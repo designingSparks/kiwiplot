@@ -1,0 +1,23 @@
+'''
+Example color palettes:
+http://repec.sowi.unibe.ch/stata/palettes/colors.html#cbrew
+https://chartio.com/learn/charts/how-to-choose-colors-data-visualization/
+'''
+
+LINEWIDTH = 2 #default linewidth
+CURSORWIDTH = 2
+YAXIS_WIDTH = 35 #allows alignment of y axis in vertically-stacked graphs
+label_style = {'color': 'k', 'font-size': '10pt'} #'#191919'
+title_style = {'color': 'k', 'size': '12pt'} #note: use size, not font-size
+legend_label_style = {'color': 'k', 'size': '8pt'} #, 'bold': True, 'italic': False
+
+
+#Color palettes for lines
+palette_1 = ['#1F77B4', '#9467BD', '#2CA02C', '#D62728']
+palette_1_light = ['#AEC7E8', '#C5B0D5', '#98DF8A', '#FF9896']
+palette_2 = ['#F8766D', '#D89000', '#39B600', '#00BFC4', '#E76BF3'] 
+
+#Graph styles
+style_dark = {'background': '#565656', 'grid': 'k', 'text': 'k', 'cursor': 'White'}
+style_white = {'background': '#FFFFFF', 'grid': '#565656', 'text': 'k', 'cursor': '#00ffff'}
+style_grey = {'background': '#c0c0c0', 'grid': '#f2f2f2', 'text': 'k', 'cursor': '#ffff33'}
