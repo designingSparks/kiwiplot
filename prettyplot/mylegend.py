@@ -11,17 +11,24 @@ from pyqtgraph.graphicsItems.LegendItem import ItemSample
 import pyqtgraph.functions as fn
 from .qtWrapper import *
 
+BACKGROUND_DEFAULT = '#808080'
 
 class myLegend(LegendItem):
-    def __init__(self, size=None, offset=None):
+    def __init__(self, size=None, offset=None, background=BACKGROUND_DEFAULT):
         LegendItem.__init__(self, size, offset)
+        self.background = background
+
 
     #Can override paint to draw a custom legend rectangle
     def paint(self, p, *args):
-        transRed = QColor(0xFF, 0, 0, 0) #the last parameter is the opacity
-        pen = fn.mkPen({'color': transRed, 'width': 0})
+        # transRed = QColor(0xFF, 0, 0, 0) #the last parameter is the opacity. 0 = opaque, 255 = solid
+        # pen = fn.mkPen({'color': transRed, 'width': 0}) #outline
+        midGrey = QColor(0xCC, 0xCC, 0xCC, 127)
+        pen = fn.mkPen({'color': midGrey, 'width': 1.5}) #outline
         p.setPen(pen) # outline
-        p.setBrush(fn.mkBrush('#808080'))   # background fill 
+        background_color = QColor(0xFF, 0xFF, 0xFF, 127)
+        # p.setBrush(fn.mkBrush('#808080'))   # background fill 
+        p.setBrush(background_color)   # background fill 
 
         p.setRenderHint(QPainter.Antialiasing)
         path = QPainterPath()
@@ -32,7 +39,7 @@ class myLegend(LegendItem):
         rect.setBottom(bottom - 9.5)
         rect.setRight(right-4.5)
 
-        path.addRoundedRect(rect, 10, 10)
+        path.addRoundedRect(rect, 8, 8)
         # QPen pen(Qt::black, 10);
         # p.setPen(pen);
         # p.fillPath(path, Qt::red);

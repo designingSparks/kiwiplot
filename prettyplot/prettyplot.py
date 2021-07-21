@@ -25,6 +25,20 @@ from .mylegend import myLegend
 from .pplogger import *
 logger = logging.getLogger('prettyplot.' + __name__) 
 
+# _Q_APP = None # Keep reference to QApplication instance to prevent garbage collection
+# qApp = QApplication.instance()
+# if qApp is None:
+#     _Q_APP = qApp = QApplication([])
+    
+
+# def qApplicationSingleton():
+#     global _Q_APP
+#     qApp = QApplication.instance()
+#     if qApp is None:
+#         _Q_APP = qApp = QApplication([])
+#     return qApp
+# qApplicationSingleton()
+
 class PrettyPlot(pg.PlotWidget):
     
     def __init__(self, style=None, linecolors=None, *args, **kwargs):
@@ -43,18 +57,34 @@ class PrettyPlot(pg.PlotWidget):
         self.linewidth = plotstyle.LINEWIDTH
         self.set_palette(plotstyle.palette_1)
         self.set_graph_style(style)
-        self.show()
         self.cursor = None
         # self.curves = list() #Not needed. Use self.plot_item.curves()
-        self.legend = None
+        self.legend_box = None
         logger.debug('Initializing plot.')
+        self.show()
 
-    def show_legend(self, legend_list=None, offset=(-20,20)):
+    # @property
+    # def qApplication(self):
+    #     """ Returns the QApplication object. Equivalent to QtWidgets.qApp.
+    #         :rtype QtWidgets.QApplication:
+    #     """
+    #     # TODO: replace the lines below by qApplicationSingleton()
+    #     global _Q_APP
 
+    #     qApp = QApplication.instance()
+    #     if qApp is None:
+    #         _Q_APP = qApp = QApplication([])
+    #     return qApp
+
+    
+    def legend(self, legend_list=None, offset=(-20,20)):
+        '''
+        Show the legend box
+        '''
         #Create legend box
-        if self.legend is None:
-            self.legend = myLegend(offset=offset)
-            self.legend.setParentItem(self.graphicsItem())
+        if self.legend_box is None:
+            self.legend_box = myLegend(offset=offset)
+            self.legend_box.setParentItem(self.graphicsItem())
             # self.legend.setParentItem(self.viewbox) #also works
 
         #If no curves exist, use the default palette to define the curves
@@ -65,12 +95,12 @@ class PrettyPlot(pg.PlotWidget):
                 pen = pg.functions.mkPen({'color': next(linecolor_cycle), 'width': self.linewidth})
                 item = PlotDataItem()
                 item.setPen(pen)
-                self.legend.addItem(item, name)
+                self.legend_box.addItem(item, name)
             return
 
         if legend_list is not None:
             for i, name in enumerate(legend_list):
-                self.legend.addItem(self.plot_item.curves[i], name)
+                self.legend_box.addItem(self.plot_item.curves[i], name)
             return
 
         #Curve names were defined during plotting
@@ -80,7 +110,7 @@ class PrettyPlot(pg.PlotWidget):
                 name = curve.name()
                 if name is None:
                     name = ''
-                self.legend.addItem(curve, name)
+                self.legend_box.addItem(curve, name)
             return
         
 
@@ -144,7 +174,7 @@ class PrettyPlot(pg.PlotWidget):
         pen = pg.functions.mkPen({'color': next(self.linecolor_cycle), 'width': self.linewidth})
         return pen
 
-    # @pyqtSlot(object)
+    @Slot(object)
     def _resized_view_box(self, view_box):
         # plot_item = self.getPlotItem()
         self._background.setRect(self.plot_item.mapRectFromItem(view_box, view_box.rect()))

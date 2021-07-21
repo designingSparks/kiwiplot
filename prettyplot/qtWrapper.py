@@ -17,18 +17,18 @@ if 'QT_API' in os.environ:
             from PySide2.QtCore import *
             from PySide2.QtGui import *
             from PySide2.QtWidgets import *
-            logger.debug('Qt backend set to PySide2.')
+            print('Qt backend set to PySide2.')
         elif api.upper() == 'PYQT5':
             from PyQt5.QtCore import *
             from PyQt5.QtGui import *
             from PyQt5.QtWidgets import *
             Signal = pyqtSignal
             Slot = pyqtSlot
-            logger.debug('Qt backend set to PyQt5.')
+            print('Qt backend set to PyQt5.')
         else:
             raise Exception("Invalid Qt API defined in os.environ['QT_API']. QT_API must be one of ['PYSIDE2', 'PYQT5'].")
 else:
-    logger.debug('Qt API not defined. Attempting to detect Qt backend automatically.')
+    print('Qt API not defined. Attempting to detect Qt backend automatically.')
     api = None
     try:
         from PySide2.QtCore import *
