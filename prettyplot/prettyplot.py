@@ -21,7 +21,7 @@ import pyqtgraph as pg
 pg.setConfigOption('antialias', True) #Plotted curve looks nicer
 from itertools import cycle
 import numpy as np
-from .mylegend import myLegend
+from .legend_box import LegendBox
 from .pplogger import *
 logger = logging.getLogger('prettyplot.' + __name__) 
 
@@ -124,7 +124,7 @@ class PrettyPlot(pg.PlotWidget):
         '''
         #Create legend box
         if self.legend_box is None:
-            self.legend_box = myLegend(offset=offset)
+            self.legend_box = LegendBox(offset=offset)
             self.legend_box.setParentItem(self.graphicsItem())
             # self.legend.setParentItem(self.viewbox) #also works
 

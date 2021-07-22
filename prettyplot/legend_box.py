@@ -13,7 +13,7 @@ from .qtWrapper import *
 
 BACKGROUND_DEFAULT = '#808080'
 
-class myLegend(LegendItem):
+class LegendBox(LegendItem):
     def __init__(self, size=None, offset=None, background=BACKGROUND_DEFAULT):
         LegendItem.__init__(self, size, offset)
         self.background = background
