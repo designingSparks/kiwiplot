@@ -314,13 +314,20 @@ class PrettyPlot(pg.PlotWidget):
 
         #Update cursor dots
         for i, curve in enumerate(self.plot_item.curves):
-            idx = (np.abs(curve.xData - xpos)).argmin()
-            xval = curve.xData[idx]
-            yval = curve.yData[idx]
-            xlist.append(xval)
-            ylist.append(yval)
-            # logger.debug(f'idx{idx}')
-            self.cursor_dots[i].setData([xval], [yval])
+        
+            if self.cursor.interpolateData is True: #linear interpolation
+                y = np.interp(xpos, curve.xData, curve.yData)
+                xlist.append(xpos)
+                ylist.append(y)
+                self.cursor_dots[i].setData([xpos], [y])
+            else:
+                #Render dots on actual data points, i.e. no interpolation
+                idx = (np.abs(curve.xData - xpos)).argmin()
+                xval = curve.xData[idx]
+                yval = curve.yData[idx]
+                xlist.append(xval)
+                ylist.append(yval)
+                self.cursor_dots[i].setData([xval], [yval])
 
         self.cursorDataSignal.emit((xlist, ylist))
 

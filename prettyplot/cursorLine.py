@@ -113,8 +113,9 @@ class CursorLine(GraphicsObject):
         self._endPoints = [0, 1] # 
         self._bounds = None
         self._lastViewSize = None
-        self.xDataLimit = list() #data limits
-
+        self.xDataLimit = list() 
+        self.interpolateData = True
+        
         if label is not None:
             labelOpts = {} if labelOpts is None else labelOpts
             self.label = InfLineLabel(self, text=label, **labelOpts)
