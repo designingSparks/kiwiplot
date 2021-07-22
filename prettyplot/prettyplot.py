@@ -286,7 +286,7 @@ class PrettyPlot(pg.PlotWidget):
             xval = curve.xData[idx]
             self.plot_item.addItem(self.cursor, ignoreBounds=True)
             self.cursor.setPos(pg.Point(xval,0))
-            self.cursor.setXlimit([curve.xData[0], curve.xData[-1]])
+            self.cursor.setXDataLimit([curve.xData[0], curve.xData[-1]])
 
             #Show the cursor dots
             for i, cursor_dot in enumerate(self.cursor_dots):
