@@ -113,10 +113,18 @@ class CursorLine(GraphicsObject):
         self._endPoints = [0, 1] # 
         self._bounds = None
         self._lastViewSize = None
-        
+        self.xLimit = list() #data limits
+
         if label is not None:
             labelOpts = {} if labelOpts is None else labelOpts
             self.label = InfLineLabel(self, text=label, **labelOpts)
+
+    def setXlimit(self, xlim):
+        '''
+        xlim a list of [xmin, xmax]
+        Used to prevent the cursor from being dragged beyond the first or last data points.
+        '''
+        self.xLimit = xlim
 
     def setMovable(self, m):
         """Set whether the line is movable by the user."""
@@ -392,21 +400,36 @@ class CursorLine(GraphicsObject):
         if self.movable and ev.button() == Qt.LeftButton:
             if ev.isStart():
                 self.moving = True
-                self.cursorOffset = self.pos() - self.mapToParent(ev.buttonDownPos())
-                logger.debug(self.cursorOffset)
+                #Mouse may not be pressed exactly on the cursorline. Maintain the original offset
+                self.cursorOffset = self.pos() - self.mapToParent(ev.buttonDownPos()) 
                 self.startPosition = self.pos()
             ev.accept()
 
             if not self.moving:
                 return
 
+            #TODO
             pos = ev.pos()
             ppos = self.mapToParent(pos) #map to axis coordinates
-
             logger.debug('mouseDragEvent: {}'.format(ppos))
+            view = self.getViewBox()
+            range = view.viewRange() #[[-0.000865195885804833, 0.020865195885804832], [-2.2279788573127783, 2.2279788573127783]]
+            xrange = range[0] #x view extents in axis coordinates
 
-            self.setPos(self.cursorOffset + self.mapToParent(ev.pos()))
-            # self.setPos(ppos)
+            #Prevents the vertical cursor from being dragged outside viewbox limits
+            newpos = self.cursorOffset + self.mapToParent(ev.pos())
+            if newpos.x() > xrange[1]:
+                newpos.setX(xrange[1])
+            elif newpos.x() < xrange[0]:
+                newpos.setX(xrange[0])
+
+            if newpos.x() < self.xLimit[0]:
+                newpos.setX(self.xLimit[0])
+            if newpos.x() > self.xLimit[1]:
+                newpos.setX(self.xLimit[1])
+
+            # self.setPos(self.cursorOffset + self.mapToParent(ev.pos()))
+            self.setPos(newpos)
 
             self.sigDragged.emit(self)
             if ev.isFinish():
