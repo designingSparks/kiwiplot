@@ -1,19 +1,32 @@
+'''
+Plots three separate figures to show the three different graph style types
+'''
 import sys, os
 from prettyplot import PrettyPlot
 from prettyplot.qtWrapper import QApplication
 import numpy as np
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    fig = PrettyPlot(style='white')
-    fig.setWindowTitle('Vanilla prettyplot')
-    t = np.linspace(0, 20e-3, 100)
-    y1 = 2*np.sin(2*np.pi*50*t)
-    y2 = 1.5*np.sin(2*np.pi*50*t)
-    y3 = 1*np.sin(2*np.pi*50*t)
+t = np.linspace(0, 20e-3, 100)
+y1 = 2*np.sin(2*np.pi*50*t)
+y2 = 1.5*np.sin(2*np.pi*50*t)
+y3 = 1*np.sin(2*np.pi*50*t)
+
+def update_plot(fig):
     fig.plot(t,y1, name='y1')
     fig.plot(t,y2, name='y2')
     fig.plot(t,y3, name='y3')
     fig.grid()
     fig.legend()
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    fig1 = PrettyPlot()
+    fig1.setWindowTitle('Style default')
+    update_plot(fig1)
+    fig2 = PrettyPlot(style='grey')
+    fig2.setWindowTitle('Style grey')
+    update_plot(fig2)
+    fig3 = PrettyPlot(style='dark')
+    fig3.setWindowTitle('Style dark')
+    update_plot(fig3)
     sys.exit(app.exec_())
