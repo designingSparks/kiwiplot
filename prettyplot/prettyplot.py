@@ -51,7 +51,7 @@ class PrettyPlot(pg.PlotWidget):
         kwargs['background'] = None
         super().__init__(*args, **kwargs)
         self.plot_item = self.getPlotItem()
-        self.plot_item.showGrid(x=True, y=True, alpha=1)
+        # self.plot_item.showGrid(x=True, y=True, alpha=1)
 
         self.viewbox = self.plot_item.getViewBox()
         self.viewbox.sigResized.connect(self._resized_view_box)
@@ -99,6 +99,23 @@ class PrettyPlot(pg.PlotWidget):
             self.set_graph_style(plotstyle.style_grey)
         elif style == 'dark':
             self.set_graph_style(plotstyle.style_dark)
+
+
+    def grid(self, *args):
+        '''
+        Enables/disables the x and y grids.
+
+        :param
+        args[0] - bool. Enables or disables both x and y grids
+        args[0], args[1] - bool. Separately enable/disable x and y grids
+        '''
+        xGrid = yGrid = True
+        if len(args) == 1:
+            xGrid = yGrid = args[0]
+        elif len(args) == 2:
+            xGrid = args[0]
+            yGrid = args[1]
+        self.plot_item.showGrid(x=xGrid, y=yGrid, alpha=1)
 
 
     def legend(self, legend_list=None, offset=(-20,20)):

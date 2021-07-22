@@ -23,8 +23,8 @@ class MainWindow(QMainWindow):
         self.status_bar.showMessage('Home view')
         
         # self.plotwidget = PlotWidget(updateLabelfn = self.status_bar.showMessage)
-        self.plotwidget1 = PrettyPlot()
-        self.plotwidget2 = PrettyPlot(style='grey')
+        self.plotwidget1 = PrettyPlot(style='grey')
+        self.plotwidget2 = PrettyPlot(style='dark')
 
         vbox = QVBoxLayout()
         widget = QWidget()
@@ -55,7 +55,7 @@ class MainWindow(QMainWindow):
         self.plotwidget1.plot(t,y2, name='y2')
         self.plotwidget1.plot(t,y3, name='y3')
         self.plotwidget1.plot(t,y4, name='y4')
-        # self.plotwidget1.plot_item.updateGrid()
+        self.plotwidget1.grid()
         self.plotwidget1.legend()
 
         self.plotwidget1.set_xlabel('Time (ms)')
@@ -64,9 +64,10 @@ class MainWindow(QMainWindow):
         self.plotwidget1.create_cursor(self.update_cursor)
         self.plotwidget1.show_cursor()
 
-        self.plotwidget2.set_linecolors(plotstyle.palette_2)
+        # self.plotwidget2.set_linecolors(plotstyle.palette_2)
         for i in range(1, 6):
             self.plotwidget2.plot(t,y1*i)
+        self.plotwidget2.grid()
         self.plotwidget2.legend(['y1','y2','y3','y4','y5']) 
 
     def createActions(self):

@@ -18,6 +18,6 @@ palette_1_light = ['#AEC7E8', '#C5B0D5', '#98DF8A', '#FF9896']
 palette_2 = ['#F8766D', '#D89000', '#39B600', '#00BFC4', '#E76BF3'] 
 
 #Inbuilt graph styles
-style_white = {'background': '#FFFFFF', 'grid': '#565656', 'text': 'k', 'cursor': '#00ffff', 'linecolors': palette_1} 
+style_white = {'background': '#FFFFFF', 'grid': '#c0c0c0', 'text': 'k', 'cursor': '#00ffff', 'linecolors': palette_1} 
 style_grey = {'background': '#c0c0c0', 'grid': '#f2f2f2', 'text': 'k', 'cursor': '#ffff33', 'linecolors': palette_2}
-style_dark = {'background': '#565656', 'grid': 'k', 'text': 'k', 'cursor': 'White', 'linecolors': palette_1_light}
+style_dark = {'background': '#565656', 'grid': 'k', 'text': 'k', 'cursor': 'White', 'linecolors': palette_2}

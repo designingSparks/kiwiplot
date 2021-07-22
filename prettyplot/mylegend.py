@@ -26,7 +26,7 @@ class myLegend(LegendItem):
         midGrey = QColor(0xCC, 0xCC, 0xCC, 127)
         pen = fn.mkPen({'color': midGrey, 'width': 1.5}) #outline
         p.setPen(pen) # outline
-        background_color = QColor(0xFF, 0xFF, 0xFF, 127)
+        background_color = QColor(0xFF, 0xFF, 0xFF, 64)
         # p.setBrush(fn.mkBrush('#808080'))   # background fill 
         p.setBrush(background_color)   # background fill 
 

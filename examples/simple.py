@@ -14,5 +14,6 @@ if __name__ == '__main__':
     fig.plot(t,y1, name='y1')
     fig.plot(t,y2, name='y2')
     fig.plot(t,y3, name='y3')
+    fig.grid()
     fig.legend()
     sys.exit(app.exec_())
