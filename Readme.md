@@ -1,9 +1,8 @@
 # Pretty Plot
-Prettyplot is a fast, beautiful plotting library. Due to its speed it is well suited for creating dynamic or interactive plots, for example, plotting a continuous time series of data. Prettyplot achieves its speed by leveraging the fast pyqtgraph package, which is built directly on Qt. It provides three default color themes, white, dark and grey.
+Prettyplot is a fast, beautiful plotting library. Due to its speed it is well suited for creating dynamic or interactive plots, for example, plotting a continuous time series of data. Prettyplot achieves its speed by leveraging the fast pyqtgraph package, which is built directly on Qt. It provides three default color themes, white, dark and grey. Below you can see the three themes.
 
 <img src="documentation/Vanilla_prettyplot.png" width="400" >
 
-<img src="documentation/Vanilla_pyqtgraph.png" width="400" >
 
 
 ## Motivation

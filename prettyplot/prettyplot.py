@@ -25,6 +25,8 @@ from .mylegend import myLegend
 from .pplogger import *
 logger = logging.getLogger('prettyplot.' + __name__) 
 
+STYLES = ['white', 'grey', 'dark']
+
 # _Q_APP = None # Keep reference to QApplication instance to prevent garbage collection
 # qApp = QApplication.instance()
 # if qApp is None:
@@ -41,7 +43,11 @@ logger = logging.getLogger('prettyplot.' + __name__)
 
 class PrettyPlot(pg.PlotWidget):
     
-    def __init__(self, style=None, linecolors=None, *args, **kwargs):
+    def __init__(self, style=None, *args, **kwargs):
+        '''
+        :param
+        style - 'white', 'grey', 'dark'
+        '''
         kwargs['background'] = None
         super().__init__(*args, **kwargs)
         self.plot_item = self.getPlotItem()
@@ -54,9 +60,14 @@ class PrettyPlot(pg.PlotWidget):
         
         #TODO: if style is a text arguement, set the palette to plotstyle.grey and linecolor to ...
         #TODO: change set_palette to set_linecolors, self.palette to self.linecolors
+        # self.set_palette(plotstyle.palette_1)
+
+        if style is None:
+            self.set_style('white')
+        else:
+            self.set_style(style)
+
         self.linewidth = plotstyle.LINEWIDTH
-        self.set_palette(plotstyle.palette_1)
-        self.set_graph_style(style)
         self.cursor = None
         # self.curves = list() #Not needed. Use self.plot_item.curves()
         self.legend_box = None
@@ -76,7 +87,20 @@ class PrettyPlot(pg.PlotWidget):
     #         _Q_APP = qApp = QApplication([])
     #     return qApp
 
-    
+
+    def set_style(self, style):
+        '''
+        '''
+        if style not in STYLES:
+            raise ValueError('style must be in: {}'.format(STYLES))
+        if style == 'white':
+            self.set_graph_style(plotstyle.style_white)
+        elif style == 'grey':
+            self.set_graph_style(plotstyle.style_grey)
+        elif style == 'dark':
+            self.set_graph_style(plotstyle.style_dark)
+
+
     def legend(self, legend_list=None, offset=(-20,20)):
         '''
         Show the legend box
@@ -115,14 +139,16 @@ class PrettyPlot(pg.PlotWidget):
         
 
 
-    def set_graph_style(self, style=None):
+    def set_graph_style(self, graphstyle):
         '''
         Sets the graph background and gridline color
+        :param - style must be in STYLES
         '''
-        if style is None:
-            self.style = plotstyle.style_white
-        else:
-            self.style = style
+        # if style is None:
+        #     self.style = plotstyle.style_white
+        # else:
+        #     self.style = style
+        self.graphstyle = graphstyle
 
         #Background color
         self._background = QGraphicsRectItem(self.viewbox.rect())
@@ -130,7 +156,7 @@ class PrettyPlot(pg.PlotWidget):
         self._background.setZValue(-1e6)
         self._background.setFlags(QGraphicsItem.ItemNegativeZStacksBehindParent)
         self._background.setPen(QPen())
-        background_color = QColor(self.style['background'])
+        background_color = QColor(self.graphstyle['background'])
         self._background.setBrush(background_color)
         self._background.setRect(self.plot_item.mapRectFromItem(self.viewbox, self.viewbox.rect())) #manual resize to show background correctly
 
@@ -139,7 +165,7 @@ class PrettyPlot(pg.PlotWidget):
         # self.plot_item.getAxis('left').setWidth(50) 
 
         #Changes the gridline color
-        col = QColor(self.style['grid'])
+        col = QColor(self.graphstyle['grid'])
         axis_pen = QPen(col)
         for ax in ('top', 'left', 'right', 'bottom'):
             axis = self.plot_item.getAxis(ax)
@@ -153,25 +179,30 @@ class PrettyPlot(pg.PlotWidget):
         for k in keys:
             axis = self.plot_item.getAxis(k)
             axis.setTickFont(font)
-            axis.setTextPen(self.style['text']) #sets text color
+            axis.setTextPen(self.graphstyle['text']) #sets text color
 
         #Needed to hide the top & right axis border. Otherwise this is rendered in black
         self.showAxis('top')
         self.showAxis('right')
         self.getAxis('top').setStyle(tickLength=0, showValues=False)
         self.getAxis('right').setStyle(tickLength=0, showValues=False)
+        self.set_linecolors(graphstyle['linecolors'])
 
 
-    def set_palette(self, palette):
-        self.palette = palette
-        self.linecolor_cycle = cycle(self.palette)
+    def set_linecolors(self, palette):
+        '''
+        :param
+        palette - a list of color strings. See plotsyle.py for examples.
+        '''
+        self.linecolors = palette
+        self.linecolor_sequence = cycle(self.linecolors)
 
 
     def _get_pen(self):
         '''
         Creates a pen based on the next color in the chosen linecolor palette.
         '''
-        pen = pg.functions.mkPen({'color': next(self.linecolor_cycle), 'width': self.linewidth})
+        pen = pg.functions.mkPen({'color': next(self.linecolor_sequence), 'width': self.linewidth})
         return pen
 
     @Slot(object)
@@ -199,7 +230,7 @@ class PrettyPlot(pg.PlotWidget):
     def create_cursor(self, callback=None):
 
         if self.cursor is None:
-            mypen = pg.functions.mkPen({'color': self.style['cursor'], 'width': plotstyle.CURSORWIDTH})  #white
+            mypen = pg.functions.mkPen({'color': self.graphstyle['cursor'], 'width': plotstyle.CURSORWIDTH})  #white
             self.cursor = pg.InfiniteLine(angle=90, movable=True, pen=mypen) #http://www.pyqtgraph.org/downloads/0.10.0/pyqtgraph-0.10.0-deb/pyqtgraph-0.10.0/examples/crosshair.py
             if callback is not None:
                 self.cursor.sigPositionChanged.connect(callback)

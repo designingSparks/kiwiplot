@@ -13,11 +13,11 @@ legend_label_style = {'color': 'k', 'size': '8pt'} #, 'bold': True, 'italic': Fa
 
 
 #Color palettes for lines
-palette_1 = ['#1F77B4', '#9467BD', '#2CA02C', '#D62728']
+palette_1 = ['#1F77B4', '#2CA02C', '#9467BD', '#D62728']
 palette_1_light = ['#AEC7E8', '#C5B0D5', '#98DF8A', '#FF9896']
 palette_2 = ['#F8766D', '#D89000', '#39B600', '#00BFC4', '#E76BF3'] 
 
-#Graph styles
-style_dark = {'background': '#565656', 'grid': 'k', 'text': 'k', 'cursor': 'White'}
-style_white = {'background': '#FFFFFF', 'grid': '#565656', 'text': 'k', 'cursor': '#00ffff'}
-style_grey = {'background': '#c0c0c0', 'grid': '#f2f2f2', 'text': 'k', 'cursor': '#ffff33'}
+#Inbuilt graph styles
+style_white = {'background': '#FFFFFF', 'grid': '#565656', 'text': 'k', 'cursor': '#00ffff', 'linecolors': palette_1} 
+style_grey = {'background': '#c0c0c0', 'grid': '#f2f2f2', 'text': 'k', 'cursor': '#ffff33', 'linecolors': palette_2}
+style_dark = {'background': '#565656', 'grid': 'k', 'text': 'k', 'cursor': 'White', 'linecolors': palette_1_light}
