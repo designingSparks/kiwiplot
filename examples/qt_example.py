@@ -24,6 +24,7 @@ class MainWindow(QMainWindow):
         
         # self.plotwidget = PlotWidget(updateLabelfn = self.status_bar.showMessage)
         self.plotwidget1 = PrettyPlot(style='grey')
+        # self.plotwidget1.cursorDataSignal.connect(self.process_cursor_data)
         self.plotwidget2 = PrettyPlot(style='dark')
 
         vbox = QVBoxLayout()
@@ -68,6 +69,10 @@ class MainWindow(QMainWindow):
             self.plotwidget2.plot(t,y1*i)
         self.plotwidget2.grid()
         self.plotwidget2.legend(['y1','y2','y3','y4','y5']) 
+    
+    @Slot(object)
+    def process_cursor_data(self, data):
+        logger.debug('Cursor data: {}'.format(data))
 
     def createActions(self):
         '''Toolbar actions'''

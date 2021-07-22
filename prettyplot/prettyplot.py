@@ -23,6 +23,8 @@ from itertools import cycle
 import numpy as np
 from .legend_box import LegendBox
 from .pplogger import *
+from .cursorLine import CursorLine
+
 logger = logging.getLogger('prettyplot.' + __name__) 
 
 STYLES = ['white', 'grey', 'dark']
@@ -41,8 +43,15 @@ STYLES = ['white', 'grey', 'dark']
 #     return qApp
 # qApplicationSingleton()
 
+def find_nearest(array, value):
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return array[idx]
+
 class PrettyPlot(pg.PlotWidget):
     
+    cursorDataSignal = Signal(object)
+
     def __init__(self, style=None, *args, **kwargs):
         '''
         :param
@@ -256,18 +265,35 @@ class PrettyPlot(pg.PlotWidget):
 
     def show_cursor(self):
 
+        if len(self.plot_item.curves) == 0:
+            return
+
         if self.cursor is None:
             mypen = pg.functions.mkPen({'color': self.graphstyle['cursor'], 'width': plotstyle.CURSORWIDTH})  #white
-            self.cursor = pg.InfiniteLine(angle=90, movable=True, pen=mypen) #http://www.pyqtgraph.org/downloads/0.10.0/pyqtgraph-0.10.0-deb/pyqtgraph-0.10.0/examples/crosshair.py
+            self.cursor = CursorLine(angle=90, movable=True, pen=mypen) #http://www.pyqtgraph.org/downloads/0.10.0/pyqtgraph-0.10.0-deb/pyqtgraph-0.10.0/examples/crosshair.py
             self.cursor.sigPositionChanged.connect(self.update_cursor)
-            self.cursor_x = 0
+            # self.cursor_x = 0
+
+            #Cursor initial position is midway on the x axis
+            #TODO - change this to midway on the viewbox
+            curve = self.plot_item.curves[0] #use first line as reference
+            # idx = int(len(curve.xData)/2)
+            # xval = curve.xData[idx]
+            left = self.viewbox.viewRange()[0][0]
+            right = self.viewbox.viewRange()[0][1]
+            mid = np.average([left, right])
+            idx = (np.abs(curve.xData - mid)).argmin()
+            xval = curve.xData[idx]
             self.plot_item.addItem(self.cursor, ignoreBounds=True)
+            self.cursor.setPos(pg.Point(xval,0))
 
             #Show the cursor dots
             for i, cursor_dot in enumerate(self.cursor_dots):
-                cursor_dot.setData([self.cursor_x], [i])
+                curve = self.plot_item.curves[i]
+                yval = curve.yData[idx] #find_nearest(curve.xData, xval)
                 self.plot_item.addItem(cursor_dot, ignoreBounds=True)
-                self.plot_item.curves.pop() #Don't store the cursor dots in the curves list
+                cursor_dot.setData([xval], [yval])
+                self.plot_item.curves.pop() #Don't store the cursor dots in the curves list as these are stored in self.cursor_dots
 
         else:
             logger.debug('Cursor already created')
@@ -275,18 +301,27 @@ class PrettyPlot(pg.PlotWidget):
     @Slot(object)
     def update_cursor(self, line):
         '''
+        Called when the cursor was moved
+        Params
         line - pyqtgraph InfiniteLine type
         '''
         xpos = line.x()
-        logger.debug('xpos: {}'.format(xpos))
+        # logger.debug('xpos: {}'.format(xpos))
+
+        xlist = list()
+        ylist = list()
 
         #Update cursor dots
         for i, curve in enumerate(self.plot_item.curves):
             idx = (np.abs(curve.xData - xpos)).argmin()
             xval = curve.xData[idx]
             yval = curve.yData[idx]
+            xlist.append(xval)
+            ylist.append(yval)
             # logger.debug(f'idx{idx}')
             self.cursor_dots[i].setData([xval], [yval])
+
+        self.cursorDataSignal.emit((xlist, ylist))
 
     # def show_cursor(self):
     #     self.plot_item.addItem(self.cursor, ignoreBounds=True)
