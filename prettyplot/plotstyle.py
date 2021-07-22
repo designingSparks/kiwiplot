@@ -6,6 +6,7 @@ https://chartio.com/learn/charts/how-to-choose-colors-data-visualization/
 
 LINEWIDTH = 2 #default linewidth
 CURSORWIDTH = 2
+CURSORDOTSIZE = 4
 YAXIS_WIDTH = 35 #allows alignment of y axis in vertically-stacked graphs
 label_style = {'color': 'k', 'font-size': '10pt'} #'#191919'
 title_style = {'color': 'k', 'size': '12pt'} #note: use size, not font-size

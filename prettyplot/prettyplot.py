@@ -73,6 +73,7 @@ class PrettyPlot(pg.PlotWidget):
         self.legend_box = None
         logger.debug('Initializing plot.')
         self.show()
+        self.cursor_dots = list() #store dots that show the intersection of the cursor and graph
 
     # @property
     # def qApplication(self):
@@ -215,12 +216,13 @@ class PrettyPlot(pg.PlotWidget):
         self.linecolor_sequence = cycle(self.linecolors)
 
 
-    def _get_pen(self):
-        '''
-        Creates a pen based on the next color in the chosen linecolor palette.
-        '''
-        pen = pg.functions.mkPen({'color': next(self.linecolor_sequence), 'width': self.linewidth})
-        return pen
+    # def _get_pen(self):
+    #     '''
+    #     Creates a pen based on the next color in the chosen linecolor palette.
+    #     '''
+    #     color = next(self.linecolor_sequence)
+    #     pen = pg.functions.mkPen({'color': color, 'width': self.linewidth})
+    #     return pen, color
 
     @Slot(object)
     def _resized_view_box(self, view_box):
@@ -228,10 +230,18 @@ class PrettyPlot(pg.PlotWidget):
         self._background.setRect(self.plot_item.mapRectFromItem(view_box, view_box.rect()))
 
 
-    def plot(self, x, y, pen=None, **kargs):
-        if pen is None:
-            pen = self._get_pen()
+    def plot(self, x, y, color=None, linewidth=None, **kargs):
+
+        if color is None:
+            color = next(self.linecolor_sequence)
+        if linewidth is None:
+            linewidth = self.linewidth
+
+        #TODO: Add try except
+        pen = pg.functions.mkPen({'color': color, 'width': linewidth})
         curve = self.plot_item.plot(x, y, pen=pen, **kargs)
+        cursor_dot = pg.ScatterPlotItem(size=plotstyle.CURSORDOTSIZE, pen=pen, brush=color)
+        self.cursor_dots.append(cursor_dot)
         # self.curves.append(curve)
         # self.viewbox.initZoomStack() #reset zoom stack
         return curve
@@ -244,20 +254,42 @@ class PrettyPlot(pg.PlotWidget):
             raise Exception(f'Could not update curve with index {index}')
 
 
-    def create_cursor(self, callback=None):
+    def show_cursor(self):
 
         if self.cursor is None:
             mypen = pg.functions.mkPen({'color': self.graphstyle['cursor'], 'width': plotstyle.CURSORWIDTH})  #white
             self.cursor = pg.InfiniteLine(angle=90, movable=True, pen=mypen) #http://www.pyqtgraph.org/downloads/0.10.0/pyqtgraph-0.10.0-deb/pyqtgraph-0.10.0/examples/crosshair.py
-            if callback is not None:
-                self.cursor.sigPositionChanged.connect(callback)
+            self.cursor.sigPositionChanged.connect(self.update_cursor)
             self.cursor_x = 0
+            self.plot_item.addItem(self.cursor, ignoreBounds=True)
+
+            #Show the cursor dots
+            for i, cursor_dot in enumerate(self.cursor_dots):
+                cursor_dot.setData([self.cursor_x], [i])
+                self.plot_item.addItem(cursor_dot, ignoreBounds=True)
+                self.plot_item.curves.pop() #Don't store the cursor dots in the curves list
+
         else:
             logger.debug('Cursor already created')
 
+    @Slot(object)
+    def update_cursor(self, line):
+        '''
+        line - pyqtgraph InfiniteLine type
+        '''
+        xpos = line.x()
+        logger.debug('xpos: {}'.format(xpos))
 
-    def show_cursor(self):
-        self.plot_item.addItem(self.cursor, ignoreBounds=True)
+        #Update cursor dots
+        for i, curve in enumerate(self.plot_item.curves):
+            idx = (np.abs(curve.xData - xpos)).argmin()
+            xval = curve.xData[idx]
+            yval = curve.yData[idx]
+            # logger.debug(f'idx{idx}')
+            self.cursor_dots[i].setData([xval], [yval])
+
+    # def show_cursor(self):
+    #     self.plot_item.addItem(self.cursor, ignoreBounds=True)
         #Get the current viewbox limits
         # left = self.viewbox.viewRange()[0][0]
         # right = self.viewbox.viewRange()[0][1]

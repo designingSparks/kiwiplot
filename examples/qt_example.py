@@ -61,7 +61,6 @@ class MainWindow(QMainWindow):
         self.plotwidget1.set_xlabel('Time (ms)')
         self.plotwidget1.set_ylabel('Magnitude')
         self.plotwidget1.set_title('Graph 1')
-        self.plotwidget1.create_cursor(self.update_cursor)
         self.plotwidget1.show_cursor()
 
         # self.plotwidget2.set_linecolors(plotstyle.palette_2)
