@@ -24,6 +24,7 @@ import numpy as np
 from .legend_box import LegendBox
 from .pplogger import *
 from .cursorLine import CursorLine
+from .ViewBox import ViewBox
 
 logger = logging.getLogger('prettyplot.' + __name__) 
 
@@ -58,12 +59,13 @@ class PrettyPlot(pg.PlotWidget):
         style - 'white', 'grey', 'dark'
         '''
         kwargs['background'] = None
-        super().__init__(*args, **kwargs)
+        super().__init__(viewBox = ViewBox(), *args, **kwargs)
         self.plot_item = self.getPlotItem()
         # self.plot_item.showGrid(x=True, y=True, alpha=1)
 
         self.viewbox = self.plot_item.getViewBox()
         self.viewbox.sigResized.connect(self._resized_view_box)
+
         # self.viewbox.setMouseMode(pg.ViewBox.RectMode) #one button mode
         # self.viewbox.setZoomMode(pg.ViewBox.xZoom)
         
@@ -83,6 +85,7 @@ class PrettyPlot(pg.PlotWidget):
         logger.debug('Initializing plot.')
         self.show()
         self.cursor_dots = list() #store dots that show the intersection of the cursor and graph
+        self.menu = None
 
     # @property
     # def qApplication(self):
@@ -386,6 +389,14 @@ class PrettyPlot(pg.PlotWidget):
             for single_item in item:
                 if isinstance(single_item, pg.graphicsItems.LabelItem.LabelItem):
                     single_item.setText(single_item.text, **plotstyle.legend_label_style) 
+
+
+    # On right-click, raise the context menu
+    def mouseClickEvent(self, ev):
+        if ev.button() == Qt.RightButton:
+            logger.debug('Right button')
+            # if self.raiseContextMenu(ev):
+            #     ev.accept()
 
 
 if __name__ == '__main__':
