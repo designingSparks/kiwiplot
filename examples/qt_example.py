@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
         
         # self.plotwidget = PlotWidget(updateLabelfn = self.status_bar.showMessage)
         self.plotwidget1 = PrettyPlot(style='grey')
-        # self.plotwidget1.cursorDataSignal.connect(self.process_cursor_data)
+        self.plotwidget1.cursorDataSignal.connect(self.process_cursor_data)
         self.plotwidget2 = PrettyPlot(style='dark')
 
         vbox = QVBoxLayout()

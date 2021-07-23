@@ -18,13 +18,15 @@ from .qtWrapper import *
 from pyqtgraph.graphicsItems.PlotDataItem import PlotDataItem
 from . import plotstyle
 import pyqtgraph as pg
+
+from prettyplot import cursorLine
 pg.setConfigOption('antialias', True) #Plotted curve looks nicer
 from itertools import cycle
 import numpy as np
 from .legend_box import LegendBox
 from .pplogger import *
 from .cursorLine import CursorLine
-from .ViewBox import ViewBox
+from .ViewBox import ViewBox 
 
 logger = logging.getLogger('prettyplot.' + __name__) 
 
@@ -59,10 +61,8 @@ class PrettyPlot(pg.PlotWidget):
         style - 'white', 'grey', 'dark'
         '''
         kwargs['background'] = None
-        super().__init__(viewBox = ViewBox(), *args, **kwargs)
+        super().__init__(viewBox = ViewBox(), *args, **kwargs) #use custom viewbox
         self.plot_item = self.getPlotItem()
-        # self.plot_item.showGrid(x=True, y=True, alpha=1)
-
         self.viewbox = self.plot_item.getViewBox()
         self.viewbox.sigResized.connect(self._resized_view_box)
 
@@ -301,6 +301,22 @@ class PrettyPlot(pg.PlotWidget):
 
         else:
             logger.debug('Cursor already created')
+    
+    def hide_cursor(self):
+        '''
+        Delete cursor line and dots.
+        This means if a line is added to the plot, you can show the cursor again and the new line will be detected.
+        '''
+        pass
+        #self.plot_item.removeItem(self.cursor)
+        #remove cursor dots
+        #self.cursor = None
+
+    def isCursorOff(self):
+        return self.cursor is None
+    
+    def isCursorOn(self):
+        return self.cursor is not None
 
     @Slot(object)
     def update_cursor(self, line):
@@ -349,8 +365,8 @@ class PrettyPlot(pg.PlotWidget):
         # self.cursor.setPos(pg.Point(xpos,0))
         # self.updatePlotHighlight(middle)
 
-    def hide_cursor(self):
-        self.plot_item.removeItem(self.cursor)
+    # def hide_cursor(self):
+    #     self.plot_item.removeItem(self.cursor)
 
     def set_xlabel(self, label):
         self.plot_item.setLabel('bottom', label, **plotstyle.label_style)
@@ -389,14 +405,6 @@ class PrettyPlot(pg.PlotWidget):
             for single_item in item:
                 if isinstance(single_item, pg.graphicsItems.LabelItem.LabelItem):
                     single_item.setText(single_item.text, **plotstyle.legend_label_style) 
-
-
-    # On right-click, raise the context menu
-    def mouseClickEvent(self, ev):
-        if ev.button() == Qt.RightButton:
-            logger.debug('Right button')
-            # if self.raiseContextMenu(ev):
-            #     ev.accept()
 
 
 if __name__ == '__main__':

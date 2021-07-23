@@ -12,9 +12,8 @@ from pyqtgraph.graphicsItems.GraphicsWidget import GraphicsWidget
 from pyqtgraph import debug as debug
 from pyqtgraph import getConfigOption
 from pyqtgraph.Qt import isQObjectAlive
-import logging
+from .pplogger import *
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 from pyqtgraph.graphicsItems.ViewBox import ViewBoxMenu
 
 __all__ = ['ViewBox']
@@ -234,6 +233,13 @@ class ViewBox(GraphicsWidget):
 
         if enableMenu:
             self.menu = ViewBoxMenu(self)
+
+            #https://srinikom.github.io/pyside-docs/PySide/QtGui/QWidget.html#PySide.QtGui.PySide.QtGui.QWidget.insertAction
+            self.actionAutoRange = QtGui.QAction("Show cursor", self.menu)
+            # self.menu.addAction(self.actionAutoRange)
+            self.menu.insertAction(self.menu.actions()[0], self.actionAutoRange)
+            # self.menu.removeAction()
+
         else:
             self.menu = None
 
