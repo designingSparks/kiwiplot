@@ -11,6 +11,7 @@ from pyqtgraph import functions as fn
 import numpy as np
 import weakref
 from .qtWrapper import *
+from . import plotstyle
 from .pplogger import *
 logger = logging.getLogger('prettyplot.' + __name__)
 
@@ -114,21 +115,59 @@ class CursorLine(GraphicsObject):
         self._endPoints = [0, 1] # 
         self._bounds = None
         self._lastViewSize = None
-        self.xDataLimit = list() 
-        self.interpolateData = True
-        self.cursor_dots = list() #store dots that show the intersection of the cursor and graph
 
         if label is not None:
             labelOpts = {} if labelOpts is None else labelOpts
             self.label = InfLineLabel(self, text=label, **labelOpts)
 
-        self.xDataLimit = list() 
-        self.interpolateData = True
-        self.isVisible = False
         self.parentWidget = parentWidget
+
+        self.xDataLimit = list()  
+        self.interpolateData = True
+        # self.isVisible = False #this causes a bug as there is already a fn called this.
         self.cursor_dots = list() #store dots that show the intersection of the cursor and graph
         self.sigPositionChanged.connect(self.update_cursor)
-        
+
+    def show(self):
+        '''
+        Display cursor and cursor dots on parent widget
+        Note: If curves are added to the plot after the cursor is shown, these will be unrecognized by the cursor.
+        '''
+        pw = self.parentWidget
+        curve = pw.plot_item.curves[0] #use first line as reference
+        # idx = int(len(curve.xData)/2)
+        # xval = curve.xData[idx]
+        left = pw.viewbox.viewRange()[0][0]
+        right = pw.viewbox.viewRange()[0][1]
+        mid = np.average([left, right])
+        idx = (np.abs(curve.xData - mid)).argmin()
+        xval = curve.xData[idx]
+        pw.plot_item.addItem(self, ignoreBounds=True)
+
+        self.setPos(Point(xval,0))
+        self.setXDataLimit([curve.xData[0], curve.xData[-1]])
+        # self.cursorEnabledSignal.emit(self.cursor)
+
+        #TODO: Create the cursor dots
+        cursor_dot = pg.ScatterPlotItem(size=plotstyle.CURSORDOTSIZE, pen=pen, brush=color)
+        self.cursor_dots.append(cursor_dot)
+
+        #Show the cursor dots
+        for i, cursor_dot in enumerate(self.cursor_dots):
+            curve = pw.plot_item.curves[i]
+            yval = curve.yData[idx] #find_nearest(curve.xData, xval)
+            pw.plot_item.addItem(cursor_dot, ignoreBounds=True)
+            cursor_dot.setData([xval], [yval])
+            pw.plot_item.curves.pop() #Don't store the cursor dots in the curves list as these are stored in self.cursor_dots
+
+
+    def hide(self):
+        '''
+        Remove from parent widget. Note the cursor line itself is not deleted. This must be done separately by removing the cursor from prettyplot.cursor_list.
+        '''
+        self.parentWidget.plot_item.removeItem(self)
+
+
     @Slot(object)
     def update_cursor(self, line):
         '''
@@ -142,7 +181,25 @@ class CursorLine(GraphicsObject):
         xlist = list()
         ylist = list()
         return
+        
+        # #Update cursor dots
+        # for i, curve in enumerate(pw.plot_item.curves):
+        
+        #     if self.interpolateData is True: #linear interpolation
+        #         y = np.interp(xpos, curve.xData, curve.yData)
+        #         xlist.append(xpos)
+        #         ylist.append(y)
+        #         self.cursor_dots[i].setData([xpos], [y])
+        #     else:
+        #         #Render dots on actual data points, i.e. no interpolation
+        #         idx = (np.abs(curve.xData - xpos)).argmin()
+        #         xval = curve.xData[idx]
+        #         yval = curve.yData[idx]
+        #         xlist.append(xval)
+        #         ylist.append(yval)
+        #         self.cursor_dots[i].setData([xval], [yval])
 
+        # self.cursorDataSignal.emit((xlist, ylist))
 
     def setXDataLimit(self, xlim):
         '''

@@ -269,10 +269,11 @@ class PrettyPlot(pg.PlotWidget):
 
     def add_cursor(self, type='v'):
         mypen = pg.functions.mkPen({'color': self.graphstyle['cursor'], 'width': plotstyle.CURSORWIDTH})  #white
-        cursor = CursorLine(angle=90, movable=True, pen=mypen) #http://www.pyqtgraph.org/downloads/0.10.0/pyqtgraph-0.10.0-deb/pyqtgraph-0.10.0/examples/crosshair.py
+        cursor = CursorLine(angle=90, movable=True, pen=mypen, parentWidget=self) #http://www.pyqtgraph.org/downloads/0.10.0/pyqtgraph-0.10.0-deb/pyqtgraph-0.10.0/examples/crosshair.py
         self.cursor_list.append(cursor)
         self.plot_item.addItem(cursor, ignoreBounds=True)
-
+        print('Cursor added')
+        
     def show_cursor(self):
         return
         if len(self.plot_item.curves) == 0:
