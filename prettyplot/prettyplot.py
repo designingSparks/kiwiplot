@@ -53,7 +53,7 @@ def find_nearest(array, value):
 
 class PrettyPlot(pg.PlotWidget):
     
-    cursorDataSignal = Signal(object)
+    # cursorDataSignal = Signal(object)
 
     def __init__(self, style=None, *args, **kwargs):
         '''
@@ -84,7 +84,7 @@ class PrettyPlot(pg.PlotWidget):
         self.legend_box = None
         logger.debug('Initializing plot.')
         self.show()
-        self.cursor_dots = list() #store dots that show the intersection of the cursor and graph
+        self.cursor_list = list() #can have multiple cursors
         self.menu = None
 
     # @property
@@ -252,8 +252,8 @@ class PrettyPlot(pg.PlotWidget):
         #TODO: Add try except
         pen = pg.functions.mkPen({'color': color, 'width': linewidth})
         curve = self.plot_item.plot(x, y, pen=pen, **kargs)
-        cursor_dot = pg.ScatterPlotItem(size=plotstyle.CURSORDOTSIZE, pen=pen, brush=color)
-        self.cursor_dots.append(cursor_dot)
+        # cursor_dot = pg.ScatterPlotItem(size=plotstyle.CURSORDOTSIZE, pen=pen, brush=color)
+        # self.cursor_dots.append(cursor_dot)
         # self.curves.append(curve)
         # self.viewbox.initZoomStack() #reset zoom stack
         return curve
@@ -266,22 +266,23 @@ class PrettyPlot(pg.PlotWidget):
             raise Exception(f'Could not update curve with index {index}')
 
 
-    def show_cursor(self):
+    def add_cursor(self, type='v'):
+        mypen = pg.functions.mkPen({'color': self.graphstyle['cursor'], 'width': plotstyle.CURSORWIDTH})  #white
+        cursor = CursorLine(angle=90, movable=True, pen=mypen) #http://www.pyqtgraph.org/downloads/0.10.0/pyqtgraph-0.10.0-deb/pyqtgraph-0.10.0/examples/crosshair.py
+        self.cursor_list.append(cursor)
+        self.plot_item.addItem(cursor, ignoreBounds=True)
 
+    def show_cursor(self):
+        return
         if len(self.plot_item.curves) == 0:
             return
 
-        if self.cursor is None:
-            mypen = pg.functions.mkPen({'color': self.graphstyle['cursor'], 'width': plotstyle.CURSORWIDTH})  #white
-            self.cursor = CursorLine(angle=90, movable=True, pen=mypen) #http://www.pyqtgraph.org/downloads/0.10.0/pyqtgraph-0.10.0-deb/pyqtgraph-0.10.0/examples/crosshair.py
-            self.cursor.sigPositionChanged.connect(self.update_cursor)
+       
             # self.cursor_x = 0
 
             #Cursor initial position is midway on the x axis
             #TODO - change this to midway on the viewbox
             curve = self.plot_item.curves[0] #use first line as reference
-            # idx = int(len(curve.xData)/2)
-            # xval = curve.xData[idx]
             left = self.viewbox.viewRange()[0][0]
             right = self.viewbox.viewRange()[0][1]
             mid = np.average([left, right])
@@ -348,7 +349,7 @@ class PrettyPlot(pg.PlotWidget):
                 ylist.append(yval)
                 self.cursor_dots[i].setData([xval], [yval])
 
-        self.cursorDataSignal.emit((xlist, ylist))
+        # self.cursorDataSignal.emit((xlist, ylist))
 
     # def show_cursor(self):
     #     self.plot_item.addItem(self.cursor, ignoreBounds=True)

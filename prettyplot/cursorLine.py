@@ -37,6 +37,7 @@ class CursorLine(GraphicsObject):
     sigPositionChangeFinished = Signal(object)
     sigPositionChanged = Signal(object)
     sigClicked =  Signal(object, object)
+    cursorDataSignal = Signal(object)
 
     def __init__(self, pos=None, angle=90, pen=None, movable=False, bounds=None,
                  hoverPen=None, label=None, labelOpts=None, span=(0, 1), markers=None, 
@@ -115,7 +116,8 @@ class CursorLine(GraphicsObject):
         self._lastViewSize = None
         self.xDataLimit = list() 
         self.interpolateData = True
-        
+        self.cursor_dots = list() #store dots that show the intersection of the cursor and graph
+
         if label is not None:
             labelOpts = {} if labelOpts is None else labelOpts
             self.label = InfLineLabel(self, text=label, **labelOpts)
@@ -414,17 +416,15 @@ class CursorLine(GraphicsObject):
             xrange = range[0] #x view extents in axis coordinates
 
             #Prevents the vertical cursor from being dragged outside viewbox or data limits
-            newpos = self.cursorOffset + self.mapToParent(ev.pos())
-            xmin = max(xrange[0], self.xDataLimit[0])
-            xmax = min(xrange[1], self.xDataLimit[1])
-
-            if newpos.x() < xmin:
-                newpos.setX(xmin)
-            if newpos.x() > xmax:
-                newpos.setX(xmax)
-
-            self.setPos(newpos)
-            # self.setPos(self.cursorOffset + self.mapToParent(ev.pos())) #original
+            # newpos = self.cursorOffset + self.mapToParent(ev.pos())
+            # xmin = max(xrange[0], self.xDataLimit[0])
+            # xmax = min(xrange[1], self.xDataLimit[1])
+            # if newpos.x() < xmin:
+            #     newpos.setX(xmin)
+            # if newpos.x() > xmax:
+            #     newpos.setX(xmax)
+            # self.setPos(newpos)
+            self.setPos(self.cursorOffset + self.mapToParent(ev.pos())) #original
 
             self.sigDragged.emit(self)
             if ev.isFinish():
