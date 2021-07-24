@@ -8,6 +8,7 @@ from pyqtgraph.graphicsItems.GraphicsItem import GraphicsItem
 from pyqtgraph.graphicsItems.TextItem import TextItem
 from pyqtgraph.graphicsItems.ViewBox import ViewBox
 from pyqtgraph import functions as fn
+from pyqtgraph import ScatterPlotItem
 import numpy as np
 import weakref
 from .qtWrapper import *
@@ -125,6 +126,7 @@ class CursorLine(GraphicsObject):
         self.xDataLimit = list()  
         self.interpolateData = True
         # self.isVisible = False #this causes a bug as there is already a fn called this.
+        self.isDisplayed = False 
         self.cursor_dots = list() #store dots that show the intersection of the cursor and graph
         self.sigPositionChanged.connect(self.update_cursor)
 
@@ -133,6 +135,9 @@ class CursorLine(GraphicsObject):
         Display cursor and cursor dots on parent widget
         Note: If curves are added to the plot after the cursor is shown, these will be unrecognized by the cursor.
         '''
+        if self.isDisplayed: #prevent multiple calls to this function from creating many cursor dots
+            return
+
         pw = self.parentWidget
         curve = pw.plot_item.curves[0] #use first line as reference
         # idx = int(len(curve.xData)/2)
@@ -142,19 +147,19 @@ class CursorLine(GraphicsObject):
         mid = np.average([left, right])
         idx = (np.abs(curve.xData - mid)).argmin()
         xval = curve.xData[idx]
-        pw.plot_item.addItem(self, ignoreBounds=True)
+        self.isDisplayed = True
 
         self.setPos(Point(xval,0))
         self.setXDataLimit([curve.xData[0], curve.xData[-1]])
-        # self.cursorEnabledSignal.emit(self.cursor)
+        pw.plot_item.addItem(self, ignoreBounds=True)
 
-        #TODO: Create the cursor dots
-        cursor_dot = pg.ScatterPlotItem(size=plotstyle.CURSORDOTSIZE, pen=pen, brush=color)
-        self.cursor_dots.append(cursor_dot)
+        #Create and show the cursor dots
+        for curve in pw.plot_item.curves:
+            pen = curve.opts['pen']
+            cursor_dot = ScatterPlotItem(size=plotstyle.CURSORDOTSIZE, pen=pen, brush=pen.color())
+            self.cursor_dots.append(cursor_dot)
 
-        #Show the cursor dots
-        for i, cursor_dot in enumerate(self.cursor_dots):
-            curve = pw.plot_item.curves[i]
+            #Show the cursor dots
             yval = curve.yData[idx] #find_nearest(curve.xData, xval)
             pw.plot_item.addItem(cursor_dot, ignoreBounds=True)
             cursor_dot.setData([xval], [yval])
