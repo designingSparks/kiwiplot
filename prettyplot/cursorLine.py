@@ -41,7 +41,7 @@ class CursorLine(GraphicsObject):
 
     def __init__(self, pos=None, angle=90, pen=None, movable=False, bounds=None,
                  hoverPen=None, label=None, labelOpts=None, span=(0, 1), markers=None, 
-                 name=None):
+                 name=None, parentWidget=None):
         """
         =============== ==================================================================
         **Arguments:**
@@ -121,6 +121,28 @@ class CursorLine(GraphicsObject):
         if label is not None:
             labelOpts = {} if labelOpts is None else labelOpts
             self.label = InfLineLabel(self, text=label, **labelOpts)
+
+        self.xDataLimit = list() 
+        self.interpolateData = True
+        self.isVisible = False
+        self.parentWidget = parentWidget
+        self.cursor_dots = list() #store dots that show the intersection of the cursor and graph
+        self.sigPositionChanged.connect(self.update_cursor)
+        
+    @Slot(object)
+    def update_cursor(self, line):
+        '''
+        Called when the cursor was moved. It updates the cursor dot to the intersection point of the cursor and the curve.
+        It also emits the cursorDataSignal signal, which contains the x, y coordinates of the new intersection points.
+        Params
+        line - pyqtgraph InfiniteLine type
+        '''
+        pw = self.parentWidget
+        xpos = line.x()
+        xlist = list()
+        ylist = list()
+        return
+
 
     def setXDataLimit(self, xlim):
         '''

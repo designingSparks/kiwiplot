@@ -85,6 +85,7 @@ class PrettyPlot(pg.PlotWidget):
         logger.debug('Initializing plot.')
         self.show()
         self.cursor_list = list() #can have multiple cursors
+        self.viewbox.cursor_list = self.cursor_list #hack for menu management of
         self.menu = None
 
     # @property

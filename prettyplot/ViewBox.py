@@ -148,6 +148,8 @@ class ViewBox(GraphicsWidget):
         self.zoom_stack = list() #list of tuples: 'xMin', 'xMax', 'yMin', 'yMax'
         self.zoom_pos = 0
         self.start_pos = None
+        #TODO: Make this more elegant?
+        self.cursor_list = None #reference to prettyplot.cursor_list. Needed for menu management as the right click events are handled in ViewBox
 
         self.state = {
 
