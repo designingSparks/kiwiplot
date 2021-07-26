@@ -19,17 +19,19 @@ def get_bessel_data(x):
     y2 = spl.jv(1,x)
     y3 = spl.jv(2,x)
     y4 = spl.jv(3,x)
-    return y1, y2, y3, y4
+    y5 = spl.jv(5,x)
+    return y1, y2, y3, y4, y5
 
 def update_plot(fig):
     # t = np.linspace(0, 20e-3, 100)
     # y1, y2, y3, y4 = get_sine_data(t)
     t = np.linspace(0,20,100)
-    y1, y2, y3, y4 = get_bessel_data(t)
+    y1, y2, y3, y4, y5 = get_bessel_data(t)
     fig.plot(t,y1, name='y1')
     fig.plot(t,y2, name='y2')
     fig.plot(t,y3, name='y3')
     fig.plot(t,y4, name='y4')
+    fig.plot(t,y5, name='y5')
     fig.grid()
     fig.legend()
 
