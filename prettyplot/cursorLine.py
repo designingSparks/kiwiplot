@@ -127,6 +127,7 @@ class CursorLine(GraphicsObject):
         self.interpolateData = True
         # self.isVisible = False #this causes a bug as there is already a fn called this.
         self.isDisplayed = False 
+        self.isPressed = False
         self.cursor_dots = list() #store dots that show the intersection of the cursor and graph
         self.sigPositionChanged.connect(self.update_cursor)
 
@@ -149,7 +150,6 @@ class CursorLine(GraphicsObject):
         xval = curve.xData[idx]
         self.isDisplayed = True
 
-        self.setPos(Point(xval,0))
         self.setXDataLimit([curve.xData[0], curve.xData[-1]])
         pw.plot_item.addItem(self, ignoreBounds=True)
 
@@ -164,6 +164,8 @@ class CursorLine(GraphicsObject):
             pw.plot_item.addItem(cursor_dot, ignoreBounds=True)
             cursor_dot.setData([xval], [yval])
             pw.plot_item.curves.pop() #Don't store the cursor dots in the curves list as these are stored in self.cursor_dots
+
+        self.setPos(Point(xval,0))
 
 
     def hide(self):
@@ -513,7 +515,15 @@ class CursorLine(GraphicsObject):
             if ev.isFinish():
                 self.moving = False
                 self.sigPositionChangeFinished.emit(self)
+                self.parentWidget.setCursor(QCursor(Qt.ArrowCursor))
+                self.isPressed = False
 
+    def mousePressEvent(self, ev):
+        logger.debug('press')
+        self.parentWidget.setCursor(QCursor(Qt.SizeHorCursor))
+        self.isPressed = True
+        ev.ignore()
+    
     def mouseClickEvent(self, ev):
         self.sigClicked.emit(self, ev)
         if self.moving and ev.button() == Qt.RightButton:
@@ -526,8 +536,11 @@ class CursorLine(GraphicsObject):
     def hoverEvent(self, ev):
         if (not ev.isExit()) and self.movable and ev.acceptDrags(Qt.LeftButton):
             self.setMouseHover(True)
+            self.parentWidget.setCursor(QCursor(Qt.SizeHorCursor))
         else:
             self.setMouseHover(False)
+            if not self.isPressed:
+                self.parentWidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def setMouseHover(self, hover):
         ## Inform the item that the mouse is (not) hovering over it
