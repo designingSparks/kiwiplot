@@ -6,15 +6,30 @@ from prettyplot import PrettyPlot
 from prettyplot.qtWrapper import QApplication
 import numpy as np
 
-t = np.linspace(0, 20e-3, 100)
-y1 = 2*np.sin(2*np.pi*50*t)
-y2 = 1.5*np.sin(2*np.pi*50*t)
-y3 = 1*np.sin(2*np.pi*50*t)
+def get_sine_data(t):
+    y1 = 2*np.sin(2*np.pi*50*t)
+    y2 = 1.5*np.sin(2*np.pi*50*t)
+    y3 = 1*np.sin(2*np.pi*50*t)
+    y4 = 0.5*np.sin(2*np.pi*50*t)
+    return y1, y2, y3, y4
+
+def get_bessel_data(x):
+    import scipy.special as spl
+    y1 = spl.jv(0,x)
+    y2 = spl.jv(1,x)
+    y3 = spl.jv(2,x)
+    y4 = spl.jv(3,x)
+    return y1, y2, y3, y4
 
 def update_plot(fig):
+    # t = np.linspace(0, 20e-3, 100)
+    # y1, y2, y3, y4 = get_sine_data(t)
+    t = np.linspace(0,20,100)
+    y1, y2, y3, y4 = get_bessel_data(t)
     fig.plot(t,y1, name='y1')
     fig.plot(t,y2, name='y2')
     fig.plot(t,y3, name='y3')
+    fig.plot(t,y4, name='y4')
     fig.grid()
     fig.legend()
 

@@ -6,11 +6,15 @@ Prettyplot is a fast, beautiful plotting library. Due to its speed it is well su
 <img src="documentation/style_dark.png" width="400" >
 
 
-
 ## Motivation
-Pretty Plot was developed to address the visual shortcomings of the pyqtgraph package. Although pyqtgraph is fast and robust, it lacks in the area of aesthetics and default styling options. Prettyplot addresses these limitations, allowing fast, interactive and aesthetically pleasing plots to be generated. 
+Pretty Plot was developed to address the visual shortcomings of the pyqtgraph package and to add useful functionality such as data cursors. Although pyqtgraph is fast and robust, it lacks in the area of aesthetics and default styles. Prettyplot addresses these limitations, allowing fast, interactive and aesthetically pleasing plots to be generated. 
+
+## Why use Pretty Plot
+- Compared to Matplotlib
+- Compared to PyQtGraph
 
 ## Example Use
+Further examples can be seen in the `examples` directory.
 
 ```python
 import sys

@@ -79,7 +79,7 @@ class PrettyPlot(pg.PlotWidget):
             self.set_style(style)
 
         self.linewidth = plotstyle.LINEWIDTH
-        self.cursor = None
+        # self.cursor = None
         # self.curves = list() #Not needed. Use self.plot_item.curves()
         self.legend_box = None
         logger.debug('Initializing plot.')
@@ -253,9 +253,6 @@ class PrettyPlot(pg.PlotWidget):
         #TODO: Add try except
         pen = pg.functions.mkPen({'color': color, 'width': linewidth})
         curve = self.plot_item.plot(x, y, pen=pen, **kargs)
-        # cursor_dot = pg.ScatterPlotItem(size=plotstyle.CURSORDOTSIZE, pen=pen, brush=color)
-        # self.cursor_dots.append(cursor_dot)
-        # self.curves.append(curve)
         # self.viewbox.initZoomStack() #reset zoom stack
         return curve
 
@@ -275,36 +272,7 @@ class PrettyPlot(pg.PlotWidget):
         # self.plot_item.addItem(cursor, ignoreBounds=True)
         print('Cursor added')
 
-    def show_cursor(self):
-        return
-        if len(self.plot_item.curves) == 0:
-            return
-
-       
-            # self.cursor_x = 0
-
-            #Cursor initial position is midway on the x axis
-            #TODO - change this to midway on the viewbox
-            curve = self.plot_item.curves[0] #use first line as reference
-            left = self.viewbox.viewRange()[0][0]
-            right = self.viewbox.viewRange()[0][1]
-            mid = np.average([left, right])
-            idx = (np.abs(curve.xData - mid)).argmin()
-            xval = curve.xData[idx]
-            self.plot_item.addItem(self.cursor, ignoreBounds=True)
-            self.cursor.setPos(pg.Point(xval,0))
-            self.cursor.setXDataLimit([curve.xData[0], curve.xData[-1]])
-
-            #Show the cursor dots
-            for i, cursor_dot in enumerate(self.cursor_dots):
-                curve = self.plot_item.curves[i]
-                yval = curve.yData[idx] #find_nearest(curve.xData, xval)
-                self.plot_item.addItem(cursor_dot, ignoreBounds=True)
-                cursor_dot.setData([xval], [yval])
-                self.plot_item.curves.pop() #Don't store the cursor dots in the curves list as these are stored in self.cursor_dots
-
-        else:
-            logger.debug('Cursor already created')
+    
     
     def hide_cursor(self):
         '''
@@ -322,55 +290,39 @@ class PrettyPlot(pg.PlotWidget):
     def isCursorOn(self):
         return self.cursor is not None
 
-    @Slot(object)
-    def update_cursor(self, line):
-        '''
-        Called when the cursor was moved
-        Params
-        line - pyqtgraph InfiniteLine type
-        '''
-        xpos = line.x()
-        # logger.debug('xpos: {}'.format(xpos))
+    # @Slot(object)
+    # def update_cursor(self, line):
+    #     '''
+    #     Called when the cursor was moved
+    #     Params
+    #     line - pyqtgraph InfiniteLine type
+    #     '''
+    #     xpos = line.x()
+    #     # logger.debug('xpos: {}'.format(xpos))
 
-        xlist = list()
-        ylist = list()
+    #     xlist = list()
+    #     ylist = list()
 
-        #Update cursor dots
-        for i, curve in enumerate(self.plot_item.curves):
+    #     #Update cursor dots
+    #     for i, curve in enumerate(self.plot_item.curves):
         
-            if self.cursor.interpolateData is True: #linear interpolation
-                y = np.interp(xpos, curve.xData, curve.yData)
-                xlist.append(xpos)
-                ylist.append(y)
-                self.cursor_dots[i].setData([xpos], [y])
-            else:
-                #Render dots on actual data points, i.e. no interpolation
-                idx = (np.abs(curve.xData - xpos)).argmin()
-                xval = curve.xData[idx]
-                yval = curve.yData[idx]
-                xlist.append(xval)
-                ylist.append(yval)
-                self.cursor_dots[i].setData([xval], [yval])
+    #         if self.cursor.interpolateData is True: #linear interpolation
+    #             y = np.interp(xpos, curve.xData, curve.yData)
+    #             xlist.append(xpos)
+    #             ylist.append(y)
+    #             self.cursor_dots[i].setData([xpos], [y])
+    #         else:
+    #             #Render dots on actual data points, i.e. no interpolation
+    #             idx = (np.abs(curve.xData - xpos)).argmin()
+    #             xval = curve.xData[idx]
+    #             yval = curve.yData[idx]
+    #             xlist.append(xval)
+    #             ylist.append(yval)
+    #             self.cursor_dots[i].setData([xval], [yval])
 
-        # self.cursorDataSignal.emit((xlist, ylist))
+    #     # self.cursorDataSignal.emit((xlist, ylist))
 
-    # def show_cursor(self):
-    #     self.plot_item.addItem(self.cursor, ignoreBounds=True)
-        #Get the current viewbox limits
-        # left = self.viewbox.viewRange()[0][0]
-        # right = self.viewbox.viewRange()[0][1]
-        # middle = np.average([left, right])
-        # self.plot_item.addItem(self.cursor, ignoreBounds=True)
-        # self.myplot.addItem(self.plotHighlight, ignoreBounds=True)
-        
-        
-        # idx = (np.abs(self.xdata - middle)).argmin()
-        # xpos = self.xdata[idx]
-        # self.cursor.setPos(pg.Point(xpos,0))
-        # self.updatePlotHighlight(middle)
-
-    # def hide_cursor(self):
-    #     self.plot_item.removeItem(self.cursor)
+  
 
     def set_xlabel(self, label):
         self.plot_item.setLabel('bottom', label, **plotstyle.label_style)

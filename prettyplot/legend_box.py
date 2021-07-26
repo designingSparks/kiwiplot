@@ -4,7 +4,7 @@ https://groups.google.com/g/pyqtgraph/c/U3AsIBvEirM/m/RdSRsZ-MAgAJ
 https://stackoverflow.com/questions/29196610/qt-drawing-a-filled-rounded-rectangle-with-border
 https://stackoverflow.com/questions/8366600/qt-opacity-color-brush
 '''
-from pyqtgraph import LegendItem, PlotDataItem, ScatterPlotItem, LabelItem
+from pyqtgraph import LegendItem, PlotDataItem, ScatterPlotItem, LabelItem, graphicsItems
 from pyqtgraph.Qt import QtCore, QtGui
 from pyqtgraph.graphicsItems.ScatterPlotItem import drawSymbol
 from pyqtgraph.graphicsItems.LegendItem import ItemSample
@@ -70,3 +70,14 @@ class LegendBox(LegendItem):
         self.layout.addItem(sample, row, 0)
         self.layout.addItem(label, row, 1)
         self.updateSize()
+
+    
+    def update_legend_text(self, labels: list):
+        '''
+        TODO: If labels[n] is None, don't update the label
+        labels: list of the new text labels. It must have the same length as the number of legend box items.
+        '''
+        for i, item in enumerate(self.items): #each item is a tuple of len 2
+            for single_item in item:
+                if isinstance(single_item, graphicsItems.LabelItem.LabelItem):
+                    single_item.setText(labels[i]) #, **plotstyle.legend_label_style) 
