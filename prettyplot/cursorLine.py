@@ -183,28 +183,27 @@ class CursorLine(GraphicsObject):
         '''
         pw = self.parentWidget
         xpos = line.x()
-        xlist = list()
+        xlist = list() #Data to emit
         ylist = list()
-        return
         
-        # #Update cursor dots
-        # for i, curve in enumerate(pw.plot_item.curves):
-        
-        #     if self.interpolateData is True: #linear interpolation
-        #         y = np.interp(xpos, curve.xData, curve.yData)
-        #         xlist.append(xpos)
-        #         ylist.append(y)
-        #         self.cursor_dots[i].setData([xpos], [y])
-        #     else:
-        #         #Render dots on actual data points, i.e. no interpolation
-        #         idx = (np.abs(curve.xData - xpos)).argmin()
-        #         xval = curve.xData[idx]
-        #         yval = curve.yData[idx]
-        #         xlist.append(xval)
-        #         ylist.append(yval)
-        #         self.cursor_dots[i].setData([xval], [yval])
+        #Update cursor dots
+        for i, curve in enumerate(pw.plot_item.curves):
+            if self.interpolateData is True: #linear interpolation
+                y = np.interp(xpos, curve.xData, curve.yData)
+                xlist.append(xpos)
+                ylist.append(y)
+                self.cursor_dots[i].setData([xpos], [y])
+            else:
+                #Render dots on actual data points, i.e. no interpolation
+                idx = (np.abs(curve.xData - xpos)).argmin()
+                xval = curve.xData[idx]
+                yval = curve.yData[idx]
+                xlist.append(xval)
+                ylist.append(yval)
+                self.cursor_dots[i].setData([xval], [yval])
 
-        # self.cursorDataSignal.emit((xlist, ylist))
+        self.cursorDataSignal.emit((xlist, ylist))
+
 
     def setXDataLimit(self, xlim):
         '''
@@ -499,16 +498,16 @@ class CursorLine(GraphicsObject):
             range = view.viewRange() #[[-0.000865195885804833, 0.020865195885804832], [-2.2279788573127783, 2.2279788573127783]]
             xrange = range[0] #x view extents in axis coordinates
 
-            #Prevents the vertical cursor from being dragged outside viewbox or data limits
-            # newpos = self.cursorOffset + self.mapToParent(ev.pos())
-            # xmin = max(xrange[0], self.xDataLimit[0])
-            # xmax = min(xrange[1], self.xDataLimit[1])
-            # if newpos.x() < xmin:
-            #     newpos.setX(xmin)
-            # if newpos.x() > xmax:
-            #     newpos.setX(xmax)
-            # self.setPos(newpos)
-            self.setPos(self.cursorOffset + self.mapToParent(ev.pos())) #original
+            # Cursor drag limits
+            newpos = self.cursorOffset + self.mapToParent(ev.pos())
+            xmin = max(xrange[0], self.xDataLimit[0]) #prevent dragging to left of viewbox or min x value
+            xmax = min(xrange[1], self.xDataLimit[1])
+            if newpos.x() < xmin:
+                newpos.setX(xmin)
+            if newpos.x() > xmax:
+                newpos.setX(xmax)
+            self.setPos(newpos)
+            # self.setPos(self.cursorOffset + self.mapToParent(ev.pos())) #original
 
             self.sigDragged.emit(self)
             if ev.isFinish():
