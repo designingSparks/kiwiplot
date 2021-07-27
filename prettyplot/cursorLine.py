@@ -16,7 +16,7 @@ from . import plotstyle
 from .pplogger import *
 logger = logging.getLogger('prettyplot.' + __name__)
 
-__all__ = ['InfiniteLine', 'InfLineLabel']
+__all__ = ['CursorLine', 'InfLineLabel']
 
 
 class CursorLine(GraphicsObject):
@@ -42,7 +42,7 @@ class CursorLine(GraphicsObject):
     cursorDataSignal = Signal(object)
 
     def __init__(self, pos=None, angle=90, pen=None, movable=False, bounds=None,
-                 hoverPen=None, label=None, labelOpts=None, span=(0, 1), markers=None, 
+                 hoverPen=None, span=(0, 1), markers=None, 
                  name=None, parentWidget=None):
         """
         =============== ==================================================================
@@ -61,11 +61,6 @@ class CursorLine(GraphicsObject):
         hoverPen        Pen to use when drawing line when hovering over it. Can be any
                         arguments that are valid for :func:`mkPen <pyqtgraph.mkPen>`.
                         Default pen is red.
-        label           Text to be displayed in a label attached to the line, or
-                        None to show no label (default is None). May optionally
-                        include formatting strings to display the line value.
-        labelOpts       A dict of keyword arguments to use when constructing the
-                        text label. See :class:`InfLineLabel`.
         span            Optional tuple (min, max) giving the range over the view to draw
                         the line. For example, with a vertical line, use span=(0.5, 1)
                         to draw only on the top half of the view.
@@ -117,9 +112,9 @@ class CursorLine(GraphicsObject):
         self._bounds = None
         self._lastViewSize = None
 
-        if label is not None:
-            labelOpts = {} if labelOpts is None else labelOpts
-            self.label = InfLineLabel(self, text=label, **labelOpts)
+        # if label is not None:
+        #     labelOpts = {} if labelOpts is None else labelOpts
+        #     self.label = InfLineLabel(self, text=label, **labelOpts)
 
         self.parentWidget = parentWidget
 
@@ -130,6 +125,19 @@ class CursorLine(GraphicsObject):
         self.isPressed = False
         self.cursor_dots = list() #store dots that show the intersection of the cursor and graph
         self.sigPositionChanged.connect(self.update_cursor)
+
+
+    def set_label(self, label, labelOpts):
+        '''
+        ParamsL
+        label           Text to be displayed in a label attached to the line, or
+                        None to show no label (default is None). May optionally
+                        include formatting strings to display the line value.
+        labelOpts       A dict of keyword arguments to use when constructing the
+                        text label. See :class:`InfLineLabel`.
+        '''
+        self.label = InfLineLabel(self, text=label, **labelOpts)
+
 
     def show(self):
         '''
