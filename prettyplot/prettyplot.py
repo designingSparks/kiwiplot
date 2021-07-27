@@ -267,7 +267,8 @@ class PrettyPlot(pg.PlotWidget):
     def add_cursor(self, type='v'):
         mypen = pg.functions.mkPen({'color': self.graphstyle['cursor'], 'width': plotstyle.CURSORWIDTH})  #white
         cursor = CursorLine(angle=90, movable=True, pen=mypen, parentWidget=self) #http://www.pyqtgraph.org/downloads/0.10.0/pyqtgraph-0.10.0-deb/pyqtgraph-0.10.0/examples/crosshair.py
-        labelOpts={'position':0.1, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True}
+        # labelOpts={'position':0.97, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True} #top
+        labelOpts={'position':0.03, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True} #bottom
         cursor.set_label('1', labelOpts)
         self.cursor_list.append(cursor)
         cursor.show() #add cursor and cursor dots to self.plot_item

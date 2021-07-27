@@ -634,6 +634,8 @@ class InfLineLabel(TextItem):
         TextItem.__init__(self, **kwds)
         self.setParentItem(line)
         self.valueChanged()
+        # self.setAnchor(self.anchors[1]) #set to left of line
+        self.setAnchor(self.anchors[0]) #set to right of line
 
     def valueChanged(self):
         if not self.isVisible():
@@ -679,10 +681,13 @@ class InfLineLabel(TextItem):
         pt = pt2 * self.orthoPos + pt1 * (1-self.orthoPos)
         self.setPos(pt)
         
+        #This flips the text label automatically to the left or right of the line when the 
+        #line transverses the middle of the viewbox
         # update anchor to keep text visible as it nears the view box edge
-        vr = self.line.viewRect()
-        if vr is not None:
-            self.setAnchor(self.anchors[0 if vr.center().y() < 0 else 1])
+        # vr = self.line.viewRect()
+        # if vr is not None:
+        #     logger.debug(vr.center().y())
+        #     self.setAnchor(self.anchors[0 if vr.center().y() < 0 else 1])
         
     def setVisible(self, v):
         TextItem.setVisible(self, v)
