@@ -24,10 +24,10 @@ pg.setConfigOption('antialias', True) #Plotted curve looks nicer
 from itertools import cycle
 import numpy as np
 from .legend_box import LegendBox
-from .pplogger import *
 from .cursorLine import CursorLine
 from .ViewBox import ViewBox 
 
+from .pplogger import *
 logger = logging.getLogger('prettyplot.' + __name__) 
 
 STYLES = ['white', 'grey', 'dark']
@@ -264,9 +264,9 @@ class PrettyPlot(pg.PlotWidget):
             raise Exception(f'Could not update curve with index {index}')
 
 
-    def add_cursor(self, type='v'):
+    def add_cursor(self, name=None, type='v'):
         mypen = pg.functions.mkPen({'color': self.graphstyle['cursor'], 'width': plotstyle.CURSORWIDTH})  #white
-        cursor = CursorLine(angle=90, movable=True, pen=mypen, parentWidget=self) #http://www.pyqtgraph.org/downloads/0.10.0/pyqtgraph-0.10.0-deb/pyqtgraph-0.10.0/examples/crosshair.py
+        cursor = CursorLine(angle=90, movable=True, pen=mypen, name=name, parentWidget=self) #http://www.pyqtgraph.org/downloads/0.10.0/pyqtgraph-0.10.0-deb/pyqtgraph-0.10.0/examples/crosshair.py
         # labelOpts={'position':0.97, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True} #top
         labelOpts={'position':0.03, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True} #bottom
         cursor.set_label('1', labelOpts)

@@ -39,7 +39,7 @@ class CursorLine(GraphicsObject):
     sigPositionChangeFinished = Signal(object)
     sigPositionChanged = Signal(object)
     sigClicked =  Signal(object, object)
-    cursorDataSignal = Signal(object)
+    cursorDataSignal = Signal(object, str)
 
     def __init__(self, pos=None, angle=90, pen=None, movable=False, bounds=None,
                  hoverPen=None, span=(0, 1), markers=None, 
@@ -212,7 +212,7 @@ class CursorLine(GraphicsObject):
                 ylist.append(yval)
                 self.cursor_dots[i].setData([xval], [yval])
 
-        self.cursorDataSignal.emit((xlist, ylist))
+        self.cursorDataSignal.emit((xlist, ylist), self._name)
 
 
     def setXDataLimit(self, xlim):
