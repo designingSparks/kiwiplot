@@ -634,8 +634,8 @@ class InfLineLabel(TextItem):
         TextItem.__init__(self, **kwds)
         self.setParentItem(line)
         self.valueChanged()
-        # self.setAnchor(self.anchors[1]) #set to left of line
-        self.setAnchor(self.anchors[0]) #set to right of line
+        self.setAnchor(self.anchors[1]) #set to left of line
+        # self.setAnchor(self.anchors[0]) #set to right of line
 
     def valueChanged(self):
         if not self.isVisible():

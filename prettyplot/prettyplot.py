@@ -330,11 +330,18 @@ class PrettyPlot(pg.PlotWidget):
 
   
 
-    def set_xlabel(self, label):
-        self.plot_item.setLabel('bottom', label, **plotstyle.label_style)
+    def set_xlabel(self, label, unit=None):
+        #Workaround that allows the font to be set
+        axis = self.plot_item.getAxis('bottom')
+        axis.label.setFont(QFont("Roboto"))
+        axis.setLabel(label, unit, **plotstyle.label_style)
+        # self.plot_item.setLabel('bottom', label, **plotstyle.label_style)
     
-    def set_ylabel(self, label):
-        self.plot_item.setLabel('left', label, **plotstyle.label_style)
+    def set_ylabel(self, label, unit=None):
+        axis = self.plot_item.getAxis('left')
+        axis.label.setFont(QFont("Roboto"))
+        axis.setLabel(label, unit, **plotstyle.label_style)
+        # self.plot_item.setLabel('left', label, **plotstyle.label_style)
     
     def set_title(self, text):
         self.plot_item.setTitle(text, **plotstyle.label_style)

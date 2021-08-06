@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
         y2 = np.sin(2*np.pi*100*t)
         y3 = 0.5*np.sin(2*np.pi*150*t)
         y4 = 0.25*np.sin(2*np.pi*200*t)
-        t = t*1000 #convert to ms
+        # t = t*1000 #convert to ms
 
         #Legend uses name keyword in plot()
         self.plotwidget1.plot(t,y1, name='y1')
@@ -43,7 +43,7 @@ class MainWindow(QMainWindow):
         self.plotwidget1.plot(t,y4, name='y4')
         self.plotwidget1.grid()
         self.plotwidget1.legend()
-        self.plotwidget1.set_xlabel('Time (ms)')
+        self.plotwidget1.set_xlabel('Time', 's') #Can also specify the base unit
         self.plotwidget1.set_ylabel('Magnitude')
         self.plotwidget1.add_cursor()
         self.plotwidget1.cursor_list[0].cursorDataSignal.connect(self.process_cursor_data)
@@ -54,7 +54,7 @@ class MainWindow(QMainWindow):
 
         #x value shown on status bar
         x, y = data
-        text = 'x = {:.2f}'.format(x[0])
+        text = 'x = {:.3f} ms'.format(x[0]*1000)
         self.status_bar.showMessage(text)
 
         #y values shown in legend box
