@@ -45,6 +45,7 @@ class MainWindow(QMainWindow):
         self.plotwidget1.legend()
         self.plotwidget1.set_xlabel('Time', 's') #Can also specify the base unit
         self.plotwidget1.set_ylabel('Magnitude')
+        self.plotwidget1.set_title('Sine Wave Magnitude')
         self.plotwidget1.add_cursor()
         self.plotwidget1.cursor_list[0].cursorDataSignal.connect(self.process_cursor_data)
 

@@ -8,10 +8,13 @@ LINEWIDTH = 2 #default linewidth
 CURSORWIDTH = 2
 CURSORDOTSIZE = 4
 YAXIS_WIDTH = 35 #allows alignment of y axis in vertically-stacked graphs
-label_style = {'color': 'k', 'font-size': '10pt'} #'#191919'
-title_style = {'color': 'k', 'size': '12pt'} #note: use size, not font-size
+
+#These are CSS parameters
+axis_label_style = {'color': 'k', 'font-size': '10pt', 'font-weight': 'bold'} 
+title_style = {'color': 'k', 'size': '12pt', 'font-weight': 'bold'} #note: use size, not font-size
 legend_label_style = {'color': 'k', 'size': '8pt'} #, 'bold': True, 'italic': False
 
+fonts = {'axis': 'Roboto', 'axis-tick': 'Roboto', 'title': 'Roboto', 'legend': 'Roboto'}
 
 #Color palettes for lines 
 palette_1 = ['#1F77B4','#2CA02C','#D62728','#9467BD','#FAA43A'] #standard

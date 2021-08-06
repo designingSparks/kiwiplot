@@ -204,8 +204,7 @@ class PrettyPlot(pg.PlotWidget):
 
         #Sets the font and color of the bottom & left axis units otherwise the text has
         #the same color as the gridlines
-        font = QFont("Arial", 9)
-        # font = QFont("Helvetica [Cronyx]", 9)
+        font = QFont("Source Sans Pro", 9) #tick font
         keys = ['bottom', 'left']
         for k in keys:
             axis = self.plot_item.getAxis(k)
@@ -333,19 +332,38 @@ class PrettyPlot(pg.PlotWidget):
     def set_xlabel(self, label, unit=None):
         #Workaround that allows the font to be set
         axis = self.plot_item.getAxis('bottom')
-        axis.label.setFont(QFont("Roboto"))
-        axis.setLabel(label, unit, **plotstyle.label_style)
+        axis.label.setFont(QFont('Source Sans Pro'))
+        axis.setLabel(label, unit, **plotstyle.axis_label_style)
         # self.plot_item.setLabel('bottom', label, **plotstyle.label_style)
     
     def set_ylabel(self, label, unit=None):
         axis = self.plot_item.getAxis('left')
-        axis.label.setFont(QFont("Roboto"))
-        axis.setLabel(label, unit, **plotstyle.label_style)
+        axis.label.setFont(QFont('Source Sans Pro')) #axis.label = QGraphicsTextItem
+        axis.setLabel(label, unit, **plotstyle.axis_label_style)
         # self.plot_item.setLabel('left', label, **plotstyle.label_style)
     
     def set_title(self, text):
-        self.plot_item.setTitle(text, **plotstyle.label_style)
 
+        #Working but can't set the font-weight to bold. This is inconsistent with the axis label styles, which take CSS parameters
+        # title_label = self.plot_item.titleLabel
+        # title_label.item.setFont(QFont('Source Sans Pro'))
+        # self.plot_item.setTitle(text, **plotstyle.title_style)
+
+        #Nasty hack to allow proper CSS styling of the title
+        #This is adapted from pyqtgraph.PlotItem.setTitle() and  pyqtgraph.LabelItem.setText()
+        self.plot_item.titleLabel.setMaximumHeight(30) # self.plot_item.titleLabel is a LabelItem
+        self.plot_item.layout.setRowFixedHeight(0, 30)
+        self.plot_item.titleLabel.setVisible(True)
+        self.plot_item.titleLabel.item.setFont(QFont('Source Sans Pro'))
+        style = ';'.join(['%s: %s' % (k, plotstyle.title_style[k]) for k in plotstyle.title_style]) #This part is from pg.AxistItem.labelString()
+        full = "<span style='{}'>{}</span>".format(style, text)
+        self.plot_item.titleLabel.item.setHtml(full)
+        # self.plot_item.titleLabel.item.setPlainText(text)
+        self.plot_item.titleLabel.updateMin()
+        self.plot_item.titleLabel.resizeEvent(None)
+        self.plot_item.titleLabel.updateGeometry()
+
+        
     # def enable_legend(self, xpos, ypos, padding=10):
     #     '''
     #     Parameters:
