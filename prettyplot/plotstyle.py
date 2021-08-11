@@ -10,8 +10,8 @@ CURSORDOTSIZE = 4
 YAXIS_WIDTH = 35 #allows alignment of y axis in vertically-stacked graphs
 
 #These are CSS parameters
-axis_label_style = {'color': 'k', 'font-size': '10pt', 'font-weight': 'bold'} 
-title_style = {'color': 'k', 'size': '12pt', 'font-weight': 'bold'} #note: use size, not font-size
+axis_label_style = {'color': 'k', 'font-size': '10pt', 'font-weight': '500'} 
+title_style = {'color': 'k', 'size': '12pt', 'font-weight': '500'} #note: use size, not font-size
 legend_label_style = {'color': 'k', 'size': '8pt'} #, 'bold': True, 'italic': False
 
 fonts = {'axis': 'Roboto', 'axis-tick': 'Roboto', 'title': 'Roboto', 'legend': 'Roboto'}

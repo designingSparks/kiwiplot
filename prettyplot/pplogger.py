@@ -18,3 +18,5 @@ root_logger = logging.getLogger('prettyplot') #set to '' if you want to display 
 root_logger.addHandler(console) 
 root_logger.setLevel(logging.DEBUG) #Uncomment to enable logging. Default level is WARNING
 
+def get_logger(name):
+    return logging.getLogger('prettyplot.' + name)
