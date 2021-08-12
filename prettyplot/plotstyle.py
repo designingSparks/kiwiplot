@@ -9,6 +9,17 @@ CURSORWIDTH = 2
 CURSORDOTSIZE = 4
 YAXIS_WIDTH = 35 #allows alignment of y axis in vertically-stacked graphs
 
+#Useful for creating palettes by name
+colors = {
+    'blue': '#1F77B4',
+    'green': '#2CA02C',
+    'red': '#D62728',
+    'black': '#1b1b1b',
+    'yellow': '#fad000',
+    'white': '#ffffff',
+    'purple': 'e76bf3'
+}
+
 #These are CSS parameters
 axis_label_style = {'color': 'k', 'font-size': '10pt', 'font-weight': '500'} 
 title_style = {'color': 'k', 'size': '12pt', 'font-weight': '500'} #note: use size, not font-size
@@ -20,7 +31,14 @@ fonts = {'axis': 'Roboto', 'axis-tick': 'Roboto', 'title': 'Roboto', 'legend': '
 palette_1 = ['#1F77B4','#2CA02C','#D62728','#9467BD','#FAA43A'] #standard
 # palette_2 = ['#1F77B4','#2CA02C','#D62728','#9467BD','#f7ce47'] 
 palette_2 = ['#1F77B4','#2CA02C','#D62728','#9467BD','#f7d55b'] 
-palette_3 = ['#00BFC4','#39B600','#ff5a51','#E76BF3','#ffa600'] #bright
+palette_3 = ['#00BFC4','#39B600','#ed3012','#E76BF3','#ff7f0e', colors['yellow']] #bright palette used for dark theme
+# Reds: 
+# Old: ff5a51
+# Tried: fc2605, f72504 good but too bright
+
+
+
+
 
 #Inbuilt graph styles
 style_white = {'background': '#FFFFFF', 'grid': '#c0c0c0', 'text': 'k', 'cursor': '#00ffff', 'linecolors': palette_1} 

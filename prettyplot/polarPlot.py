@@ -33,16 +33,13 @@ class PolarPlot(pg.PlotWidget):
         else:
             self.set_style(style)
 
-        #Polar grid using InfiniteLines
-#         self.plot_item.addLine(angle=0)
-#         self.plot_item.addLine(angle=60)
-#         self.plot_item.addLine(angle=120)
+        #Draw axis lines, which emanate from the origin
         if nlines is not None:
             angles = np.arange(nlines)*360/nlines
             for a in angles:
                 grid_color = QColor(self.graphstyle['grid'])
-                line = PolarLine(angle=a, pen=grid_color)
-                self.plot_item.addItem(line)
+                axisline = PolarLine(angle=a, pen=grid_color)
+                self.plot_item.addItem(axisline)
         
         self.linewidth = plotstyle.LINEWIDTH
         self.legend_box = None
@@ -68,10 +65,6 @@ class PolarPlot(pg.PlotWidget):
         Sets the graph background and gridline color
         :param - style must be in STYLES
         '''
-        # if style is None:
-        #     self.style = plotstyle.style_white
-        # else:
-        #     self.style = style
         self.graphstyle = graphstyle
 
         #Background color
