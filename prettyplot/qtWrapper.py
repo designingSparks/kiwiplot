@@ -6,19 +6,18 @@ import os
 from .pplogger import *
 logger = logging.getLogger('prettyplot.' + __name__) 
 
-
-api_list = ['PYSIDE2', 'PYQT5'] #valid apis in os.environ
+api_list = ['PYSIDE2', 'PYQT5']
 
 
 if 'QT_API' in os.environ:
-    api = os.environ['QT_API']
+    api = os.environ['QT_API'].upper()
     if api in api_list:
-        if api.upper() == 'PYSIDE2':
+        if api == 'PYSIDE2':
             from PySide2.QtCore import *
             from PySide2.QtGui import *
             from PySide2.QtWidgets import *
             print('Qt backend set to PySide2.')
-        elif api.upper() == 'PYQT5':
+        elif api == 'PYQT5':
             from PyQt5.QtCore import *
             from PyQt5.QtGui import *
             from PyQt5.QtWidgets import *

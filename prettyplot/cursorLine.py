@@ -2,6 +2,7 @@
 '''
 This is a patched version of pyqtgraph.InfiniteLine
 '''
+from .qtWrapper import *
 from pyqtgraph.Point import Point
 from pyqtgraph.graphicsItems.GraphicsObject import GraphicsObject
 from pyqtgraph.graphicsItems.GraphicsItem import GraphicsItem
@@ -11,7 +12,6 @@ from pyqtgraph import functions as fn
 from pyqtgraph import ScatterPlotItem
 import numpy as np
 import weakref
-from .qtWrapper import *
 from . import plotstyle
 from .pplogger import *
 logger = logging.getLogger('prettyplot.' + __name__)
