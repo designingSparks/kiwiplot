@@ -46,4 +46,13 @@ if __name__ == '__main__':
 - pyqtgraph 0.12+
 - PySide2 or PyQt5
 - numpy 1.17+
-  
+
+
+## Installing
+
+```python
+>>cd prettyplot
+>>python setup.py bdist_wheel
+>>cd dist
+>>pip install prettyplot-0.1.0-py3-none-any.whl
+```

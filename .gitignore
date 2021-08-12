@@ -1,6 +1,5 @@
 .env
 build/
-dist/
 examples/images/
 prettyplot/__pycache__/
 prettyplot.egg-info/
