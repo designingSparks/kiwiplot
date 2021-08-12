@@ -138,7 +138,7 @@ class PrettyPlot(pg.PlotWidget):
         '''
         #Create legend box
         if self.legend_box is None:
-            self.legend_box = LegendBox(offset=offset)
+            self.legend_box = LegendBox(offset=offset) #TODO: Adjust the offset if a title is displayed. Title offset=30
             self.legend_box.setParentItem(self.graphicsItem())
             # self.legend.setParentItem(self.viewbox) #also works
 

@@ -3,15 +3,16 @@ Demonstrate creation of a custom graphic (a candlestick plot)
 """
 from .qtWrapper import *
 import pyqtgraph as pg
-# from pyqtgraph import QtCore, QtGui
 
 ## Create a subclass of GraphicsObject.
 ## The only required methods are paint() and boundingRect() 
 ## (see QGraphicsItem documentation)
 class CandlestickItem(pg.GraphicsObject):
-    def __init__(self, data):
+    def __init__(self, data, colors):
         pg.GraphicsObject.__init__(self)
         self.data = data  ## data must have fields: time, open, close, min, max
+        self.green = colors[0]
+        self.red = colors[1]
         self.generatePicture()
     
     def generatePicture(self):
@@ -19,14 +20,15 @@ class CandlestickItem(pg.GraphicsObject):
         ## rather than re-drawing the shapes every time.
         self.picture = QPicture()
         p = QPainter(self.picture)
-        p.setPen(pg.mkPen('w', width=2))
         w = (self.data[1][0] - self.data[0][0]) / 3.
         for (t, open, close, min, max) in self.data:
-            p.drawLine(QPointF(t, min), QPointF(t, max))
             if open > close:
-                p.setBrush(pg.mkBrush('r'))
+                p.setPen(pg.mkPen(self.red, width=2))
+                p.setBrush(pg.mkBrush(self.red))
             else:
-                p.setBrush(pg.mkBrush('g'))
+                p.setPen(pg.mkPen(self.green, width=2))
+                p.setBrush(pg.mkBrush(self.green))
+            p.drawLine(QPointF(t, min), QPointF(t, max))
             p.drawRect(QRectF(t-w, open, w*2, close-open))
         p.end()
     

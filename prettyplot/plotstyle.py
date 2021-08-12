@@ -36,11 +36,11 @@ palette_3 = ['#00BFC4','#39B600','#ed3012','#E76BF3','#ff7f0e', colors['yellow']
 # Old: ff5a51
 # Tried: fc2605, f72504 good but too bright
 
-
-
-
+#Candlestickpalettes
+cp1 = cp2 = ['#2CA02C','#D62728']
+cp3 = ['#39B600','#ed3012']
 
 #Inbuilt graph styles
-style_white = {'background': '#FFFFFF', 'grid': '#c0c0c0', 'text': 'k', 'cursor': '#00ffff', 'linecolors': palette_1} 
-style_grey = {'background': '#c0c0c0', 'grid': '#f2f2f2', 'text': 'k', 'cursor': '#ffff33', 'linecolors': palette_2}
-style_dark = {'background': '#565656', 'grid': 'k', 'text': 'k', 'cursor': '#ffff33', 'linecolors': palette_3}
+style_white = {'background': '#FFFFFF', 'grid': '#c0c0c0', 'text': 'k', 'cursor': '#00ffff', 'linecolors': palette_1, 'candlecolors': cp1} 
+style_grey = {'background': '#c0c0c0', 'grid': '#f2f2f2', 'text': 'k', 'cursor': '#ffff33', 'linecolors': palette_2, 'candlecolors': cp2}
+style_dark = {'background': '#565656', 'grid': 'k', 'text': 'k', 'cursor': '#ffff33', 'linecolors': palette_3, 'candlecolors': cp3}

@@ -3,7 +3,7 @@ import sys
 import numpy as np
 from prettyplot import PrettyPlot, plotstyle
 from prettyplot.qtWrapper import *
-from prettyplot.candlestickItem import CandlestickItem
+from prettyplot.candlestickPlot import CandlestickPlot
 import pyqtgraph as pg #must come after importing prettyplot.qt
 
 
@@ -19,8 +19,8 @@ data = [  ## fields are (time, open, close, min, max).
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    fig1 = PrettyPlot(style='dark')
+    fig1 = CandlestickPlot(style='dark')
     fig1.setWindowTitle('Candlestick example')
-    item = CandlestickItem(data)
-    fig1.plotItem.addItem(item)
+    fig1.plot(data)
+    fig1.grid(False, True)
     sys.exit(app.exec_())
