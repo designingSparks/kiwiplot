@@ -18,12 +18,22 @@ class MainWindow(QMainWindow):
         widget1.setLayout(vbox1)
         self.setCentralWidget(widget1)
 
-        nlines = 6
-        angles = np.arange(nlines)*360/nlines
-        for a in angles:
-            grid_color = QColor(self.plotwidget.graphstyle['grid'])
-            arrow = SimpleVector(angle=a, pen=grid_color)
-            self.plotwidget.plot_item.addItem(arrow)
+        
+        grid_color = QColor(self.plotwidget.graphstyle['grid'])
+
+        #Default vector
+        vector1 = SimpleVector(pen=grid_color)
+        self.plotwidget.plot_item.addItem(vector1)
+
+        #How to shift vector position and angle dynamically
+        vector2 = SimpleVector(pen=grid_color)
+        vector2.setPos(QPointF(1,1))
+        vector2.setAngle(45)
+        self.plotwidget.plot_item.addItem(vector2)
+
+        #Initialize vector using all possible parameters
+        vector3 = SimpleVector(tail=(0,1), length=0.5, angle=90, pen=grid_color)
+        self.plotwidget.plot_item.addItem(vector3)
 
         self.show()
 
