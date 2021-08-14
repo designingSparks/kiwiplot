@@ -1,10 +1,8 @@
 import os, sys
 import sys
 import numpy as np
-from prettyplot import PrettyPlot, plotstyle
 from prettyplot.qtWrapper import *
 from prettyplot.candlestickPlot import CandlestickPlot
-import pyqtgraph as pg #must come after importing prettyplot.qt
 
 
 data = [  ## fields are (time, open, close, min, max).
