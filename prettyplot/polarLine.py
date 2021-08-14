@@ -1,4 +1,5 @@
 '''
+Useful for drawing axis lines in polar plots that start from the origin.
 Reference:
 https://stackoverflow.com/questions/37702642/draw-half-infinite-lines
 '''
