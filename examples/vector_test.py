@@ -1,15 +1,15 @@
-'''
-Useful for drawing simple vectors
-'''
-from .qtWrapper import *
+import pyqtgraph as pg
+import sys
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+from prettyplot.simpleVector import SimpleVector
 from pyqtgraph.graphicsItems.InfiniteLine import InfiniteLine
 from pyqtgraph.Point import Point
 
 TIP_DY = 0.1
 TIP_DX = 0.2
 
-#TODO: Change the linewidth
-#How to autoscale the view
 
 class SimpleVector(InfiniteLine):
 
@@ -36,5 +36,15 @@ class SimpleVector(InfiniteLine):
         arrowhead = QPolygonF([Point(self.length-TIP_DX, TIP_DY), self.head, Point(self.length-TIP_DX, -TIP_DY)])
         p.drawPolyline(arrowhead)
 
-
+if __name__ == '__main__':
+    app = pg.mkQApp("Vanilla pyqtgraph")
+    fig = pg.PlotWidget()
+    vector1 = SimpleVector(pen='#ffffff')
+    vector2 = SimpleVector(pen='#ffffff')
+    vector2.setPos(QPointF(1,1))
+    vector2.setAngle(45)
+    fig.plotItem.addItem(vector1)
+    fig.plotItem.addItem(vector2)
+    fig.show()
+    sys.exit(app.exec_())
 
