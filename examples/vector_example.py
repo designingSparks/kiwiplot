@@ -1,10 +1,8 @@
 from prettyplot.qtWrapper import *
 from prettyplot import PrettyPlot
-import pyqtgraph as pg
-import numpy as np
+import pyqtgraph.functions as fn
 from prettyplot.simpleVector import SimpleVector
-from prettyplot.pplogger import get_logger
-logger = get_logger( __name__) 
+
 
 class MainWindow(QMainWindow):
 
@@ -18,21 +16,15 @@ class MainWindow(QMainWindow):
         widget1.setLayout(vbox1)
         self.setCentralWidget(widget1)
 
-        
-        grid_color = QColor(self.plotwidget.graphstyle['grid'])
-
-        #Default vector
-        vector1 = SimpleVector(pen=grid_color)
-        self.plotwidget.plot_item.addItem(vector1)
-
-        #How to shift vector position and angle dynamically
-        vector2 = SimpleVector(pen=grid_color)
-        vector2.setPos(QPointF(1,1))
+        pen = fn.mkPen({'color': self.plotwidget.graphstyle['grid'], 'width': 1.5})
+        vector1 = SimpleVector(pen)
+        vector2 = SimpleVector(pen)
+        vector2.setPos((1,1))
         vector2.setAngle(45)
-        self.plotwidget.plot_item.addItem(vector2)
+        vector3 = SimpleVector(pen, tail=(0,1), length=2, angle=90)
 
-        #Initialize vector using all possible parameters
-        vector3 = SimpleVector(tail=(0,1), length=0.5, angle=90, pen=grid_color)
+        self.plotwidget.plot_item.addItem(vector1)
+        self.plotwidget.plot_item.addItem(vector2)
         self.plotwidget.plot_item.addItem(vector3)
 
         self.show()
