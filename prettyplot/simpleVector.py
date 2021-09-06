@@ -1,5 +1,5 @@
 '''
-Attempt to use GraphicsObject to create a custom item.
+Draws a basic arrow. For an example, see /examples/vector_example.py
 '''
 from .qtWrapper import *
 from pyqtgraph import GraphicsObject
@@ -14,6 +14,7 @@ class SimpleVector(GraphicsObject):
     def __init__(self, pen, length=1, tail=(0,0), angle=0, *args, **kwargs):
         '''
         :param
+        pen - QPen object
         tail - starting position of the vector tail
         '''
         super().__init__(*args, **kwargs)
@@ -48,12 +49,11 @@ class SimpleVector(GraphicsObject):
         ## (in this case, QPicture does all the work of computing the bouning rect for us)
         return QRectF(self.picture.boundingRect())
 
-
     def setAngle(self, angle):
-        """
+        '''
         Takes angle argument in degrees.
         0 is horizontal; 90 is vertical.
-        """
+        '''
         self.angle = angle #((angle+45) % 180) - 45   ##  -45 <= angle < 135
         self.resetTransform()
         self.setRotation(self.angle)
@@ -71,9 +71,9 @@ class SimpleVector(GraphicsObject):
             GraphicsObject.setPos(self, pos)
 
     def viewTransformChanged(self):
-        """
+        '''
         Called whenever the transformation matrix of the view has changed.
         (eg, the view range has changed or the view was resized)
-        """
+        '''
         self._boundingRect = None
         GraphicsItem.viewTransformChanged(self)
