@@ -393,6 +393,22 @@ class PrettyPlot(pg.PlotWidget):
                 if isinstance(single_item, pg.graphicsItems.LabelItem.LabelItem):
                     single_item.setText(single_item.text, **plotstyle.legend_label_style) 
 
+    def xlim(self, xlim):
+        '''
+        Set the x limits of the plot.
+        Parameters:
+        xlim - a list with two values, e.g. [-1,1]
+        '''
+        self.viewbox.setXRange(*xlim) 
+
+    def ylim(self, ylim):
+        '''
+        Set the y limits of the plot.
+        Parameters:
+        ylim - a list with two values, e.g. [-1,1]
+        '''
+        self.viewbox.setYRange(*ylim) 
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

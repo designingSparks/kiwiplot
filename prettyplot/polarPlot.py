@@ -22,7 +22,7 @@ class PolarPlot(pg.PlotWidget):
         '''
         kwargs['background'] = None
         super().__init__(*args, **kwargs) #use custom viewbox
-        self.plot_item = self.getPlotItem()
+        self.plot_item = self.getPlotItem() #could use self.plotItem instead
         self.viewbox = self.plot_item.getViewBox()
         self.viewbox.sigResized.connect(self._resized_view_box)
         self.setAspectLocked() #important for polar plot to keep x:y ratio constant
@@ -128,3 +128,25 @@ class PolarPlot(pg.PlotWidget):
         curve = self.plot_item.plot(x, y, pen=pen, **kargs)
         return curve
 
+
+    def update_plot(self, index, x, y):
+        try:
+            self.plot_item.curves[index].setData(x, y)
+        except Exception as ex:
+            raise Exception(f'Could not update curve with index {index}')
+
+    def xlim(self, xlim):
+        '''
+        Set the x limits of the plot.
+        Parameters:
+        xlim - a list with two values, e.g. [-1,1]
+        '''
+        self.viewbox.setXRange(*xlim) 
+
+    def ylim(self, ylim):
+        '''
+        Set the y limits of the plot.
+        Parameters:
+        ylim - a list with two values, e.g. [-1,1]
+        '''
+        self.viewbox.setYRange(*ylim) 
