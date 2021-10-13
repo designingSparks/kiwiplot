@@ -258,7 +258,7 @@ class PrettyPlot(pg.PlotWidget):
 
     def update_curve(self, index, x, y):
         try:
-            self.curves[index].setData(x, y)
+            self.plotItem.curves[index].setData(x, y)
         except Exception as ex:
             raise Exception(f'Could not update curve with index {index}')
 

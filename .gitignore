@@ -7,3 +7,5 @@ prettyplot/customViewBox_1.py
 prettyplot/customViewBox_2.py
 .project
 .pydevproject
+examples/data_streaming/__pycache__/
+docs/
