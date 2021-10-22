@@ -1,15 +1,14 @@
 '''
 '''
-#https://github.com/CabbageDevelopment/qasync/blob/master/examples/aiohttp_fetch.py
+#Ref: https://github.com/CabbageDevelopment/qasync/blob/master/examples/aiohttp_fetch.py
 import asyncio
 import functools
 import sys
-from qt import *
+from prettyplot.qtWrapper import *
 import qasync
-from qasync import asyncSlot, asyncClose #, QApplication
+from qasync import asyncClose 
 from serial_worker import Worker
 from rolling_data import RollingData
-import numpy as np
 from prettyplot import PrettyPlot
 from prettyplot.pplogger import get_logger
 logger = get_logger( __name__) 
@@ -19,16 +18,12 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('Light measurement')
+        self.setWindowTitle('Data streaming using asyncio')
         self.setStyleSheet('QToolBar{spacing:5px;};') #QStatusBar.item {border: none;}
         self.plotwidget1 = PrettyPlot()
         self.plotwidget1.grid(True)
         self.plotwidget1.linewidth = 1
-
         vbox1 = QVBoxLayout()
-        # self.button1 = QPushButton("Measure")
-        # self.button1.clicked.connect(self.button1_clicked)
-        # vbox1.addWidget(self.button1)
         vbox1.addWidget(self.plotwidget1)
         widget1 = QWidget()
         widget1.setLayout(vbox1)
@@ -43,20 +38,13 @@ class MainWindow(QMainWindow):
         '''
         loop = asyncio.get_event_loop()
         self.serial_worker = Worker(loop)
-        # self.serial_worker.packet_received.connect(self.process_packet)
         self.serial_worker.packet_received.connect(self.rolling_data.append)
         self.serial_worker.work()
     
-    # @Slot(object)
-    # def process_packet(self, packet):
-    #     self.rolling_data.append(packet)
-
-
     @asyncClose
     async def closeEvent(self, event):
         logger.debug('Closing') #Cleanup connections
         self.serial_worker.stop_work()
-        
         #Alternative
         # pending = asyncio.Task.all_tasks()
         # for task in pending:

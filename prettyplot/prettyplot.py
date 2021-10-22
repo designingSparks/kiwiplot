@@ -407,7 +407,15 @@ class PrettyPlot(pg.PlotWidget):
         Parameters:
         ylim - a list with two values, e.g. [-1,1]
         '''
-        self.viewbox.setYRange(*ylim) 
+        self.viewbox.setYRange(*ylim)
+
+    def link_x(self, plot):
+        '''
+        Link the x axis so that panning or zooming on plot causes the x axis on this prettyplot to be updated.
+        Parameters:
+        plot - an instance of prettyplot
+        '''
+        self.plotItem.setXLink(plot.plotItem)
 
 
 if __name__ == '__main__':

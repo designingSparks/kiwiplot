@@ -6,6 +6,8 @@ import numpy as np
 from prettyplot import PrettyPlot, plotstyle
 from prettyplot.qtWrapper import *
 import pyqtgraph as pg #must come after importing prettyplot.qt
+from prettyplot.ViewBox import ViewBox
+from prettyplot.zoom_stack import ZoomStack
 
 _this_file = os.path.realpath(sys.argv[0])
 BASEDIR = os.path.dirname(_this_file)
@@ -27,6 +29,14 @@ class MainWindow(QMainWindow):
         # self.plotwidget1.cursorDataSignal.connect(self.process_cursor_data)
         self.plotwidget2 = PrettyPlot(style='dark')
 
+        #Set mouse mode to rectangle mode
+        self.plotwidget1.plotItem.vb.setMouseMode(pg.ViewBox.RectMode)
+        self.plotwidget2.plotItem.vb.setMouseMode(pg.ViewBox.RectMode)
+        self.plotwidget1.plotItem.vb._zoomMode = ViewBox.xZoom
+
+        #Link X axes
+        self.plotwidget2.link_x(self.plotwidget1)
+
         vbox = QVBoxLayout()
         widget = QWidget()
         vbox.addWidget(self.plotwidget1)
@@ -36,6 +46,7 @@ class MainWindow(QMainWindow):
 
         self.createActions()
         self.createToolBar()
+        self.zoom_stack = ZoomStack([self.plotwidget1.plotItem.vb, self.plotwidget2.plotItem.vb])
 
         # self.plotwidget1.viewbox.sigZoomStackEnd.connect(self.forwardAction.setEnabled)
         # self.plotwidget1.viewbox.sigZoomStackStart.connect(self.backAction.setEnabled)
