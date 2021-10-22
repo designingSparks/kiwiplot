@@ -46,7 +46,10 @@ class MainWindow(QMainWindow):
 
         self.createActions()
         self.createToolBar()
+
         self.zoom_stack = ZoomStack([self.plotwidget1.plotItem.vb, self.plotwidget2.plotItem.vb])
+        self.plotwidget1.plotItem.vb.sigZoom.connect(self.zoom_stack.addToZoomStack)
+        self.plotwidget2.plotItem.vb.sigZoom.connect(self.zoom_stack.addToZoomStack)
 
         # self.plotwidget1.viewbox.sigZoomStackEnd.connect(self.forwardAction.setEnabled)
         # self.plotwidget1.viewbox.sigZoomStackStart.connect(self.backAction.setEnabled)

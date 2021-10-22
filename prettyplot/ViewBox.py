@@ -4,6 +4,8 @@ import sys
 from copy import deepcopy
 import numpy as np
 from pyqtgraph.Qt import QtGui, QtCore
+
+from prettyplot.zoom_stack import ZoomStack
 basestring = str
 from pyqtgraph import Point
 from pyqtgraph import functions as fn
@@ -95,6 +97,7 @@ class ViewBox(GraphicsWidget):
     sigResized = QtCore.Signal(object)
     sigZoomStackStart = QtCore.Signal(bool)
     sigZoomStackEnd = QtCore.Signal(bool)
+    sigZoom = QtCore.Signal(object, object)
 
     ## mouse modes
     PanMode = 3
@@ -114,7 +117,8 @@ class ViewBox(GraphicsWidget):
     NamedViews = weakref.WeakValueDictionary()   # name: ViewBox
     AllViews = weakref.WeakKeyDictionary()       # ViewBox: None
 
-    def __init__(self, parent=None, border=None, lockAspect=False, enableMouse=True, invertY=False, enableMenu=True, name=None, invertX=False):
+    def __init__(self, parent=None, border=None, lockAspect=False, enableMouse=True, invertY=False, enableMenu=True, 
+                name=None, invertX=False, zoomStack=None):
         """
         ==============  =============================================================
         **Arguments:**
@@ -147,7 +151,11 @@ class ViewBox(GraphicsWidget):
         self._zoomMode = ViewBox.freeZoom
         self.zoom_stack = list() #list of tuples: 'xMin', 'xMax', 'yMin', 'yMax'
         self.zoom_pos = 0
-        self.start_pos = None
+
+        self.zoomStack = zoomStack #zoom_stack.py
+
+        self.start_pos = None #for mouse handling
+
         #TODO: Make this more elegant?
         self.cursor_list = None #reference to prettyplot.cursor_list. Needed for menu management as the right click events are handled in ViewBox
 
@@ -1342,6 +1350,8 @@ class ViewBox(GraphicsWidget):
                     self.axHistoryPointer += 1
                     self.axHistory.append(ax) # = self.axHistory[:self.axHistoryPointer] + [ax]
                     self.addToZoomStack(ax) #Zoom stack approach
+
+                    self.sigZoom.emit(self, ax) #zoom stack in separate file
 
                     # ax = QtCore.QRectF(Point(ev.buttonDownPos(ev.button())), Point(pos))
                     # ax = self.childGroup.mapRectFromParent(ax)
