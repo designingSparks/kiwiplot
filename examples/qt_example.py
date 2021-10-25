@@ -47,14 +47,14 @@ class MainWindow(QMainWindow):
         self.createActions()
         self.createToolBar()
 
-        self.zoom_stack = ZoomStack([self.plotwidget1.plotItem.vb, self.plotwidget2.plotItem.vb])
-        self.plotwidget1.plotItem.vb.sigZoom.connect(self.zoom_stack.addToZoomStack)
-        self.plotwidget2.plotItem.vb.sigZoom.connect(self.zoom_stack.addToZoomStack)
-
-        # self.plotwidget1.viewbox.sigZoomStackEnd.connect(self.forwardAction.setEnabled)
-        # self.plotwidget1.viewbox.sigZoomStackStart.connect(self.backAction.setEnabled)
+        #Initialize zoom stack and back/forward icons
+        self.zoom_stack = ZoomStack([self.plotwidget1, self.plotwidget2])
+        self.zoom_stack.sigEnableForward.connect(self.forwardAction.setEnabled)
+        self.zoom_stack.sigEnableBack.connect(self.backAction.setEnabled)
         self.backAction.setEnabled(False)
         self.forwardAction.setEnabled(False)
+        self.backAction.triggered.connect(self.zoom_stack.zoom_back)
+
         self.show()
         self.update_plots()
 
@@ -92,8 +92,7 @@ class MainWindow(QMainWindow):
     def createActions(self):
         '''Toolbar actions'''
         icon = QIcon(os.path.join(IMAGE_DIR, 'back.png'))
-        self.backAction = QAction(icon, "Back", self, shortcut=QKeySequence.Back,
-                 triggered=self.default_action)
+        self.backAction = QAction(icon, "Back", self, shortcut=QKeySequence.Back)
         
         icon = QIcon(os.path.join(IMAGE_DIR, 'forward.png'))
         self.forwardAction = QAction(icon, "Forward", self, shortcut=QKeySequence.Forward,
