@@ -54,9 +54,13 @@ class MainWindow(QMainWindow):
         self.backAction.setEnabled(False)
         self.forwardAction.setEnabled(False)
         self.backAction.triggered.connect(self.zoom_stack.zoom_back)
+        self.forwardAction.triggered.connect(self.zoom_stack.zoom_forward)
+        self.zoomHomeAction.triggered.connect(self.zoom_stack.zoom_home)
 
         self.show()
         self.update_plots()
+        self.zoom_stack.initZoomStack() #Must be called after creating the plots
+
 
     def update_plots(self):
         t = np.linspace(0, 20e-3, 100)
@@ -95,12 +99,10 @@ class MainWindow(QMainWindow):
         self.backAction = QAction(icon, "Back", self, shortcut=QKeySequence.Back)
         
         icon = QIcon(os.path.join(IMAGE_DIR, 'forward.png'))
-        self.forwardAction = QAction(icon, "Forward", self, shortcut=QKeySequence.Forward,
-                 triggered=self.default_action)
+        self.forwardAction = QAction(icon, "Forward", self, shortcut=QKeySequence.Forward)
         
         icon = QIcon(os.path.join(IMAGE_DIR, 'zoom_fit.png'))
-        self.zoomHomeAction = QAction(icon, "Zoom to fit", self, shortcut=QKeySequence.MoveToStartOfLine, #home key
-                 triggered=self.default_action)
+        self.zoomHomeAction = QAction(icon, "Zoom to fit", self, shortcut=QKeySequence.MoveToStartOfLine)
         
         icon = QIcon(os.path.join(IMAGE_DIR, 'zoom.png'))
         self.zoomAction = QAction(icon, "Free zoom", self, shortcut="Ctrl+Z",

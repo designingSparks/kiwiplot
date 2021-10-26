@@ -15,7 +15,8 @@ from pyqtgraph import debug as debug
 from pyqtgraph import getConfigOption
 from pyqtgraph.Qt import isQObjectAlive
 from .pplogger import *
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 from pyqtgraph.graphicsItems.ViewBox import ViewBoxMenu
 
 __all__ = ['ViewBox']
