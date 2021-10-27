@@ -1,10 +1,10 @@
 .env
 build/
 examples/images/
-prettyplot/__pycache__/
-prettyplot.egg-info/
-prettyplot/customViewBox_1.py
-prettyplot/customViewBox_2.py
+kiwiplot/__pycache__/
+kiwiplot.egg-info/
+kiwiplot/customViewBox_1.py
+kiwiplot/customViewBox_2.py
 .project
 .pydevproject
 examples/data_streaming/__pycache__/

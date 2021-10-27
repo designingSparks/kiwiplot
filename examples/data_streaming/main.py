@@ -4,13 +4,13 @@
 import asyncio
 import functools
 import sys
-from prettyplot.qtWrapper import *
+from kiwiplot.qtWrapper import *
 import qasync
 from qasync import asyncClose 
 from serial_worker import Worker
 from rolling_data import RollingData
-from prettyplot import PrettyPlot
-from prettyplot.pplogger import get_logger
+from kiwiplot import KiwiPlot
+from kiwiplot.pplogger import get_logger
 logger = get_logger( __name__) 
 
 
@@ -20,7 +20,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle('Data streaming using asyncio')
         self.setStyleSheet('QToolBar{spacing:5px;};') #QStatusBar.item {border: none;}
-        self.plotwidget1 = PrettyPlot()
+        self.plotwidget1 = KiwiPlot()
         self.plotwidget1.grid(True)
         self.plotwidget1.linewidth = 1
         vbox1 = QVBoxLayout()

@@ -5,7 +5,7 @@ from copy import deepcopy
 import numpy as np
 from pyqtgraph.Qt import QtGui, QtCore
 
-from prettyplot.zoom_stack import ZoomStack
+from kiwiplot.zoom_stack import ZoomStack
 basestring = str
 from pyqtgraph import Point
 from pyqtgraph import functions as fn
@@ -158,7 +158,7 @@ class ViewBox(GraphicsWidget):
         self.start_pos = None #for mouse handling
 
         #TODO: Make this more elegant?
-        self.cursor_list = None #reference to prettyplot.cursor_list. Needed for menu management as the right click events are handled in ViewBox
+        self.cursor_list = None #reference to kiwiplot.cursor_list. Needed for menu management as the right click events are handled in ViewBox
 
         self.state = {
 

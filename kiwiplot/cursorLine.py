@@ -14,7 +14,7 @@ import numpy as np
 import weakref
 from . import plotstyle
 from .pplogger import *
-logger = logging.getLogger('prettyplot.' + __name__)
+logger = logging.getLogger('kiwiplot.' + __name__)
 
 __all__ = ['CursorLine', 'InfLineLabel']
 
@@ -178,7 +178,7 @@ class CursorLine(GraphicsObject):
 
     def hide(self):
         '''
-        Remove from parent widget. Note the cursor line itself is not deleted. This must be done separately by removing the cursor from prettyplot.cursor_list.
+        Remove from parent widget. Note the cursor line itself is not deleted. This must be done separately by removing the cursor from kiwiplot.cursor_list.
         '''
         self.parentWidget.plot_item.removeItem(self)
 

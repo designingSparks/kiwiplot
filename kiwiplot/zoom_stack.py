@@ -1,5 +1,5 @@
 '''
-The zoomstack is useful for recalling or restoring zoomed views on multiple prettyplot objects that are within the same QMainWindow.
+The zoomstack is useful for recalling or restoring zoomed views on multiple kiwiplot objects that are within the same QMainWindow.
 It can be used with a single plot or multiple plots.
 
 The zoom state is stored as follows:
@@ -11,11 +11,14 @@ Usage:
 To initialize, pass the plots that the zoomstack should manage to the contructer.
 Plot the data on the plot
 Call the function initZoomStack.
+
+TODO:
+Refactor ViewBox.py
 '''
 
 
 from .qtWrapper import *
-from prettyplot.pplogger import get_logger
+from kiwiplot.pplogger import get_logger
 logger = get_logger(__name__)
 
 

@@ -19,7 +19,7 @@ from pyqtgraph.graphicsItems.PlotDataItem import PlotDataItem
 from . import plotstyle
 import pyqtgraph as pg
 
-from prettyplot import cursorLine
+from kiwiplot import cursorLine
 pg.setConfigOption('antialias', True) #Plotted curve looks nicer
 from itertools import cycle
 import numpy as np
@@ -28,7 +28,7 @@ from .cursorLine import CursorLine
 from .ViewBox import ViewBox 
 
 from .pplogger import *
-logger = logging.getLogger('prettyplot.' + __name__) 
+logger = logging.getLogger('kiwiplot.' + __name__) 
 
 STYLES = ['white', 'grey', 'dark']
 
@@ -51,7 +51,7 @@ def find_nearest(array, value):
     idx = (np.abs(array - value)).argmin()
     return array[idx]
 
-class PrettyPlot(pg.PlotWidget):
+class KiwiPlot(pg.PlotWidget):
     
     # cursorDataSignal = Signal(object)
 
@@ -411,16 +411,16 @@ class PrettyPlot(pg.PlotWidget):
 
     def link_x(self, plot):
         '''
-        Link the x axis so that panning or zooming on plot causes the x axis on this prettyplot to be updated.
+        Link the x axis so that panning or zooming on plot causes the x axis on this kiwiplot to be updated.
         Parameters:
-        plot - an instance of prettyplot
+        plot - an instance of kiwiplot
         '''
         self.plotItem.setXLink(plot.plotItem)
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    fig = PrettyPlot()
+    fig = kiwiplot()
     import numpy as np
     t = np.linspace(0, 20e-3, 100)
     y1 = 2*np.sin(2*np.pi*50*t)

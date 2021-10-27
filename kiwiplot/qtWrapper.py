@@ -4,7 +4,7 @@ https://github.com/spyder-ide/qtpy/blob/master/qtpy/__init__.py
 '''
 import os
 from .pplogger import *
-logger = logging.getLogger('prettyplot.' + __name__) 
+logger = logging.getLogger('kiwiplot.' + __name__) 
 
 api_list = ['PYSIDE2', 'PYQT5']
 

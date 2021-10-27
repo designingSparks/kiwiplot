@@ -3,11 +3,11 @@
 import os, sys
 import sys
 import numpy as np
-from prettyplot import PrettyPlot, plotstyle
-from prettyplot.qtWrapper import *
-import pyqtgraph as pg #must come after importing prettyplot.qt
-from prettyplot.ViewBox import ViewBox
-from prettyplot.zoom_stack import ZoomStack
+from kiwiplot import KiwiPlot, plotstyle
+from kiwiplot.qtWrapper import *
+import pyqtgraph as pg #must come after importing kiwiplot.qt
+from kiwiplot.ViewBox import ViewBox
+from kiwiplot.zoom_stack import ZoomStack
 
 _this_file = os.path.realpath(sys.argv[0])
 BASEDIR = os.path.dirname(_this_file)
@@ -25,9 +25,9 @@ class MainWindow(QMainWindow):
         self.status_bar.showMessage('Home view')
         
         # self.plotwidget = PlotWidget(updateLabelfn = self.status_bar.showMessage)
-        self.plotwidget1 = PrettyPlot(style='grey')
+        self.plotwidget1 = KiwiPlot(style='grey')
         # self.plotwidget1.cursorDataSignal.connect(self.process_cursor_data)
-        self.plotwidget2 = PrettyPlot(style='dark')
+        self.plotwidget2 = KiwiPlot(style='dark')
 
         #Set mouse mode to rectangle mode
         self.plotwidget1.plotItem.vb.setMouseMode(pg.ViewBox.RectMode)

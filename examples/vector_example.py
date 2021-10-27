@@ -1,14 +1,14 @@
-from prettyplot.qtWrapper import *
-from prettyplot import PrettyPlot
+from kiwiplot.qtWrapper import *
+from kiwiplot import KiwiPlot
 import pyqtgraph.functions as fn
-from prettyplot.simpleVector import SimpleVector
+from kiwiplot.simpleVector import SimpleVector
 
 
 class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.plotwidget = PrettyPlot(style='grey')
+        self.plotwidget = KiwiPlot(style='grey')
         self.plotwidget.setAspectLocked()
         vbox1 = QVBoxLayout()
         vbox1.addWidget(self.plotwidget)

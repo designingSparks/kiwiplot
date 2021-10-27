@@ -1,7 +1,7 @@
-# Pretty Plot
-Prettyplot is a fast, beautiful plotting library. Due to its speed it is well suited for creating dynamic or interactive plots, for example, plotting a continuous time series of data. Prettyplot achieves its speed by leveraging the fast pyqtgraph package, which is built directly on Qt. It offers nicer looking plots and additional features such as polar plots. It provides three graph styles as shown below: white, the default style, dark and grey.
+# Kiwiplot
+Kiwiplot is a fast, beautiful plotting library. Due to its speed it is well suited for creating dynamic or interactive plots, for example, plotting a continuous time series of data. Kiwiplot achieves its speed by leveraging the fast pyqtgraph package, which is built directly on Qt. It offers nicer looking plots and additional features such as polar plots. It provides three graph styles as shown below: white, the default style, dark and grey.
 
-Prettyplot has not yet reached version 1.0. Expect breaking changes.
+Kiwiplot has not yet reached version 1.0. Expect breaking changes.
 
 
 <img src="documentation/style_default.png" width="400" >
@@ -10,9 +10,9 @@ Prettyplot has not yet reached version 1.0. Expect breaking changes.
 
 
 ## Motivation
-Pretty Plot was developed to address the visual shortcomings of the pyqtgraph package and to add useful functionality such as data cursors. Although pyqtgraph is fast and robust, it lacks in the area of aesthetics and default styles. Prettyplot addresses these limitations, allowing fast, interactive and aesthetically pleasing plots to be generated. 
+ Kiwiplot was developed to address the visual shortcomings of the pyqtgraph package and to add useful functionality such as data cursors. Although pyqtgraph is fast and robust, it lacks in the area of aesthetics and default styles. Kiwiplot addresses these limitations, allowing fast, interactive and aesthetically pleasing plots to be generated. 
 
-## Why use Pretty Plot
+## Why use Kiwiplot
 - Compared to Matplotlib
 - Compared to PyQtGraph
 
@@ -21,13 +21,13 @@ Further examples can be seen in the `examples` directory.
 
 ```python
 import sys
-from prettyplot import PrettyPlot
-from prettyplot.qtWrapper import QApplication
+from kiwiplot import KiwiPlot
+from kiwiplot.qtWrapper import QApplication
 import numpy as np
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    fig = PrettyPlot(style='dark')
+    fig = KiwiPlot(style='dark')
     fig.setWindowTitle('Style dark')
     t = np.linspace(0, 20e-3, 100)
     y1 = 2*np.sin(2*np.pi*50*t)
@@ -51,8 +51,8 @@ if __name__ == '__main__':
 ## Installing
 
 ```python
->>cd prettyplot
+>>cd kiwiplot
 >>python setup.py bdist_wheel
 >>cd dist
->>pip install prettyplot-0.1.0-py3-none-any.whl
+>>pip install kiwiplot-0.1.0-py3-none-any.whl
 ```

@@ -2,7 +2,7 @@
 '''
 import numpy as np
 from constants import MAX_DATA_POINTS
-from prettyplot.pplogger import get_logger
+from kiwiplot.pplogger import get_logger
 logger = get_logger( __name__) 
 
 

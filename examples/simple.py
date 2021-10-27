@@ -2,8 +2,8 @@
 Plots three separate figures to show the three different graph style types
 '''
 import sys, os
-from prettyplot import PrettyPlot
-from prettyplot.qtWrapper import QApplication
+from kiwiplot import KiwiPlot
+from kiwiplot.qtWrapper import QApplication
 import numpy as np
 
 def get_sine_data(t):
@@ -39,13 +39,13 @@ def update_plot(fig):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    fig1 = PrettyPlot()
+    fig1 = KiwiPlot()
     fig1.setWindowTitle('Style default')
     update_plot(fig1)
-    fig2 = PrettyPlot(style='grey')
+    fig2 = KiwiPlot(style='grey')
     fig2.setWindowTitle('Style grey')
     update_plot(fig2)
-    fig3 = PrettyPlot(style='dark')
+    fig3 = KiwiPlot(style='dark')
     fig3.setWindowTitle('Style dark')
     update_plot(fig3)
     sys.exit(app.exec_())
