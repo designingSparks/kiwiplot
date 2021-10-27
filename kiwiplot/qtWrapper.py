@@ -3,7 +3,7 @@ Partly inspired by
 https://github.com/spyder-ide/qtpy/blob/master/qtpy/__init__.py
 '''
 import os
-from .pplogger import *
+from .klog import *
 logger = logging.getLogger('kiwiplot.' + __name__) 
 
 api_list = ['PYSIDE2', 'PYQT5']

@@ -13,7 +13,7 @@ from pyqtgraph import ScatterPlotItem
 import numpy as np
 import weakref
 from . import plotstyle
-from .pplogger import *
+from .klog import *
 logger = logging.getLogger('kiwiplot.' + __name__)
 
 __all__ = ['CursorLine', 'InfLineLabel']

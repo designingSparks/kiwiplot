@@ -6,7 +6,7 @@ pg.setConfigOption('antialias', True) #Plotted curve looks nicer
 from itertools import cycle
 import numpy as np
 from .polarLine import PolarLine
-from .pplogger import get_logger
+from .klog import get_logger
 logger = get_logger( __name__) 
 
 STYLES = ['white', 'grey', 'dark']

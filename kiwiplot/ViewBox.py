@@ -14,7 +14,7 @@ from pyqtgraph.graphicsItems.GraphicsWidget import GraphicsWidget
 from pyqtgraph import debug as debug
 from pyqtgraph import getConfigOption
 from pyqtgraph.Qt import isQObjectAlive
-from .pplogger import *
+from .klog import *
 # logger = logging.getLogger(__name__)
 logger = get_logger(__name__)
 from pyqtgraph.graphicsItems.ViewBox import ViewBoxMenu

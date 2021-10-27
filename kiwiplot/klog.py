@@ -1,7 +1,7 @@
 '''
 Configuration of the logger for the kiwiplot module.
 Example:
-from pplogger import *
+from klog import *
 logger = logging.getLogger('kiwiplot.' + __name__) 
 #logger.setLevel(logger.WARNING) #can customize the logger level for each file individually
 '''

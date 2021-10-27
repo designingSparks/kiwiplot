@@ -6,7 +6,7 @@ from kiwiplot.qtWrapper import *
 from kiwiplot.polarPlot import PolarPlot
 import pyqtgraph as pg
 import numpy as np
-from kiwiplot.pplogger import get_logger
+from kiwiplot.klog import get_logger
 logger = get_logger( __name__) 
 
 class MainWindow(QMainWindow):

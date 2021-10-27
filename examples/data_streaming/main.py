@@ -10,7 +10,7 @@ from qasync import asyncClose
 from serial_worker import Worker
 from rolling_data import RollingData
 from kiwiplot import KiwiPlot
-from kiwiplot.pplogger import get_logger
+from kiwiplot.klog import get_logger
 logger = get_logger( __name__) 
 
 

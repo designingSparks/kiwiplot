@@ -11,7 +11,7 @@ from .cursorLine import CursorLine
 from .ViewBox import ViewBox 
 from kiwiplot.kiwiplot import kiwiplot
 from .candlestickItem import CandlestickItem
-from .pplogger import *
+from .klog import *
 logger = get_logger(__name__) 
 
 

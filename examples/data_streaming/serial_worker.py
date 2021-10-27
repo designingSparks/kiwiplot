@@ -5,7 +5,7 @@ import time
 import numpy as np
 from itertools import cycle
 from constants import UPDATE_TIME
-from kiwiplot.pplogger import get_logger
+from kiwiplot.klog import get_logger
 logger = get_logger( __name__) 
 
 x = np.arange(0, 2*np.pi, 2*np.pi/100)

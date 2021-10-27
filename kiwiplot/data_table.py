@@ -6,7 +6,7 @@ import sys
 from . qtWrapper import *
 from . eng_notation import eng
 from numpy import double
-from .pplogger import *
+from .klog import *
 logger = logging.getLogger('kiwiplot.' + __name__) 
 
 

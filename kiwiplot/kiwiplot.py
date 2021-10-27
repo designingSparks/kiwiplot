@@ -26,11 +26,13 @@ import numpy as np
 from .legend_box import LegendBox
 from .cursorLine import CursorLine
 from .ViewBox import ViewBox 
+from .klog import get_logger
+logger = get_logger('kiwiplot.' + __name__)
 
-from .pplogger import *
-logger = logging.getLogger('kiwiplot.' + __name__) 
 
 STYLES = ['white', 'grey', 'dark']
+
+from .constants import IMAGE_DIR
 
 # _Q_APP = None # Keep reference to QApplication instance to prevent garbage collection
 # qApp = QApplication.instance()
@@ -83,10 +85,14 @@ class KiwiPlot(pg.PlotWidget):
         # self.curves = list() #Not needed. Use self.plot_item.curves()
         self.legend_box = None
         logger.debug('Initializing plot.')
-        self.show()
         self.cursor_list = list() #can have multiple cursors
         self.viewbox.cursor_list = self.cursor_list #hack for menu management of
         self.menu = None
+
+        icon_path = os.path.join(IMAGE_DIR, 'kiwi_small.png')
+        self.setWindowIcon(QIcon(icon_path))
+        self.show()
+
 
     # @property
     # def qApplication(self):

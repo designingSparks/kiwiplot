@@ -18,7 +18,7 @@ Refactor ViewBox.py
 
 
 from .qtWrapper import *
-from kiwiplot.pplogger import get_logger
+from kiwiplot.klog import get_logger
 logger = get_logger(__name__)
 
 

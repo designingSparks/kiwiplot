@@ -9,3 +9,4 @@ kiwiplot/customViewBox_2.py
 .pydevproject
 examples/data_streaming/__pycache__/
 docs/
+prettyplot.egg-info/SOURCES.txt
