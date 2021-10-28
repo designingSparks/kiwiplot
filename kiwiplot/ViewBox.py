@@ -14,10 +14,10 @@ from pyqtgraph.graphicsItems.GraphicsWidget import GraphicsWidget
 from pyqtgraph import debug as debug
 from pyqtgraph import getConfigOption
 from pyqtgraph.Qt import isQObjectAlive
-from .klog import *
-# logger = logging.getLogger(__name__)
+from .klog import get_logger
 logger = get_logger(__name__)
 from pyqtgraph.graphicsItems.ViewBox import ViewBoxMenu
+from .constants import ZOOM_MODE
 
 __all__ = ['ViewBox']
 
@@ -109,11 +109,6 @@ class ViewBox(GraphicsWidget):
     YAxis = 1
     XYAxes = 2
 
-    ## zoom modes
-    freeZoom = 0
-    xZoom = 1
-    yZoom = 2
-
     ## for linking views together
     NamedViews = weakref.WeakValueDictionary()   # name: ViewBox
     AllViews = weakref.WeakKeyDictionary()       # ViewBox: None
@@ -149,7 +144,7 @@ class ViewBox(GraphicsWidget):
 
         self._lastScene = None  ## stores reference to the last known scene this view was a part of.
 
-        self._zoomMode = ViewBox.freeZoom
+        self._zoomMode = ZOOM_MODE.xZoom
         self.zoom_stack = list() #list of tuples: 'xMin', 'xMax', 'yMin', 'yMax'
         self.zoom_pos = 0
 
@@ -1266,11 +1261,11 @@ class ViewBox(GraphicsWidget):
         '''
         self.start_pos = event.pos()
         self.start_point = self.mapToView(self.start_pos)
-        logger.debug('Start point xy: {}, {}'.format(self.start_point.x(), self.start_point.y()))
-        logger.debug('Mouse press detected')
+        # logger.debug('Start point xy: {}, {}'.format(self.start_point.x(), self.start_point.y()))
+        # logger.debug('Mouse press detected')
         rect = self.viewRect()
         event_valid = rect.contains(self.mapToView(self.start_pos))
-        logger.debug('Pressed in viewbox: {}'.format(event_valid))
+        # logger.debug('Pressed in viewbox: {}'.format(event_valid))
         event.ignore()
 
 
@@ -1301,7 +1296,7 @@ class ViewBox(GraphicsWidget):
                     _p1 = self.start_point
                     _p2 = self.mapToView(pos)
 
-                    if self._zoomMode == ViewBox.xZoom:
+                    if  self._zoomMode == ZOOM_MODE.xZoom:
                         left = self.viewRange()[0][0]
                         right = self.viewRange()[0][1]
                         bottom = self.viewRange()[1][0]
@@ -1320,7 +1315,7 @@ class ViewBox(GraphicsWidget):
                         ax = QtCore.QRectF(_p1, _p2)
 #                         self.setXRange(self.start_point.x(), point.x(), padding=0) #works
                         
-                    elif self._zoomMode == ViewBox.yZoom:
+                    elif self._zoomMode == ZOOM_MODE.yZoom:
                         left = self.viewRange()[0][0]
                         right = self.viewRange()[0][1]
                         bottom = self.viewRange()[1][0]
@@ -1341,7 +1336,7 @@ class ViewBox(GraphicsWidget):
                         ax = QtCore.QRectF(_p1, _p2)
 #                         self.setYRange(self.start_point.y(), point.y(), padding=0) #works
                         
-                    elif self._zoomMode == ViewBox.freeZoom:
+                    elif self._zoomMode == ZOOM_MODE.freeZoom:
                         p1 = Point(ev.buttonDownPos(ev.button()))
                         p2 = Point(pos)
                         ax = QtCore.QRectF(p1, p2)
@@ -1367,18 +1362,18 @@ class ViewBox(GraphicsWidget):
                     # logger.debug('Drag in viewbox: {}'.format(event_valid))
                     
                     #Could simplify this
-                    if self._zoomMode == ViewBox.xZoom or self._zoomMode == ViewBox.yZoom:
+                    if self._zoomMode == ZOOM_MODE.xZoom or self._zoomMode == ZOOM_MODE.yZoom:
                         delta = pos - self.start_pos
                         dx = delta.x()
                         dy = delta.y()
                         if abs(dx) > abs(dy):
-                            if self._zoomMode != ViewBox.xZoom:
-                                self._zoomMode = ViewBox.xZoom
-                                logger.debug('Setting ViewBox.xZoom')
+                            if self._zoomMode != ZOOM_MODE.xZoom:
+                                self._zoomMode = ZOOM_MODE.xZoom
+                                logger.debug('Setting ZOOM_MODE.xZoom')
                         else:
-                            if self._zoomMode != ViewBox.yZoom:
-                                self._zoomMode = ViewBox.yZoom
-                                logger.debug('Setting ViewBox.yZoom')
+                            if self._zoomMode != ZOOM_MODE.yZoom:
+                                self._zoomMode = ZOOM_MODE.yZoom
+                                logger.debug('Setting ZOOM_MODE.yZoom')
                             
                     ## update the zoom rectangle
 #                     self.updateScaleBox(ev.buttonDownPos(), ev.pos()) #Original
@@ -1479,8 +1474,8 @@ class ViewBox(GraphicsWidget):
 
 
     def setZoomMode(self, mode):
-        if mode not in [ViewBox.freeZoom, ViewBox.xZoom, ViewBox.yZoom]:
-            raise Exception("Mode must be ViewBox.freeZoom, ViewBox.xZoom, or ViewBox.yZoom")
+        if mode not in [ZOOM_MODE.freeZoom, ZOOM_MODE.xZoom, ZOOM_MODE.yZoom]:
+            raise Exception("Mode must be ZOOM_MODE.freeZoom, ZOOM_MODE.xZoom, or ZOOM_MODE.yZoom")
         self._zoomMode = mode
 
     def keyPressEvent(self, ev):
@@ -1523,7 +1518,7 @@ class ViewBox(GraphicsWidget):
         _p2 = self.mapToView(p2)
         
         #Calculate QRect r differently base on zoom mode
-        if self._zoomMode == ViewBox.xZoom:
+        if self._zoomMode == ZOOM_MODE.xZoom:
 
             bottom = self.viewRange()[1][0]
             top = self.viewRange()[1][1]
@@ -1533,7 +1528,7 @@ class ViewBox(GraphicsWidget):
 #             print('_p2: {}, {}'.format(_p2.x(), _p2.y()))
             r = QtCore.QRectF(_p1, _p2)
             
-        elif self._zoomMode == ViewBox.yZoom:
+        elif self._zoomMode == ZOOM_MODE.yZoom:
             #View coordinates
             left = self.viewRange()[0][0]
             right = self.viewRange()[0][1]
@@ -1543,7 +1538,7 @@ class ViewBox(GraphicsWidget):
 #             print('_p2: {}, {}'.format(_p2.x(), _p2.y()))
             r = QtCore.QRectF(_p1, _p2)
             
-        elif self._zoomMode == ViewBox.freeZoom:
+        elif self._zoomMode == ZOOM_MODE.freeZoom:
             r = QtCore.QRectF(p1, p2)
             r = self.childGroup.mapRectFromParent(r)
         

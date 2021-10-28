@@ -18,6 +18,7 @@ Refactor ViewBox.py
 
 
 from .qtWrapper import *
+from .constants import ZOOM_MODE
 from kiwiplot.klog import get_logger
 logger = get_logger(__name__)
 
@@ -38,7 +39,7 @@ class ZoomStack(QObject):
             self.vbox_list.append(plot_widget.plotItem.vb) #store viewbox of the plot item for recalling zoom
 
 
-    def initZoomStack(self):
+    def save_home_view(self):
         '''
         Store the initial zoom state of all viewboxes managed by the zoom stack. 
         The data must be plotted in the viewbox first otherwise the default unit rectangle
@@ -59,6 +60,20 @@ class ZoomStack(QObject):
             zoom_state.append(rect)
         logger.debug('Initial zoom state: {}'.format(zoom_state))
         self.stack.append(zoom_state)
+
+
+    def link_toolbar_actions(self, backAction, forwardAction, zoomHomeAction, zoomFreeAction, zoomConstrainedAction):
+        '''
+        Link the actions in the QToolbar in the QMainWindow with the appropriate methods and signals. 
+        In
+        '''
+        self.sigEnableBack.connect(backAction.setEnabled)
+        self.sigEnableForward.connect(forwardAction.setEnabled)
+        backAction.triggered.connect(self.zoom_back)
+        forwardAction.triggered.connect(self.zoom_forward)
+        zoomHomeAction.triggered.connect(self.zoom_home)
+        zoomFreeAction.triggered.connect(self.enable_free_zoom)
+        zoomConstrainedAction.triggered.connect(self.enable_constrained_zoom)
 
 
     def zoom_home(self):
@@ -143,3 +158,15 @@ class ZoomStack(QObject):
         self.sigEnableBack.emit(self.zoom_pos > 0)
         self.sigEnableForward.emit(self.zoom_pos < (len(self.stack) - 1))
     
+
+    @Slot()
+    def enable_free_zoom(self):
+        logger.debug('Enabling free zoom')
+        for viewbox in self.vbox_list:
+            viewbox._zoomMode = ZOOM_MODE.freeZoom
+
+    @Slot()
+    def enable_constrained_zoom(self):
+        logger.debug('Enabling constrained zoom')
+        for viewbox in self.vbox_list:
+            viewbox._zoomMode = ZOOM_MODE.xZoom
