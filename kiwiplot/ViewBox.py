@@ -96,8 +96,8 @@ class ViewBox(GraphicsWidget):
     sigStateChanged = QtCore.Signal(object)
     sigTransformChanged = QtCore.Signal(object)
     sigResized = QtCore.Signal(object)
-    sigZoomStackStart = QtCore.Signal(bool)
-    sigZoomStackEnd = QtCore.Signal(bool)
+    # sigZoomStackStart = QtCore.Signal(bool)
+    # sigZoomStackEnd = QtCore.Signal(bool)
     sigZoom = QtCore.Signal(object, object)
 
     ## mouse modes
@@ -114,7 +114,7 @@ class ViewBox(GraphicsWidget):
     AllViews = weakref.WeakKeyDictionary()       # ViewBox: None
 
     def __init__(self, parent=None, border=None, lockAspect=False, enableMouse=True, invertY=False, enableMenu=True, 
-                name=None, invertX=False, zoomStack=None):
+                name=None, invertX=False):
         """
         ==============  =============================================================
         **Arguments:**
@@ -144,11 +144,7 @@ class ViewBox(GraphicsWidget):
 
         self._lastScene = None  ## stores reference to the last known scene this view was a part of.
 
-        self._zoomMode = ZOOM_MODE.xZoom
-        self.zoom_stack = list() #list of tuples: 'xMin', 'xMax', 'yMin', 'yMax'
-        self.zoom_pos = 0
-
-        self.zoomStack = zoomStack #zoom_stack.py
+        self._zoomMode = ZOOM_MODE.xZoom #default zoom mode
 
         self.start_pos = None #for mouse handling
 
@@ -1345,9 +1341,7 @@ class ViewBox(GraphicsWidget):
                     self.showAxRect(ax, padding=0) #apply zoom
                     self.axHistoryPointer += 1
                     self.axHistory.append(ax) # = self.axHistory[:self.axHistoryPointer] + [ax]
-                    self.addToZoomStack(ax) #Zoom stack approach
-
-                    self.sigZoom.emit(self, ax) #zoom stack in separate file
+                    self.sigZoom.emit(self, ax) #zoom stack in zoom_stack.py
 
                     # ax = QtCore.QRectF(Point(ev.buttonDownPos(ev.button())), Point(pos))
                     # ax = self.childGroup.mapRectFromParent(ax)
@@ -1412,66 +1406,6 @@ class ViewBox(GraphicsWidget):
             self._resetTarget()
             self.scaleBy(x=x, y=y, center=center)
             self.sigRangeChangedManually.emit(self.state['mouseEnabled'])
-
-
-    def initZoomStack(self):
-        '''Store the initial view on the zoom stack and don't increment self.zoom_pos'''
-        vr = self.viewRange()
-        bottom = vr[1][0]
-        top = vr[1][1]
-        left = vr[0][0]
-        right = vr[0][1]
-        _p1 = QtCore.QPointF(left, top)
-        _p2 = QtCore.QPointF(right, bottom)
-        ax = QtCore.QRectF(_p1, _p2)
-        self.zoom_stack.append(ax)
-        logger.debug('Init zoom stack: {}'.format(ax))
-        
-    def addToZoomStack(self, ax):
-        n = len(self.zoom_stack) - self.zoom_pos - 1
-        if n:
-            logger.debug('Pruning zoom stack. n={}'.format(n))
-            self.zoom_stack = self.zoom_stack[:self.zoom_pos+1]
-
-        self.zoom_stack.append(ax)
-        self.zoom_pos += 1
-        logger.debug('Updated zoom stack: {}'.format(ax))
-        logger.debug('zoom_pos: {}, len zoom_stack: {}'.format(self.zoom_pos, len(self.zoom_stack)))
-        self.sigZoomStackStart.emit(self.zoom_pos > 0)
-        self.sigZoomStackEnd.emit(self.zoom_pos < (len(self.zoom_stack) - 1))
-        
-    def zoom_home(self):
-        logger.debug('Zoomed home')
-        last_ax = self.zoom_stack[self.zoom_pos]
-        home_ax = self.zoom_stack[0]
-
-        if last_ax != home_ax:
-            self.showAxRect(home_ax, padding=0)
-            self.addToZoomStack(home_ax)
-        
-    def zoom_back(self):
-        logger.debug('Zooming back')
-        if self.zoom_pos > 0:
-            self.zoom_pos -= 1
-            last_ax = self.zoom_stack[self.zoom_pos]
-            logger.debug('Ax: {}'.format(last_ax))
-            self.showAxRect(last_ax, padding=0) #apply zoom
-            
-#         logger.debug('Emitting: {}'.format(self.zoom_pos > 0))
-        # self.sigZoomStackStart.emit(self.zoom_pos > 0)
-        # self.sigZoomStackEnd.emit(self.zoom_pos < (len(self.zoom_stack) - 1))
-    
-    def zoom_forward(self):
-        logger.debug('Zoomed forward')
-        if self.zoom_pos < (len(self.zoom_stack) - 1):
-            self.zoom_pos += 1
-            last_ax = self.zoom_stack[self.zoom_pos]
-            self.showAxRect(last_ax, padding=0) #apply zoom
-            
-#         logger.debug('Emitting: {}'.format(self.zoom_pos < (len(self.zoom_stack) - 1)))
-        # self.sigZoomStackStart.emit(self.zoom_pos > 0)
-        # self.sigZoomStackEnd.emit(self.zoom_pos < (len(self.zoom_stack) - 1))
-
 
     def setZoomMode(self, mode):
         if mode not in [ZOOM_MODE.freeZoom, ZOOM_MODE.xZoom, ZOOM_MODE.yZoom]:

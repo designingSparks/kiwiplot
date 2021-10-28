@@ -163,10 +163,10 @@ class ZoomStack(QObject):
     def enable_free_zoom(self):
         logger.debug('Enabling free zoom')
         for viewbox in self.vbox_list:
-            viewbox._zoomMode = ZOOM_MODE.freeZoom
+            viewbox.setZoomMode(ZOOM_MODE.freeZoom)
 
     @Slot()
     def enable_constrained_zoom(self):
         logger.debug('Enabling constrained zoom')
         for viewbox in self.vbox_list:
-            viewbox._zoomMode = ZOOM_MODE.xZoom
+            viewbox.setZoomMode(ZOOM_MODE.xZoom)
