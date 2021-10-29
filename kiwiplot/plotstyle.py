@@ -8,6 +8,8 @@ LINEWIDTH = 2 #default linewidth
 CURSORWIDTH = 2
 CURSORDOTSIZE = 4
 YAXIS_WIDTH = 35 #allows alignment of y axis in vertically-stacked graphs
+TITLE_HEIGHT = 30
+LEGEND_OFFSET = 15 #both x and y
 
 #Useful for creating palettes by name
 colors = {

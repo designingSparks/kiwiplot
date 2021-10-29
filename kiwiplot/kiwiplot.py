@@ -20,6 +20,7 @@ from . import plotstyle
 import pyqtgraph as pg
 
 from kiwiplot import cursorLine
+from kiwiplot.plotstyle import *
 pg.setConfigOption('antialias', True) #Plotted curve looks nicer
 from itertools import cycle
 import numpy as np
@@ -28,8 +29,6 @@ from .cursorLine import CursorLine
 from .ViewBox import ViewBox 
 from .klog import get_logger
 logger = get_logger('kiwiplot.' + __name__)
-
-
 STYLES = ['white', 'grey', 'dark']
 
 from .constants import IMAGE_DIR
@@ -92,7 +91,7 @@ class KiwiPlot(pg.PlotWidget):
         icon_path = os.path.join(IMAGE_DIR, 'kiwi_small.png')
         self.setWindowIcon(QIcon(icon_path))
         self.show()
-
+        self.hasTitle = False
 
     # @property
     # def qApplication(self):
@@ -141,13 +140,19 @@ class KiwiPlot(pg.PlotWidget):
         self.plot_item.showGrid(x=xGrid, y=yGrid, alpha=1)
 
 
-    def legend(self, legend_list=None, offset=(-20,20)):
+    def legend(self, legend_list=None):
         '''
         Show the legend box
         '''
+        #offset[0], distance from right hand side of plot. 0=flush, -ve=distance from right
+        # offset[1] - offset from top of plot, +ve = distance from top
+        offset=[-LEGEND_OFFSET, LEGEND_OFFSET]
+        if self.hasTitle:
+            offset[1] += TITLE_HEIGHT
+    
         #Create legend box
         if self.legend_box is None:
-            self.legend_box = LegendBox(offset=offset) #TODO: Adjust the offset if a title is displayed. Title offset=30
+            self.legend_box = LegendBox(offset=offset) 
             self.legend_box.setParentItem(self.graphicsItem())
             # self.legend.setParentItem(self.viewbox) #also works
 
@@ -360,8 +365,8 @@ class KiwiPlot(pg.PlotWidget):
 
         #Nasty hack to allow proper CSS styling of the title
         #This is adapted from pyqtgraph.PlotItem.setTitle() and  pyqtgraph.LabelItem.setText()
-        self.plot_item.titleLabel.setMaximumHeight(30) # self.plot_item.titleLabel is a LabelItem
-        self.plot_item.layout.setRowFixedHeight(0, 30)
+        self.plot_item.titleLabel.setMaximumHeight(TITLE_HEIGHT) # self.plot_item.titleLabel is a LabelItem
+        self.plot_item.layout.setRowFixedHeight(0, TITLE_HEIGHT) #row in which title label is placed
         self.plot_item.titleLabel.setVisible(True)
         self.plot_item.titleLabel.item.setFont(QFont('Source Sans Pro'))
         style = ';'.join(['%s: %s' % (k, plotstyle.title_style[k]) for k in plotstyle.title_style]) #This part is from pg.AxistItem.labelString()
@@ -371,8 +376,12 @@ class KiwiPlot(pg.PlotWidget):
         self.plot_item.titleLabel.updateMin()
         self.plot_item.titleLabel.resizeEvent(None)
         self.plot_item.titleLabel.updateGeometry()
-
+        self.hasTitle = True
         
+        if self.legend_box is not None:
+            logger.debug('Adjusting legend offset')
+            self.legend_box.setOffset([-LEGEND_OFFSET, LEGEND_OFFSET+TITLE_HEIGHT])
+
     # def enable_legend(self, xpos, ypos, padding=10):
     #     '''
     #     Parameters:
