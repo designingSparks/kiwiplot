@@ -27,9 +27,10 @@ class MainWindow(QMainWindow):
         # self.plotwidget = PlotWidget(updateLabelfn = self.status_bar.showMessage)
         self.plotwidget1 = KiwiPlot(style='grey')
         # self.plotwidget1.cursorDataSignal.connect(self.process_cursor_data)
-        self.plotwidget2 = KiwiPlot(style='grey')
+        self.plotwidget2 = KiwiPlot(style='white')
 
-        #Set mouse mode to rectangle mode
+        #Set mouse mode to rectangle (zoom) mode rather than the default pan mode
+        #TODO: Shift this into the constructor of zoom stack.
         self.plotwidget1.plotItem.vb.setMouseMode(pg.ViewBox.RectMode)
         self.plotwidget2.plotItem.vb.setMouseMode(pg.ViewBox.RectMode)
         self.plotwidget2.link_x(self.plotwidget1) #Link X axes

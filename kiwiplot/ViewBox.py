@@ -211,10 +211,13 @@ class ViewBox(GraphicsWidget):
         self.borderRect.setZValue(1e3)
         self.borderRect.setPen(self.border)
 
-        ## Make scale box that is shown when dragging on the view
+        ## Make zoom box that is shown when dragging on the view
         self.rbScaleBox = QtGui.QGraphicsRectItem(0, 0, 1, 1)
+
+        #Default zoombox color - yellow
         self.rbScaleBox.setPen(fn.mkPen((255,255,100), width=1))
         self.rbScaleBox.setBrush(fn.mkBrush(255,255,0,100))
+
         self.rbScaleBox.setZValue(1e9)
         self.rbScaleBox.hide()
         self.addItem(self.rbScaleBox, ignoreBounds=True)
@@ -360,6 +363,11 @@ class ViewBox(GraphicsWidget):
         self.background.setVisible(color is not None)
         self.state['background'] = color
         self.updateBackground()
+
+    def setZoomBoxColor(self, color):
+        self.rbScaleBox.setPen(fn.mkPen(color[:3], width=1)) #outer border of zoom box is solid (ignore alpha value)
+        brush = fn.mkBrush(color)
+        self.rbScaleBox.setBrush(brush) #inner color is transparent
 
     def setMouseMode(self, mode):
         """
@@ -1371,7 +1379,8 @@ class ViewBox(GraphicsWidget):
                             
                     ## update the zoom rectangle
 #                     self.updateScaleBox(ev.buttonDownPos(), ev.pos()) #Original
-                    self.updateScaleBox(self.start_pos, ev.pos())
+
+                    self.updateScaleBox(self.start_pos, ev.pos()) 
 
 
             else:

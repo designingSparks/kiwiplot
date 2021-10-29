@@ -115,10 +115,13 @@ class KiwiPlot(pg.PlotWidget):
             raise ValueError('style must be in: {}'.format(STYLES))
         if style == 'white':
             self.set_graph_style(plotstyle.style_white)
+            self.viewbox.setZoomBoxColor(plotstyle.style_white['zoombox'])
         elif style == 'grey':
             self.set_graph_style(plotstyle.style_grey)
+            self.viewbox.setZoomBoxColor(plotstyle.style_grey['zoombox'])
         elif style == 'dark':
             self.set_graph_style(plotstyle.style_dark)
+            self.viewbox.setZoomBoxColor(plotstyle.style_dark['zoombox'])
 
 
     def grid(self, *args):
