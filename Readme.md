@@ -1,5 +1,5 @@
 # Kiwiplot
-Kiwiplot is a fast, beautiful plotting library. Due to its speed it is well suited for creating dynamic or interactive plots, for example, plotting a continuous time series of data. Kiwiplot achieves its speed by leveraging the fast pyqtgraph package, which is built directly on Qt. It offers nicer looking plots and additional features such as polar plots. It provides three graph styles as shown below: white, the default style, dark and grey.
+Kiwiplot is a performant, beautiful plotting library. Due to its speed it is well suited for creating dynamic or interactive plots, for example, plotting a continuous time series of data. Kiwiplot achieves its speed by leveraging the fast pyqtgraph package, which is built directly on Qt. Kiwiplot offers a range of aesthetically pleaseing styling options and additional features such as data cursors, polar plots and constrained x or y zoom modes. The three graph styles are shown below: white, the default style, dark and grey.
 
 Kiwiplot has not yet reached version 1.0. Expect breaking changes.
 
@@ -13,11 +13,16 @@ Kiwiplot has not yet reached version 1.0. Expect breaking changes.
  Kiwiplot was developed to address the visual shortcomings of the pyqtgraph package and to add useful functionality such as data cursors. Although pyqtgraph is fast and robust, it lacks in the area of aesthetics and default styles. Kiwiplot addresses these limitations, allowing fast, interactive and aesthetically pleasing plots to be generated. 
 
 ## Why use Kiwiplot
-- Compared to Matplotlib
-- Compared to PyQtGraph
+
+**Compared to Matplotlib**
+Matplotlib is a comprehensive plotting package that can generate production-quality graphs. However, for data streaming applications, animations and interactivity, it is far from ideal. Matplotlib is a behemoth and the update rate is slow, resulting in a laggy experience. 
+
+
+**Compared to PyQtGraph**
+PytQtGraph is a performant graphing library. Vanilla PyQt plots are not great looking and visual customization is limited.
 
 ## Example Use
-Further examples can be seen in the `examples` directory.
+Example usage can be seen beow. Further examples can be found in the `examples` directory.
 
 ```python
 import sys

@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages  # Always prefer setuptools over distutils
 
 __title__ = 'kiwiplot'
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 __license__ = 'MIT'
 
 
