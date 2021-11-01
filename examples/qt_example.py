@@ -6,9 +6,9 @@ import numpy as np
 from kiwiplot import KiwiPlot, plotstyle
 from kiwiplot.qtWrapper import *
 import pyqtgraph as pg #must come after importing kiwiplot.qt
+# pg.setConfigOptions(useOpenGL=True) #works but anitaliasing stops working
 from kiwiplot.ViewBox import ViewBox
 from kiwiplot.zoom_stack import ZoomStack
-
 _this_file = os.path.realpath(sys.argv[0])
 BASEDIR = os.path.dirname(_this_file)
 IMAGE_DIR = os.path.join(BASEDIR, 'images')

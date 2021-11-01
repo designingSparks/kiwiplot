@@ -98,7 +98,7 @@ class ViewBox(GraphicsWidget):
     sigResized = QtCore.Signal(object)
     # sigZoomStackStart = QtCore.Signal(bool)
     # sigZoomStackEnd = QtCore.Signal(bool)
-    sigZoom = QtCore.Signal(object, object)
+    sigZoom = QtCore.Signal()
 
     ## mouse modes
     PanMode = 3
@@ -1346,10 +1346,11 @@ class ViewBox(GraphicsWidget):
                         ax = QtCore.QRectF(p1, p2)
                         ax = self.childGroup.mapRectFromParent(ax)
                     
+                    logger.debug('ax: {}'.format(ax))
                     self.showAxRect(ax, padding=0) #apply zoom
                     self.axHistoryPointer += 1
                     self.axHistory.append(ax) # = self.axHistory[:self.axHistoryPointer] + [ax]
-                    self.sigZoom.emit(self, ax) #zoom stack in zoom_stack.py
+                    self.sigZoom.emit() #zoom stack in zoom_stack.py
 
                     # ax = QtCore.QRectF(Point(ev.buttonDownPos(ev.button())), Point(pos))
                     # ax = self.childGroup.mapRectFromParent(ax)
