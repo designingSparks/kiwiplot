@@ -10,3 +10,4 @@ kiwiplot/customViewBox_2.py
 examples/data_streaming/__pycache__/
 docs/
 prettyplot.egg-info/SOURCES.txt
+prettyplot/__pycache__
