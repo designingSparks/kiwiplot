@@ -19,18 +19,19 @@ from pyqtgraph.graphicsItems.PlotDataItem import PlotDataItem
 from . import plotstyle
 import pyqtgraph as pg
 
-from prettyplot import cursorLine
+from kiwiplot import cursorLine
+from kiwiplot.plotstyle import *
 pg.setConfigOption('antialias', True) #Plotted curve looks nicer
 from itertools import cycle
 import numpy as np
 from .legend_box import LegendBox
 from .cursorLine import CursorLine
 from .ViewBox import ViewBox 
-
-from .pplogger import *
-logger = logging.getLogger('prettyplot.' + __name__) 
-
+from .klog import get_logger
+logger = get_logger('kiwiplot.' + __name__)
 STYLES = ['white', 'grey', 'dark']
+
+from .constants import IMAGE_DIR
 
 # _Q_APP = None # Keep reference to QApplication instance to prevent garbage collection
 # qApp = QApplication.instance()
@@ -51,7 +52,7 @@ def find_nearest(array, value):
     idx = (np.abs(array - value)).argmin()
     return array[idx]
 
-class PrettyPlot(pg.PlotWidget):
+class KiwiPlot(pg.PlotWidget):
     
     # cursorDataSignal = Signal(object)
 
@@ -83,10 +84,14 @@ class PrettyPlot(pg.PlotWidget):
         # self.curves = list() #Not needed. Use self.plot_item.curves()
         self.legend_box = None
         logger.debug('Initializing plot.')
-        self.show()
         self.cursor_list = list() #can have multiple cursors
         self.viewbox.cursor_list = self.cursor_list #hack for menu management of
         self.menu = None
+
+        icon_path = os.path.join(IMAGE_DIR, 'kiwi_small.png')
+        self.setWindowIcon(QIcon(icon_path))
+        self.show()
+        self.hasTitle = False
 
     # @property
     # def qApplication(self):
@@ -109,10 +114,13 @@ class PrettyPlot(pg.PlotWidget):
             raise ValueError('style must be in: {}'.format(STYLES))
         if style == 'white':
             self.set_graph_style(plotstyle.style_white)
+            self.viewbox.setZoomBoxColor(plotstyle.style_white['zoombox'])
         elif style == 'grey':
             self.set_graph_style(plotstyle.style_grey)
+            self.viewbox.setZoomBoxColor(plotstyle.style_grey['zoombox'])
         elif style == 'dark':
             self.set_graph_style(plotstyle.style_dark)
+            self.viewbox.setZoomBoxColor(plotstyle.style_dark['zoombox'])
 
 
     def grid(self, *args):
@@ -132,13 +140,19 @@ class PrettyPlot(pg.PlotWidget):
         self.plot_item.showGrid(x=xGrid, y=yGrid, alpha=1)
 
 
-    def legend(self, legend_list=None, offset=(-20,20)):
+    def legend(self, legend_list=None):
         '''
         Show the legend box
         '''
+        #offset[0], distance from right hand side of plot. 0=flush, -ve=distance from right
+        # offset[1] - offset from top of plot, +ve = distance from top
+        offset=[-LEGEND_OFFSET, LEGEND_OFFSET]
+        if self.hasTitle:
+            offset[1] += TITLE_HEIGHT
+    
         #Create legend box
         if self.legend_box is None:
-            self.legend_box = LegendBox(offset=offset) #TODO: Adjust the offset if a title is displayed. Title offset=30
+            self.legend_box = LegendBox(offset=offset) 
             self.legend_box.setParentItem(self.graphicsItem())
             # self.legend.setParentItem(self.viewbox) #also works
 
@@ -351,8 +365,8 @@ class PrettyPlot(pg.PlotWidget):
 
         #Nasty hack to allow proper CSS styling of the title
         #This is adapted from pyqtgraph.PlotItem.setTitle() and  pyqtgraph.LabelItem.setText()
-        self.plot_item.titleLabel.setMaximumHeight(30) # self.plot_item.titleLabel is a LabelItem
-        self.plot_item.layout.setRowFixedHeight(0, 30)
+        self.plot_item.titleLabel.setMaximumHeight(TITLE_HEIGHT) # self.plot_item.titleLabel is a LabelItem
+        self.plot_item.layout.setRowFixedHeight(0, TITLE_HEIGHT) #row in which title label is placed
         self.plot_item.titleLabel.setVisible(True)
         self.plot_item.titleLabel.item.setFont(QFont('Source Sans Pro'))
         style = ';'.join(['%s: %s' % (k, plotstyle.title_style[k]) for k in plotstyle.title_style]) #This part is from pg.AxistItem.labelString()
@@ -362,8 +376,12 @@ class PrettyPlot(pg.PlotWidget):
         self.plot_item.titleLabel.updateMin()
         self.plot_item.titleLabel.resizeEvent(None)
         self.plot_item.titleLabel.updateGeometry()
-
+        self.hasTitle = True
         
+        if self.legend_box is not None:
+            logger.debug('Adjusting legend offset')
+            self.legend_box.setOffset([-LEGEND_OFFSET, LEGEND_OFFSET+TITLE_HEIGHT])
+
     # def enable_legend(self, xpos, ypos, padding=10):
     #     '''
     #     Parameters:
@@ -407,12 +425,20 @@ class PrettyPlot(pg.PlotWidget):
         Parameters:
         ylim - a list with two values, e.g. [-1,1]
         '''
-        self.viewbox.setYRange(*ylim) 
+        self.viewbox.setYRange(*ylim)
+
+    def link_x(self, plot):
+        '''
+        Link the x axis so that panning or zooming on plot causes the x axis on this kiwiplot to be updated.
+        Parameters:
+        plot - an instance of kiwiplot
+        '''
+        self.plotItem.setXLink(plot.plotItem)
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    fig = PrettyPlot()
+    fig = kiwiplot()
     import numpy as np
     t = np.linspace(0, 20e-3, 100)
     y1 = 2*np.sin(2*np.pi*50*t)

@@ -1,13 +1,15 @@
-from qt import *
+# from qt import *
+from kiwiplot.qtWrapper import *
 import asyncio
 import time
 import numpy as np
 from itertools import cycle
-from prettyplot.pplogger import get_logger
+from constants import UPDATE_TIME
+from kiwiplot.klog import get_logger
 logger = get_logger( __name__) 
 
 x = np.arange(0, 2*np.pi, 2*np.pi/100)
-x1 = np.split(x, 10) #list of 20 arrays
+x1 = np.split(x, 10) #creates list of numpy arrays
 iter_x = cycle(x1)
 
 class Worker(QObject):
@@ -30,11 +32,11 @@ class Worker(QObject):
         self.packet_received.emit(result)
 
     def stop_work(self):
-        print('Stopping work')
+        logger.debug('Stopping work')
         self.task.cancel()
 
     async def read_bytes(self):
-        gen = self.serial_simulator.read_packet(0.1)
+        gen = self.serial_simulator.read_packet(UPDATE_TIME)
         while(True):
             try:
                 packet = await gen.__anext__()
@@ -60,19 +62,16 @@ class SerialSimulator():
         async generator function that simulates incoming sequence of serial data
         There is no time drift.
         '''
-        # num = 0
         starttime = time.time()
         while True:
-
             dt = (time.time() - starttime) % tinterval
             delay = tinterval - dt #Want to avoid time drift
-            # num += 1
             x = next(iter_x)
             y = self.function1(x)
             yield y
-
-            try:
+            
+            try: #Exit gracefully if the task is cancelled. 
                 await asyncio.sleep(delay) #simulated IO delay
-            except asyncio.CancelledError: #Raise when the task is cancelled
-                print('Cancelled detected')
+            except asyncio.CancelledError: #Raised when the task is cancelled
+                logger.debug('Cancelled detected')
                 break

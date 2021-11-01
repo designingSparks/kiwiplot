@@ -3,9 +3,9 @@
 import os, sys
 import sys
 import numpy as np
-from prettyplot import PrettyPlot, plotstyle
-from prettyplot.qtWrapper import *
-import pyqtgraph as pg #must come after importing prettyplot.qt
+from kiwiplot import KiwiPlot, plotstyle
+from kiwiplot.qtWrapper import *
+import pyqtgraph as pg #must come after importing kiwiplot.qt
 
 _this_file = os.path.realpath(sys.argv[0])
 BASEDIR = os.path.dirname(_this_file)
@@ -19,7 +19,7 @@ class MainWindow(QMainWindow):
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
         self.status_height = self.status_bar.minimumSize().height()
-        self.plotwidget1 = PrettyPlot(style='grey')
+        self.plotwidget1 = KiwiPlot(style='grey')
         self.update_plot()
         vbox = QVBoxLayout()
         widget = QWidget()

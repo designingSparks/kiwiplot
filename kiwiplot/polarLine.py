@@ -11,8 +11,8 @@ from pyqtgraph.Point import Point
 from itertools import cycle
 import numpy as np
 from . import plotstyle
-from .pplogger import *
-logger = logging.getLogger('prettyplot.' + __name__) 
+from .klog import *
+logger = logging.getLogger('kiwiplot.' + __name__) 
 
 class PolarLine(InfiniteLine):
 

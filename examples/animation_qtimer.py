@@ -2,11 +2,11 @@
 Simple animation of a polar plot using the QTimer timeout interrupt to draw the curve.
 A scatterplot item, i.e. dot is drawn at the head of the curve.
 '''
-from prettyplot.qtWrapper import *
-from prettyplot.polarPlot import PolarPlot
+from kiwiplot.qtWrapper import *
+from kiwiplot.polarPlot import PolarPlot
 import pyqtgraph as pg
 import numpy as np
-from prettyplot.pplogger import get_logger
+from kiwiplot.klog import get_logger
 logger = get_logger( __name__) 
 
 class MainWindow(QMainWindow):

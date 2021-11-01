@@ -6,8 +6,8 @@ import sys
 from . qtWrapper import *
 from . eng_notation import eng
 from numpy import double
-from .pplogger import *
-logger = logging.getLogger('prettyplot.' + __name__) 
+from .klog import *
+logger = logging.getLogger('kiwiplot.' + __name__) 
 
 
 class DataTable(QTableWidget):

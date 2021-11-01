@@ -3,10 +3,10 @@
 import os, sys
 import sys
 import numpy as np
-from prettyplot import PrettyPlot, plotstyle
-from prettyplot.qtWrapper import *
-import pyqtgraph as pg #must come after importing prettyplot.qt
-from prettyplot.data_table import DataTable
+from kiwiplot import KiwiPlot, plotstyle
+from kiwiplot.qtWrapper import *
+import pyqtgraph as pg #must come after importing kiwiplot.qt
+from kiwiplot.data_table import DataTable
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
         self.status_height = self.status_bar.minimumSize().height()
-        self.plotwidget1 = PrettyPlot(style='grey')
+        self.plotwidget1 = KiwiPlot(style='grey')
         self.data_table = DataTable(['y1', 'y2', 'y3', 'y4'], ['x', 'Val'])
         self.update_plot()
 

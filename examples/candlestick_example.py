@@ -1,8 +1,8 @@
 import os, sys
 import sys
 import numpy as np
-from prettyplot.qtWrapper import *
-from prettyplot.candlestickPlot import CandlestickPlot
+from kiwiplot.qtWrapper import *
+from kiwiplot.candlestickPlot import CandlestickPlot
 
 
 data = [  ## fields are (time, open, close, min, max).
