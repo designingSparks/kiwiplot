@@ -22,7 +22,7 @@ Matplotlib is a comprehensive plotting package that can generate production-qual
 PytQtGraph is a performant graphing library. Vanilla PyQt plots are not great looking and visual customization is limited.
 
 ## Example Use
-Example usage can be seen beow. Further examples can be found in the `examples` directory.
+Normal usage in a standalone application can be seen below. Further examples can be found in the `examples` directory.
 
 ```python
 import sys
@@ -46,6 +46,29 @@ if __name__ == '__main__':
     sys.exit(app.exec_())
 ```
 
+## IPython Support
+
+Kiwiplot can be used from and IPython console or the Jupyter QtConsole as follows:
+
+```python
+%gui qt #typically necessary to integrate with the Qt GUI loop
+from kiwiplot import KiwiPlot
+fig = KiwiPlot()
+t = np.linspace(0, 20e-3, 100)
+y = 2*np.sin(2*np.pi*50*t)
+fig.plot(t,y)
+fig.grid()
+fig.set_xlabel('Time (s)')
+fig.set_ylabel('Amplitude (V)')
+fig.set_title('Sine Wave')
+fig1.setWindowTitle('Kiwiplot')
+```
+
+More information about the IPython (Jupyter) GUI event loop can be found [here](https://ipython.readthedocs.io/en/stable/config/eventloops.html). In general you will need to test your Python installation to see if the command `%gui qt` is necessary.
+
+A discussion about integration of Jupyterlab with PyQtGraph is [here](https://github.com/pyqtgraph/pyqtgraph/issues/1963).
+
+
 ## Requirements
 - Python 3.7+
 - pyqtgraph 0.12+
@@ -59,5 +82,5 @@ if __name__ == '__main__':
 >>cd kiwiplot
 >>python setup.py bdist_wheel
 >>cd dist
->>pip install kiwiplot-0.1.0-py3-none-any.whl
+>>pip install kiwiplot-x.y.z-py3-none-any.whl
 ```
