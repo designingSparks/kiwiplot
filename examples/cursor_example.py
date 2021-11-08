@@ -14,7 +14,7 @@ IMAGE_DIR = os.path.join(BASEDIR, 'images')
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.setWindowTitle('Plot Example')
+        self.setWindowTitle('Cursor Example')
         self.setStyleSheet('QToolBar{spacing:5px;};') #QStatusBar.item {border: none;}
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
@@ -46,8 +46,8 @@ class MainWindow(QMainWindow):
         self.plotwidget1.set_xlabel('Time', 's') #Can also specify the base unit
         self.plotwidget1.set_ylabel('Magnitude')
         self.plotwidget1.set_title('Sine Wave Magnitude')
-        self.plotwidget1.add_cursor()
-        self.plotwidget1.cursor_list[0].cursorDataSignal.connect(self.process_cursor_data)
+        self.plotwidget1.cursor_on()
+        self.plotwidget1.cursor.cursorDataSignal.connect(self.process_cursor_data)
 
 
     @Slot(object)

@@ -39,7 +39,7 @@ class CursorLine(GraphicsObject):
     sigPositionChangeFinished = Signal(object)
     sigPositionChanged = Signal(object)
     sigClicked =  Signal(object, object)
-    cursorDataSignal = Signal(object, str)
+    cursorDataSignal = Signal(object, object)
 
     def __init__(self, pos=None, angle=90, pen=None, movable=False, bounds=None,
                  hoverPen=None, span=(0, 1), markers=None, 
@@ -141,7 +141,7 @@ class CursorLine(GraphicsObject):
 
     def show(self):
         '''
-        Display cursor and cursor dots on parent widget
+        Display cursor and cursor dots on parent plot item. Set the x position of the cursor automatically.
         Note: If curves are added to the plot after the cursor is shown, these will be unrecognized by the cursor.
         '''
         if self.isDisplayed: #prevent multiple calls to this function from creating many cursor dots
@@ -178,9 +178,12 @@ class CursorLine(GraphicsObject):
 
     def hide(self):
         '''
-        Remove from parent widget. Note the cursor line itself is not deleted. This must be done separately by removing the cursor from kiwiplot.cursor_list.
+        Remove cursorLine and dots from parent plot item.
         '''
         self.parentWidget.plot_item.removeItem(self)
+        for cursor_dot in self.cursor_dots:
+            self.parentWidget.removeItem(cursor_dot)
+            self.cursor_dots = list()
 
 
     @Slot(object)
@@ -195,7 +198,8 @@ class CursorLine(GraphicsObject):
         xpos = line.x()
         xlist = list() #Data to emit
         ylist = list()
-        
+        # logger.debug('Updating cursor position')
+
         #Update cursor dots
         for i, curve in enumerate(pw.plot_item.curves):
             if self.interpolateData is True: #linear interpolation
@@ -212,7 +216,7 @@ class CursorLine(GraphicsObject):
                 ylist.append(yval)
                 self.cursor_dots[i].setData([xval], [yval])
 
-        self.cursorDataSignal.emit((xlist, ylist), self._name)
+        self.cursorDataSignal.emit((xlist, ylist), self)
 
 
     def setXDataLimit(self, xlim):

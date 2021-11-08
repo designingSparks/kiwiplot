@@ -60,7 +60,7 @@ class LegendBox(LegendItem):
         title           The title to display for this item. Simple HTML allowed.
         ==============  ========================================================
         """
-        label = LabelItem(name, color=(0,0,0))
+        label = LabelItem(name, color=(0,0,0), justify='left')
         if isinstance(item, ItemSample):
             sample = item
         else:

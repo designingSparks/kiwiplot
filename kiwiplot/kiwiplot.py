@@ -11,6 +11,7 @@ widget.setLayout(vbox)
 self.setCentralWidget(widget)
 self.show()
 '''
+from os import times
 import sys
 # import os
 # os.environ['QT_API'] = 'PYQT5'
@@ -52,6 +53,7 @@ def find_nearest(array, value):
     idx = (np.abs(array - value)).argmin()
     return array[idx]
 
+
 class KiwiPlot(pg.PlotWidget):
     
     # cursorDataSignal = Signal(object)
@@ -66,8 +68,7 @@ class KiwiPlot(pg.PlotWidget):
         self.plot_item = self.getPlotItem()
         self.viewbox = self.plot_item.getViewBox()
         self.viewbox.sigResized.connect(self._resized_view_box)
-
-        # self.viewbox.setMouseMode(pg.ViewBox.RectMode) #one button mode
+        self.viewbox.setMouseMode(pg.ViewBox.RectMode) #one button mode
         # self.viewbox.setZoomMode(pg.ViewBox.xZoom)
         
         #TODO: if style is a text arguement, set the palette to plotstyle.grey and linecolor to ...
@@ -80,16 +81,17 @@ class KiwiPlot(pg.PlotWidget):
             self.set_style(style)
 
         self.linewidth = plotstyle.LINEWIDTH
-        # self.cursor = None
+        self.cursor = None #reference to last cursor
+        # self.cursor_list = list() #can have multiple cursors
         # self.curves = list() #Not needed. Use self.plot_item.curves()
         self.legend_box = None
         logger.debug('Initializing plot.')
-        self.cursor_list = list() #can have multiple cursors
-        self.viewbox.cursor_list = self.cursor_list #hack for menu management of
+        # self.viewbox.cursor_list = self.cursor_list #hack for menu management of
         self.menu = None
 
         icon_path = os.path.join(IMAGE_DIR, 'kiwi_small.png')
         self.setWindowIcon(QIcon(icon_path))
+
         self.show()
         self.hasTitle = False
 
@@ -143,6 +145,7 @@ class KiwiPlot(pg.PlotWidget):
     def legend(self, legend_list=None):
         '''
         Show the legend box
+        TODO: Change to show_legend()
         '''
         #offset[0], distance from right hand side of plot. 0=flush, -ve=distance from right
         # offset[1] - offset from top of plot, +ve = distance from top
@@ -153,8 +156,8 @@ class KiwiPlot(pg.PlotWidget):
         #Create legend box
         if self.legend_box is None:
             self.legend_box = LegendBox(offset=offset) 
-            self.legend_box.setParentItem(self.graphicsItem())
-            # self.legend.setParentItem(self.viewbox) #also works
+            # self.legend_box.setParentItem(self.graphicsItem()) 
+            self.legend_box.setParentItem(self.viewbox) #also works.  implicitly adds this graphics item to the scene of the parent
 
         #If no curves exist, use the default palette to define the curves
         #Note that the yaxis width is incorrect until self.plot() has been called
@@ -182,7 +185,14 @@ class KiwiPlot(pg.PlotWidget):
                 self.legend_box.addItem(curve, name)
             return
         
-
+    def _hide_legend(self):
+        '''
+        Hide the legend box
+        Ref: legend.scene().removeItem(legend)
+        '''
+        scene = self.legend_box.scene()
+        scene.removeItem(self.legend_box)
+        self.legend_box = None
 
     def set_graph_style(self, graphstyle):
         '''
@@ -256,18 +266,28 @@ class KiwiPlot(pg.PlotWidget):
         self._background.setRect(self.plot_item.mapRectFromItem(view_box, view_box.rect()))
 
 
-    def plot(self, x, y, color=None, linewidth=None, **kargs):
-
-        if color is None:
-            color = next(self.linecolor_sequence)
+    def plot(self, *args, color=None, linewidth=None, **kargs):
+        '''
+        Parameters:
+        *args - x,y values for plotting
+        '''
         if linewidth is None:
             linewidth = self.linewidth
 
+        if len(args)%2:
+            raise Exception('Number of arguments for plot() incorrect')
+        for x, y in zip(*[iter(args)]*2): #iterate two items at a time
+            if color is None: #automatically get next color in sequence
+                color = next(self.linecolor_sequence)
+                pen = pg.functions.mkPen({'color': color, 'width': linewidth})
+                color = None
+            else:
+                pen = pg.functions.mkPen({'color': color, 'width': linewidth})
+            self.plot_item.plot(x, y, pen=pen, **kargs)
+
         #TODO: Add try except
-        pen = pg.functions.mkPen({'color': color, 'width': linewidth})
-        curve = self.plot_item.plot(x, y, pen=pen, **kargs)
-        # self.viewbox.initZoomStack() #reset zoom stack
-        return curve
+        # curve = self.plot_item.plot(x, y, pen=pen, **kargs)
+        # return curve
 
 
     def update_curve(self, index, x, y):
@@ -277,32 +297,30 @@ class KiwiPlot(pg.PlotWidget):
             raise Exception(f'Could not update curve with index {index}')
 
 
-    def add_cursor(self, name=None, type='v'):
+    def cursor_on(self, name=None, type='v'):
+        '''
+        Adds a cursor
+        '''
         mypen = pg.functions.mkPen({'color': self.graphstyle['cursor'], 'width': plotstyle.CURSORWIDTH})  #white
         cursor = CursorLine(angle=90, movable=True, pen=mypen, name=name, parentWidget=self) #http://www.pyqtgraph.org/downloads/0.10.0/pyqtgraph-0.10.0-deb/pyqtgraph-0.10.0/examples/crosshair.py
         # labelOpts={'position':0.97, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True} #top
         labelOpts={'position':0.03, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True} #bottom
-        cursor.set_label('1', labelOpts)
-        self.cursor_list.append(cursor)
+        # cursor.set_label('1', labelOpts) #cursor label is in bottom left
+        # self.cursor_list.append(cursor)
         cursor.show() #add cursor and cursor dots to self.plot_item
-        print('Cursor added')
+        logger.debug('Cursor added')
+        self.cursor = cursor 
 
         #This works - The label itself is a TextItem
         # inf1 = pg.InfiniteLine(movable=True, angle=90, pen=mypen, label='x={value:0.2f}', 
         #                labelOpts={'position':0.1, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True})
         # self.plot_item.addItem(inf1)
-        
     
-    def hide_cursor(self):
-        '''
-        Delete cursor line and dots.
-        This means if a line is added to the plot, you can show the cursor again and the new line will be detected.
-        '''
-        pass
-        #self.plot_item.removeItem(self.cursor)
-        #remove cursor dots
-        #self.cursor = None
-
+        
+    def cursor_off(self):
+        self.cursor.hide()
+        self.cursor = None
+    
     def isCursorOff(self):
         return self.cursor is None
     
