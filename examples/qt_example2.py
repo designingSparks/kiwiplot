@@ -12,8 +12,6 @@ def get_bessel_data(x):
     y2 = spl.jv(1,x)
     y3 = spl.jv(2,x)
     y4 = spl.jv(3,x)
-    y5 = spl.jv(5,x)
-    y6 = spl.jv(6,x)
     return y1, y2, y3, y4
 
 if __name__ == '__main__':
@@ -21,12 +19,16 @@ if __name__ == '__main__':
     win = KiwiWindow()
     fig1 = win.add_plot()
     fig2 = win.add_plot()
+    fig3 = win.add_plot()
     fig2.link_x(fig1)
+    fig3.link_x(fig1)
     t = np.linspace(0,20,100)
     y1, y2, y3, y4 = get_bessel_data(t)
     fig1.plot(t,y1,t,y2,t,y3,t,y4)
     fig2.plot(t,2*y1,t,2*y2,t,2*y3,t,2*y4)
+    fig3.plot(t,3*y1,t,3*y2,t,3*y3,t,3*y4)
     fig1.grid(True)
     fig2.grid(True)
+    fig3.grid(True)
     win.initZoomStack()
     sys.exit(app.exec_())

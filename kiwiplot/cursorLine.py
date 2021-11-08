@@ -124,7 +124,7 @@ class CursorLine(GraphicsObject):
         self.isDisplayed = False 
         self.isPressed = False
         self.cursor_dots = list() #store dots that show the intersection of the cursor and graph
-        self.sigPositionChanged.connect(self.update_cursor)
+        # self.sigPositionChanged.connect(self.update_cursor)
 
 
     def set_label(self, label, labelOpts):
@@ -186,8 +186,8 @@ class CursorLine(GraphicsObject):
             self.cursor_dots = list()
 
 
-    @Slot(object)
-    def update_cursor(self, line):
+    # @Slot(object)
+    def update_cursor_dots(self):
         '''
         Called when the cursor was moved. It updates the cursor dot to the intersection point of the cursor and the curve.
         It also emits the cursorDataSignal signal, which contains the x, y coordinates of the new intersection points.
@@ -195,10 +195,11 @@ class CursorLine(GraphicsObject):
         line - pyqtgraph InfiniteLine type
         '''
         pw = self.parentWidget
-        xpos = line.x()
+        # xpos = line.x()
+        xpos = self.p[0]
         xlist = list() #Data to emit
         ylist = list()
-        # logger.debug('Updating cursor position')
+        # logger.debug('Updating cursor dots')
 
         #Update cursor dots
         for i, curve in enumerate(pw.plot_item.curves):
@@ -215,8 +216,9 @@ class CursorLine(GraphicsObject):
                 xlist.append(xval)
                 ylist.append(yval)
                 self.cursor_dots[i].setData([xval], [yval])
+        return xlist, ylist
 
-        self.cursorDataSignal.emit((xlist, ylist), self)
+        # self.cursorDataSignal.emit((xlist, ylist), self)
 
 
     def setXDataLimit(self, xlim):
@@ -336,6 +338,13 @@ class CursorLine(GraphicsObject):
         self.update()
 
 
+    def forceDataSignal(self):
+        '''
+        Hack to ensure the legend box is initialized correctly
+        '''
+        xlist, ylist = self.update_cursor_dots()
+        self.cursorDataSignal.emit((xlist, ylist), self)
+
     def setPos(self, pos, emitSignal=True):
 
         if isinstance(pos, (list, tuple, np.ndarray)) and not np.ndim(pos) == 0:
@@ -364,10 +373,13 @@ class CursorLine(GraphicsObject):
 
         if self.p != newPos:
             self.p = newPos
+            xlist, ylist = self.update_cursor_dots()
             self.viewTransformChanged()
             GraphicsObject.setPos(self, Point(self.p))
-            if emitSignal:
-                self.sigPositionChanged.emit(self)
+
+            # if emitSignal:
+            self.sigPositionChanged.emit(self)  
+            self.cursorDataSignal.emit((xlist, ylist), self)
 
     def getXPos(self):
         return self.p[0]

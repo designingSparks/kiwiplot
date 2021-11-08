@@ -5,8 +5,11 @@ import sys
 from kiwiplot import KiwiPlot, ZoomStack
 from kiwiplot.qtWrapper import *
 from kiwiplot.constants import IMAGE_DIR, ZOOM_MODE
+from .klog import get_logger
+logger = get_logger('kiwiplot.' + __name__)
 
 LAYOUTS = ['vertical', 'v', 'horizontal', 'h']
+LINK_CURSORS = True
 
 class KiwiWindow(QMainWindow):
 
@@ -129,16 +132,18 @@ class KiwiWindow(QMainWindow):
         if show:
             logger.debug('Showing cursor')
             for plot in self.plot_list:
+                plot.legend() #show legend
                 plot.cursor_on()
                 plot.cursor.blockSignals(True)
                 plot.cursor.show()
+                plot.cursor.cursorDataSignal.connect(self.update_cursors) #works for one cursor
                 self.cursor_list.append(plot.cursor)
-                plot.cursor.sigPositionChanged.connect(self.update_cursor_pos)
-                plot.cursor.cursorDataSignal.connect(self.update_legend)
-                plot.legend() #show legend
+                # plot.cursor.sigPositionChanged.connect(self.update_cursor_pos)
+                # plot.cursor.cursorDataSignal.connect(self.update_legend_text) #works for one cursor
             for plot in self.plot_list:
                 plot.cursor.blockSignals(False)
-            # for plot in self.plot_list:
+                plot.cursor.forceDataSignal()
+
         else:
             logger.debug('Hiding cursor')
             for plot in self.plot_list:
@@ -147,30 +152,33 @@ class KiwiWindow(QMainWindow):
             self.cursor_list = list()
 
             
-    @Slot(object)
-    def update_cursor_pos(self, cursor):
+    def update_cursors(self, data, cursor):
         '''
         Slot that is called when a cursor in self.cursor_list was moved.
         The position of all other cursors is updated.
         '''
+        x, y = data
         idx = self.cursor_list.index(cursor) #get the cursor that caused the movement
-        logger.debug('update_cursor_pos: {}'.format(idx))
+        # logger.debug('update_cursor_pos: {}'.format(idx))
         x = cursor.getXPos()
-        #Update positions of cursors that didn't generate the event
-        cursorsToUpdate = self.cursor_list.copy()
-        cursorsToUpdate.pop(idx)
-        for c in cursorsToUpdate:
-            c.setPos(x)
+        self.update_legend_text(data, cursor)
+
+        #If cursors are linked, update the other cursors
+        if LINK_CURSORS:
+            cursorsToUpdate = self.cursor_list.copy()
+            cursorsToUpdate.pop(idx)
+            for c in cursorsToUpdate:
+                c.setPos(x) #emits a signal
 
 
-    @Slot(object)
-    def update_legend(self, data, cursor):
+    # @Slot(object)
+    def update_legend_text(self, data, cursor):
         '''
         '''
         x, y = data
         idx = self.cursor_list.index(cursor)
-        text = 'x = {:.3f} ms, idx: {}'.format(x[0]*1000, idx)
-        logger.debug(text)
+        # text = 'x = {:.3f} ms, idx: {}'.format(x[0]*1000, idx)
+        # logger.debug(text)
         plot = self.plot_list[idx] #get kiwiplot to update
         
         legend_labels = list()
