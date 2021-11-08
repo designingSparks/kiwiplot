@@ -130,10 +130,15 @@ class KiwiWindow(QMainWindow):
             logger.debug('Showing cursor')
             for plot in self.plot_list:
                 plot.cursor_on()
+                plot.cursor.blockSignals(True)
+                plot.cursor.show()
+                self.cursor_list.append(plot.cursor)
                 plot.cursor.sigPositionChanged.connect(self.update_cursor_pos)
                 plot.cursor.cursorDataSignal.connect(self.update_legend)
-                self.cursor_list.append(plot.cursor)
                 plot.legend() #show legend
+            for plot in self.plot_list:
+                plot.cursor.blockSignals(False)
+            # for plot in self.plot_list:
         else:
             logger.debug('Hiding cursor')
             for plot in self.plot_list:
@@ -149,7 +154,7 @@ class KiwiWindow(QMainWindow):
         The position of all other cursors is updated.
         '''
         idx = self.cursor_list.index(cursor) #get the cursor that caused the movement
-        # logger.debug('Cursor event received: {}'.format(idx))
+        logger.debug('update_cursor_pos: {}'.format(idx))
         x = cursor.getXPos()
         #Update positions of cursors that didn't generate the event
         cursorsToUpdate = self.cursor_list.copy()
@@ -164,8 +169,8 @@ class KiwiWindow(QMainWindow):
         '''
         x, y = data
         idx = self.cursor_list.index(cursor)
-        # text = 'x = {:.3f} ms, idx: {}'.format(x[0]*1000, idx)
-        # logger.debug(text)
+        text = 'x = {:.3f} ms, idx: {}'.format(x[0]*1000, idx)
+        logger.debug(text)
         plot = self.plot_list[idx] #get kiwiplot to update
         
         legend_labels = list()

@@ -153,9 +153,9 @@ class CursorLine(GraphicsObject):
         # xval = curve.xData[idx]
         left = pw.viewbox.viewRange()[0][0]
         right = pw.viewbox.viewRange()[0][1]
-        mid = np.average([left, right])
-        idx = (np.abs(curve.xData - mid)).argmin()
-        xval = curve.xData[idx]
+        xmid = np.average([left, right])
+        # idx = (np.abs(curve.xData - mid)).argmin()
+        # xval = curve.xData[idx]
         self.isDisplayed = True
 
         self.setXDataLimit([curve.xData[0], curve.xData[-1]])
@@ -166,14 +166,14 @@ class CursorLine(GraphicsObject):
             pen = curve.opts['pen']
             cursor_dot = ScatterPlotItem(size=plotstyle.CURSORDOTSIZE, pen=pen, brush=pen.color())
             self.cursor_dots.append(cursor_dot)
-
-            #Show the cursor dots
-            yval = curve.yData[idx] #find_nearest(curve.xData, xval)
             pw.plot_item.addItem(cursor_dot, ignoreBounds=True)
-            cursor_dot.setData([xval], [yval])
             pw.plot_item.curves.pop() #Don't store the cursor dots in the curves list as these are stored in self.cursor_dots
 
-        self.setPos(Point(xval,0))
+            #Show the cursor dots
+            # yval = curve.yData[idx] #find_nearest(curve.xData, xval)
+            # cursor_dot.setData([xval], [yval])
+
+        self.setPos(Point(xmid,0))
 
 
     def hide(self):
@@ -335,7 +335,8 @@ class CursorLine(GraphicsObject):
         self.setRotation(self.angle)
         self.update()
 
-    def setPos(self, pos):
+
+    def setPos(self, pos, emitSignal=True):
 
         if isinstance(pos, (list, tuple, np.ndarray)) and not np.ndim(pos) == 0:
             newPos = list(pos)
@@ -365,7 +366,8 @@ class CursorLine(GraphicsObject):
             self.p = newPos
             self.viewTransformChanged()
             GraphicsObject.setPos(self, Point(self.p))
-            self.sigPositionChanged.emit(self)
+            if emitSignal:
+                self.sigPositionChanged.emit(self)
 
     def getXPos(self):
         return self.p[0]

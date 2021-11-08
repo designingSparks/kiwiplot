@@ -307,7 +307,7 @@ class KiwiPlot(pg.PlotWidget):
         labelOpts={'position':0.03, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True} #bottom
         # cursor.set_label('1', labelOpts) #cursor label is in bottom left
         # self.cursor_list.append(cursor)
-        cursor.show() #add cursor and cursor dots to self.plot_item
+        # cursor.show() #add cursor and cursor dots to self.plot_item
         logger.debug('Cursor added')
         self.cursor = cursor 
 
