@@ -269,6 +269,7 @@ class KiwiPlot(pg.PlotWidget):
     def plot(self, *args, color=None, linewidth=None, **kargs):
         '''
         Parameters:
+        linewidth - set the width of the particular curve. If unspecified, the default linewidth is used.
         *args - x,y values for plotting
         '''
         if linewidth is None:
@@ -399,6 +400,13 @@ class KiwiPlot(pg.PlotWidget):
         if self.legend_box is not None:
             logger.debug('Adjusting legend offset')
             self.legend_box.setOffset([-LEGEND_OFFSET, LEGEND_OFFSET+TITLE_HEIGHT])
+
+
+    def set_linewidth(self, width):
+        '''
+        Set the default linewidth for all curves drawn on the plot.
+        '''
+        self.linewidth = width
 
     # def enable_legend(self, xpos, ypos, padding=10):
     #     '''
