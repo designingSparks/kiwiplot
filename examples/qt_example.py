@@ -78,14 +78,14 @@ class MainWindow(QMainWindow):
         self.plotwidget1.set_ylabel('Magnitude')
         self.plotwidget1.legend()
         self.plotwidget1.set_title('Graph 1')
-        self.plotwidget1.add_cursor()
+        self.plotwidget1.cursor_on()
 
         # self.plotwidget2.set_linecolors(plotstyle.palette_2)
         for i in range(1, 6):
             self.plotwidget2.plot(t,y1*i)
         self.plotwidget2.grid()
         self.plotwidget2.legend(['y1','y2','y3','y4','y5']) 
-        self.plotwidget2.add_cursor()
+        self.plotwidget2.cursor_on()
     
     @Slot(object)
     def process_cursor_data(self, data):
