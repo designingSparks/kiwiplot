@@ -15,7 +15,7 @@ def get_bessel_data(x):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    win = KiwiWindow()
+    win = KiwiWindow(title='Kiwi window example')
     fig1 = win.add_plot()
     fig2 = win.add_plot()
     # fig3 = win.add_plot()

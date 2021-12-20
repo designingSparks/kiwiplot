@@ -13,9 +13,9 @@ LINK_CURSORS = True
 
 class KiwiWindow(QMainWindow):
 
-    def __init__(self, layout='vertical', statusBar=False):
+    def __init__(self, layout='vertical', title='Kiwi Window', statusBar=False):
         super(KiwiWindow, self).__init__()
-        self.setWindowTitle('Kiwiplot')
+        self.setWindowTitle(title)
         icon_path = os.path.join(IMAGE_DIR, 'kiwi_small.png')
         self.setWindowIcon(QIcon(icon_path))
         self.setStyleSheet('QToolBar{spacing:5px;};') #QStatusBar.item {border: none;}
