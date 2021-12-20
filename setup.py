@@ -16,9 +16,11 @@ setup(
     description='Fast beautiful plots using Qt',
     long_description=readme + '\n\n' + changelog,
     packages=find_packages(),
-    url='tbd', # Homepage.
+    include_package_data=True,
+    package_data={__title__: ['images/*.png']},
+    # url='tbd', # Homepage.
     author='Dr. John',
-    author_email='tbd',
+    # author_email='tbd',
     license=__license__,
     python_requires='>=3.6',
 )

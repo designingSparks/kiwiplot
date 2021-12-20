@@ -11,3 +11,5 @@ examples/data_streaming/__pycache__/
 docs/
 prettyplot.egg-info/SOURCES.txt
 prettyplot/__pycache__
+dist/
+kiwiplot_examples/data_streaming/__pycache__/

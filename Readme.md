@@ -103,6 +103,15 @@ fig.set_title('Sine Wave')
 fig1.setWindowTitle('Kiwiplot')
 ```
 
+**KiwiWindow example in IPython**
+```python
+%gui qt 
+from kiwiwindow import KiwiWindow
+win = KiwiWindow()
+
+```
+
+
 More information about the IPython (Jupyter) GUI event loop can be found [here](https://ipython.readthedocs.io/en/stable/config/eventloops.html). In general you will need to test your Python installation to see if the command `%gui qt` is necessary.
 
 A discussion about integration of Jupyterlab with PyQtGraph is [here](https://github.com/pyqtgraph/pyqtgraph/issues/1963).
