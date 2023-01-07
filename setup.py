@@ -1,3 +1,9 @@
+'''
+References:
+https://docs.python.org/3/distutils/setupscript.html#distutils-installing-package-data
+https://stackoverflow.com/questions/24347450/how-do-you-add-additional-files-to-a-wheel
+https://stackoverflow.com/questions/61624018/include-extra-file-in-a-python-package-using-setuptools
+'''
 from setuptools import setup, find_packages  # Always prefer setuptools over distutils
 
 __title__ = 'kiwiplot'
@@ -17,7 +23,8 @@ setup(
     long_description=readme + '\n\n' + changelog,
     packages=find_packages(),
     include_package_data=True,
-    package_data={__title__: ['images/*.png']},
+    package_data={__title__: ['images/*.png', '../kiwiplot_examples/*.py']},
+    #data_files=[('examples', ['../kiwplot_examples/b1.gif', 'bm/b2.gif']), #another option for including examples
     # url='tbd', # Homepage.
     author='Dr. John',
     # author_email='tbd',

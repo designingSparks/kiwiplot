@@ -133,3 +133,14 @@ A discussion about integration of Jupyterlab with PyQtGraph is [here](https://gi
 >>cd dist
 >>pip install kiwiplot-x.y.z-py3-none-any.whl
 ```
+
+## Known Issues
+
+In data streaming applications or zooming/panning plots, the performance is poor if the line width is larger than 1. This is a limitation of pyqtgraph that is outlined in [this](https://github.com/pyqtgraph/pyqtgraph/issues/533) issue. If the graph appears sluggish try setting the linewidth to 1 using `fig.set_linewidth(1)`. If you want a linewidth greater than 1, you can use OpenGL for rendering. With this option the line rendering will no longer be aliased and the lines will appear grainy. You can configure openGL rendering mode as follows:
+
+```python
+import pyqtgraph as pg
+pg.setConfigOption('useOpenGL', True)
+```
+
+You may need to first install pyopengl as follows: `pip install pyopengl`
