@@ -1487,10 +1487,12 @@ class ViewBox(GraphicsWidget):
             r = QtCore.QRectF(p1, p2)
             r = self.childGroup.mapRectFromParent(r)
         
-        self.rbScaleBox.setPos(r.topLeft()) #QPointF
-        self.rbScaleBox.resetTransform()
-        self.rbScaleBox.scale(r.width(), r.height())
+        #Not working
+        self.rbScaleBox.setPos(r.topLeft())
+        tr = QtGui.QTransform.fromScale(r.width(), r.height())
+        self.rbScaleBox.setTransform(tr)
         self.rbScaleBox.show()
+
 
     def showAxRect(self, ax, **kwargs):
         """Set the visible range to the given rectangle
