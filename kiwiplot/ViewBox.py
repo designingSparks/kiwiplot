@@ -1487,7 +1487,7 @@ class ViewBox(GraphicsWidget):
             r = QtCore.QRectF(p1, p2)
             r = self.childGroup.mapRectFromParent(r)
         
-        #Not working
+        #Working
         self.rbScaleBox.setPos(r.topLeft())
         tr = QtGui.QTransform.fromScale(r.width(), r.height())
         self.rbScaleBox.setTransform(tr)
