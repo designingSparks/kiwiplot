@@ -2,7 +2,7 @@ import os, sys
 import sys
 import numpy as np
 from kiwiplot.qtWrapper import *
-from kiwiplot.candlestickPlot import CandlestickPlot
+from kiwiplot import CandlestickPlot
 
 
 data = [  ## fields are (time, open, close, min, max).
@@ -21,4 +21,4 @@ if __name__ == '__main__':
     fig1.setWindowTitle('Candlestick example')
     fig1.plot(data)
     fig1.grid(False, True)
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

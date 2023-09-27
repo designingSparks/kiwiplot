@@ -6,12 +6,18 @@ import os
 from .klog import *
 logger = logging.getLogger('kiwiplot.' + __name__) 
 
-api_list = ['PYSIDE2', 'PYQT5']
+api_list = ['PYSIDE6', 'PYSIDE2', 'PYQT5']
 
 
 if 'QT_API' in os.environ:
     api = os.environ['QT_API'].upper()
     if api in api_list:
+        if api == 'PYSIDE6':
+            from PySide6.QtCore import *
+            from PySide6.QtGui import *
+            from PySide6.QtWidgets import *
+            print('Qt backend set to PySide6.')
+
         if api == 'PYSIDE2':
             from PySide2.QtCore import *
             from PySide2.QtGui import *
@@ -30,13 +36,13 @@ else:
     print('Qt API not defined. Attempting to detect Qt backend automatically.')
     api = None
     try:
-        from PySide2.QtCore import *
-        from PySide2.QtGui import *
-        from PySide2.QtWidgets import *
-        os.environ['QT_API'] = 'pyside2'
-        logger.debug("Setting os.environ['QT_API'] to 'PYSIDE2'.")
+        from PySide6.QtCore import *
+        from PySide6.QtGui import *
+        from PySide6.QtWidgets import *
+        os.environ['QT_API'] = 'pyside6'
+        logger.debug("Setting os.environ['QT_API'] to 'PYSIDE6'.")
     except ImportError as e:
-        logger.debug('Could not import PySide2.')
+        logger.debug('Could not import PySide6.')
 
     if 'QT_API' not in os.environ:
         try:

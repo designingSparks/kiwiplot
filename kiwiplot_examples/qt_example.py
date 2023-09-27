@@ -7,7 +7,8 @@ from kiwiplot import KiwiPlot, plotstyle
 from kiwiplot.qtWrapper import *
 import pyqtgraph as pg #must come after importing kiwiplot.qt
 # pg.setConfigOptions(useOpenGL=True) #works but anitaliasing stops working
-from kiwiplot.ViewBox import ViewBox
+from pyqtgraph.graphicsItems.ViewBox import ViewBox
+# from kiwiplot.ViewBox import ViewBox #js
 from kiwiplot.zoom_stack import ZoomStack
 _this_file = os.path.realpath(sys.argv[0])
 BASEDIR = os.path.dirname(_this_file)
@@ -46,18 +47,22 @@ class MainWindow(QMainWindow):
         self.createActions()
         self.createToolBar()
 
-        #Initialize zoom stack and back/forward icons
-        self.zoom_stack = ZoomStack([self.plotwidget1, self.plotwidget2])
-        self.zoom_stack.link_toolbar_actions(
-            self.backAction,
-            self.forwardAction,
-            self.zoomHomeAction,
-            self.zoomFreeAction,
-            self.zoomConstrainedAction
-        )
+        #Initialize zoom stack and back/forward icons.
+        #TODO: Need modified zoom stack
+        # self.zoom_stack = ZoomStack([self.plotwidget1, self.plotwidget2])
+        # self.zoom_stack.link_toolbar_actions(
+        #     self.backAction,
+        #     self.forwardAction,
+        #     self.zoomHomeAction,
+        #     self.zoomFreeAction,
+        #     self.zoomConstrainedAction
+        # )
         self.show()
         self.plot_data()
-        self.zoom_stack.save_home_view() #Must be called after creating the plots
+        
+        #TODO: Need modified zoom stack
+        # self.zoom_stack.save_home_view() #Must be called after creating the plots
+
 
 
     def plot_data(self):
@@ -110,7 +115,7 @@ class MainWindow(QMainWindow):
         self.zoomConstrainedAction.setChecked(True) #default zoom mode
         icon = QIcon(os.path.join(IMAGE_DIR, 'data_cursor.png'))
         self.dataCursorAction = QAction(icon, "Data cursor", self, shortcut="Ctrl+D",
-                 triggered=self.default_action)
+                 triggered=self.show_cursor)
         self.dataCursorAction.setCheckable(True)
         iconfile = QIcon(os.path.join(IMAGE_DIR, 'settings_icon.png'))
         self.settingsAction = QAction(iconfile, "&Settings", self, shortcut="Ctrl+,",
@@ -144,10 +149,10 @@ class MainWindow(QMainWindow):
         show = self.dataCursorAction.isChecked()
         if show:
             logger.debug('Showing cursor')
-            # self.plotwidget.show_cursor()
+            self.plotwidget1.cursor_on()
         else:
             logger.debug('Hiding cursor')
-            # self.plotwidget.hide_cursor()
+            self.plotwidget1.cursor_off ()
             self.status_bar.showMessage('')
             
     def default_action(self):

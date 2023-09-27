@@ -9,13 +9,13 @@ import numpy as np
 from .legend_box import LegendBox
 from .cursorLine import CursorLine
 from .ViewBox import ViewBox 
-from kiwiplot.kiwiplot import kiwiplot
+from kiwiplot import KiwiPlot
 from .candlestickItem import CandlestickItem
 from .klog import *
 logger = get_logger(__name__) 
 
 
-class CandlestickPlot(kiwiplot):
+class CandlestickPlot(KiwiPlot):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -23,4 +23,5 @@ class CandlestickPlot(kiwiplot):
 
     def plot(self, data):
         item = CandlestickItem(data, self.graphstyle['candlecolors'])
+        logger.debug('Plotting candlestick')
         self.plotItem.addItem(item)

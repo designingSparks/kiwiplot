@@ -60,7 +60,10 @@ class ChildGroup(ItemGroup):
 
     def itemChange(self, change, value):
         ret = ItemGroup.itemChange(self, change, value)
-        if change == self.ItemChildAddedChange or change == self.ItemChildRemovedChange:
+        if change in [
+            self.GraphicsItemChange.ItemChildAddedChange,
+            self.GraphicsItemChange.ItemChildRemovedChange,
+        ]:
             try:
                 itemsChangedListeners = self.itemsChangedListeners
             except AttributeError:
@@ -70,7 +73,7 @@ class ChildGroup(ItemGroup):
             else:
                 for listener in itemsChangedListeners:
                     listener.itemsChanged()
-        return ret
+        return 
 
 
 class ViewBox(GraphicsWidget):
@@ -189,8 +192,8 @@ class ViewBox(GraphicsWidget):
 
         self.locateGroup = None  ## items displayed when using ViewBox.locate(item)
 
-        self.setFlag(self.ItemClipsChildrenToShape)
-        self.setFlag(self.ItemIsFocusable, True)  ## so we can receive key presses
+        self.setFlag(self.GraphicsItemFlag.ItemClipsChildrenToShape)
+        self.setFlag(self.GraphicsItemFlag.ItemIsFocusable, True)  ## so we can receive key presses
 
         ## childGroup is required so that ViewBox has local coordinates similar to device coordinates.
         ## this is a workaround for a Qt + OpenGL bug that causes improper clipping

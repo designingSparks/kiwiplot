@@ -34,6 +34,7 @@ class ZoomStack(QObject):
         self.vbox_list = list() #viewboxes managed by the zoom stack
         self.stack = list() #the stack itself, stores each zoom state
         self.zoom_pos = 0
+        
         for plot_widget in plot_list:
             # plot_widget.plotItem.vb.sigZoom.connect(self.addToZoomStack)
             plot_widget.plotItem.vb.sigZoom.connect(self.updateZoomStack)

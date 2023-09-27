@@ -30,4 +30,4 @@ if __name__ == '__main__':
     fig2.grid(True)
     # fig3.grid(True)
     win.initZoomStack()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

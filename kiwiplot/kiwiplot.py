@@ -27,7 +27,8 @@ from itertools import cycle
 import numpy as np
 from .legend_box import LegendBox
 from .cursorLine import CursorLine
-from .ViewBox import ViewBox 
+from pyqtgraph.graphicsItems.ViewBox import ViewBox
+# from .ViewBox import ViewBox #js
 from .klog import get_logger
 logger = get_logger('kiwiplot.' + __name__)
 STYLES = ['white', 'grey', 'dark']
@@ -116,13 +117,13 @@ class KiwiPlot(pg.PlotWidget):
             raise ValueError('style must be in: {}'.format(STYLES))
         if style == 'white':
             self.set_graph_style(plotstyle.style_white)
-            self.viewbox.setZoomBoxColor(plotstyle.style_white['zoombox'])
+            # self.viewbox.setZoomBoxColor(plotstyle.style_white['zoombox'])
         elif style == 'grey':
             self.set_graph_style(plotstyle.style_grey)
-            self.viewbox.setZoomBoxColor(plotstyle.style_grey['zoombox'])
+            # self.viewbox.setZoomBoxColor(plotstyle.style_grey['zoombox'])
         elif style == 'dark':
             self.set_graph_style(plotstyle.style_dark)
-            self.viewbox.setZoomBoxColor(plotstyle.style_dark['zoombox'])
+            # self.viewbox.setZoomBoxColor(plotstyle.style_dark['zoombox'])
 
 
     def grid(self, *args):
@@ -308,7 +309,7 @@ class KiwiPlot(pg.PlotWidget):
         labelOpts={'position':0.03, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True} #bottom
         # cursor.set_label('1', labelOpts) #cursor label is in bottom left
         # self.cursor_list.append(cursor)
-        # cursor.show() #add cursor and cursor dots to self.plot_item
+        cursor.show() #add cursor and cursor dots to self.plot_item
         logger.debug('Cursor added')
         self.cursor = cursor 
 
@@ -464,7 +465,7 @@ class KiwiPlot(pg.PlotWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    fig = kiwiplot()
+    fig = KiwiPlot()
     import numpy as np
     t = np.linspace(0, 20e-3, 100)
     y1 = 2*np.sin(2*np.pi*50*t)

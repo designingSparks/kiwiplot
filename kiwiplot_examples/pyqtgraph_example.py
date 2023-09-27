@@ -1,9 +1,9 @@
 import sys
 import pyqtgraph as pg
 import numpy as np
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
 
 if __name__ == '__main__':
     app = pg.mkQApp("Vanilla pyqtgraph")
