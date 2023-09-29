@@ -26,9 +26,10 @@ pg.setConfigOption('antialias', True) #Plotted curve looks nicer
 from itertools import cycle
 import numpy as np
 from .legend_box import LegendBox
-from .cursorLine import CursorLine
-from pyqtgraph.graphicsItems.ViewBox import ViewBox
-# from .ViewBox import ViewBox #js
+# from .cursorLine import CursorLine
+from .cursorLine2 import CursorLine2 as CursorLine
+# from pyqtgraph.graphicsItems.ViewBox import ViewBox
+from .ViewBox2 import ViewBox2 #js
 from .klog import get_logger
 logger = get_logger('kiwiplot.' + __name__)
 STYLES = ['white', 'grey', 'dark']
@@ -65,7 +66,7 @@ class KiwiPlot(pg.PlotWidget):
         style - 'white', 'grey', 'dark'
         '''
         kwargs['background'] = None
-        super().__init__(viewBox = ViewBox(), *args, **kwargs) #use custom viewbox
+        super().__init__(viewBox = ViewBox2(), *args, **kwargs) #use custom viewbox
         self.plot_item = self.getPlotItem()
         self.viewbox = self.plot_item.getViewBox()
         self.viewbox.sigResized.connect(self._resized_view_box)

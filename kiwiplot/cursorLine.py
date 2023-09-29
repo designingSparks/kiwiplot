@@ -88,6 +88,7 @@ class CursorLine(GraphicsObject):
         if pos is None:
             pos = Point(0,0)
         self.setPos(pos)
+        # self.setZValue(1e6)
 
         if pen is None:
             pen = (200, 200, 100)
@@ -464,7 +465,7 @@ class CursorLine(GraphicsObject):
         return self._boundingRect
 
     def paint(self, p, *args):
-        p.setRenderHint(p.Antialiasing)
+        # p.setRenderHint(p.Antialiasing)
         
         left, right = self._endPoints
         pen = self.currentPen
