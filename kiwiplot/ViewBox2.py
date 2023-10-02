@@ -30,7 +30,6 @@ class ViewBox2(ViewBox):
     def __init__(self, parent=None, border=None, lockAspect=False, enableMouse=True, invertY=False, enableMenu=True, name=None, invertX=False, defaultPadding=0.02):
         super().__init__(parent, border, lockAspect, enableMouse, invertY, enableMenu, name, invertX, defaultPadding)
         self._zoomMode = ZOOM_MODE.xZoom #default zoom mode
-        self.setZoomBoxColor(zoom_blue)
         
     def setZoomBoxColor(self, color):
         self.rbScaleBox.setPen(fn.mkPen(color[:3], width=1)) #outer border of zoom box is solid (ignore alpha value)

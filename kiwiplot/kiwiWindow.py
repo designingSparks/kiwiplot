@@ -45,7 +45,7 @@ class KiwiWindow(QMainWindow):
         self.setCentralWidget(widget)
         self.createActions()
         self.createToolBar()
-        self.show()
+        # self.show()
         
 
     def initZoomStack(self):

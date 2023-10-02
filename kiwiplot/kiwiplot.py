@@ -118,13 +118,10 @@ class KiwiPlot(pg.PlotWidget):
             raise ValueError('style must be in: {}'.format(STYLES))
         if style == 'white':
             self.set_graph_style(plotstyle.style_white)
-            # self.viewbox.setZoomBoxColor(plotstyle.style_white['zoombox'])
         elif style == 'grey':
             self.set_graph_style(plotstyle.style_grey)
-            # self.viewbox.setZoomBoxColor(plotstyle.style_grey['zoombox'])
         elif style == 'dark':
             self.set_graph_style(plotstyle.style_dark)
-            # self.viewbox.setZoomBoxColor(plotstyle.style_dark['zoombox'])
 
 
     def grid(self, *args):
@@ -216,6 +213,9 @@ class KiwiPlot(pg.PlotWidget):
         background_color = QColor(self.graphstyle['background'])
         self._background.setBrush(background_color)
         self._background.setRect(self.plot_item.mapRectFromItem(self.viewbox, self.viewbox.rect())) #manual resize to show background correctly
+
+        #Zoombox
+        self.viewbox.setZoomBoxColor(self.graphstyle['zoombox'])
 
         #Needed to ensure y axis are aligned
         self.plot_item.getAxis('left').setWidth(plotstyle.YAXIS_WIDTH) 
