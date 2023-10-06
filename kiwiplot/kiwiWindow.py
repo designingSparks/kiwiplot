@@ -13,7 +13,7 @@ LINK_CURSORS = True
 
 class KiwiWindow(QMainWindow):
 
-    def __init__(self, layout='vertical', title='Kiwi Window', statusBar=False):
+    def __init__(self, layout='vertical', title='Kiwi Window', statusBar=False, show=True):
         super(KiwiWindow, self).__init__()
         self.setWindowTitle(title)
         icon_path = os.path.join(IMAGE_DIR, 'kiwi_small.png')
@@ -45,7 +45,8 @@ class KiwiWindow(QMainWindow):
         self.setCentralWidget(widget)
         self.createActions()
         self.createToolBar()
-        # self.show()
+        if show:
+            self.show()
         
 
     def initZoomStack(self):

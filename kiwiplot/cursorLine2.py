@@ -72,6 +72,16 @@ class CursorLine2(InfiniteLine):
         self.setPos(Point(xmid,0))
 
 
+    def hide(self):
+        '''
+        Remove cursorLine and dots from parent plot item.
+        '''
+        self.parentWidget.plot_item.removeItem(self)
+        for cursor_dot in self.cursor_dots:
+            self.parentWidget.removeItem(cursor_dot)
+            self.cursor_dots = list()
+
+            
     def setXDataLimit(self, xlim):
         '''
         xlim a list of [xmin, xmax]

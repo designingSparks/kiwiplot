@@ -78,7 +78,7 @@ class ZoomStack(QObject):
         if last_ax != home_state:
             logger.debug('Adding home view to stack')
             self.recall_view(home_state)
-            self.addToZoomStack(home_state)
+            self.updateZoomStack()
         
 
     def recall_view(self, zoom_state):

@@ -17,8 +17,7 @@ if 'QT_API' in os.environ:
             from PySide6.QtGui import *
             from PySide6.QtWidgets import *
             print('Qt backend set to PySide6.')
-
-        if api == 'PYSIDE2':
+        elif api == 'PYSIDE2':
             from PySide2.QtCore import *
             from PySide2.QtGui import *
             from PySide2.QtWidgets import *
