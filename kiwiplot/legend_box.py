@@ -47,7 +47,7 @@ class LegendBox(LegendItem):
         p.drawPath(path)
         # p.drawRect(self.boundingRect())
 
-    def addItem(self, item, name):
+    def addItem(self, item, text1):
         """
         Add a new entry to the legend.
 
@@ -60,7 +60,8 @@ class LegendBox(LegendItem):
         title           The title to display for this item. Simple HTML allowed.
         ==============  ========================================================
         """
-        label = LabelItem(name, color=(0,0,0), justify='left')
+        label = LabelItem(text1, color=(0,0,0), justify='right')
+        # label2 = LabelItem(text2, color=(0,0,0), justify='right')
         if isinstance(item, ItemSample):
             sample = item
         else:
@@ -69,15 +70,47 @@ class LegendBox(LegendItem):
         self.items.append((sample, label))
         self.layout.addItem(sample, row, 0)
         self.layout.addItem(label, row, 1)
+        # self.layout.addItem(label2, row, 2)
+        self.updateSize()
+
+
+    def extend_label(self):
+        '''
+        Appends a label to each row of the legend box. Useful for displaying values that change with the cursor.
+        '''
+        for i, item_tuple in enumerate(self.items):
+            label = LabelItem('', color=(0,0,0), justify='right')
+            self.layout.addItem(label, i, 2)
+            # item_tuple =  #extend the tuple
+            self.items[i] = item_tuple + (label,)
+        self.updateSize()
+
+
+    def reduce_label(self):
+        '''
+        Removes the last label from each row of the legend box.
+        '''
+        for i, item_tuple in enumerate(self.items):
+            item = item_tuple[-1]
+            self.layout.removeItem(item)
+            item.deleteLater()
+            self.items[i] = item_tuple[:-1]
+
         self.updateSize()
 
     
-    def update_legend_text(self, labels: list):
+    def update_legend_text(self, labels: list, pos):
         '''
         TODO: If labels[n] is None, don't update the label
         labels: list of the new text labels. It must have the same length as the number of legend box items.
+        pos: label position. 0 = first label, 1 = second label
         '''
-        for i, item in enumerate(self.items): #each item is a tuple of len 2
-            for single_item in item:
-                if isinstance(single_item, graphicsItems.LabelItem.LabelItem):
-                    single_item.setText(labels[i]) #, **plotstyle.legend_label_style) 
+        for i, items in enumerate(self.items): #each item is a tuple of len 2
+            single_item = items[pos+1] #add 
+            if isinstance(single_item, graphicsItems.LabelItem.LabelItem):
+                single_item.setText(labels[i])
+            
+            # for single_item in item:
+            #     if isinstance(single_item, graphicsItems.LabelItem.LabelItem):
+            #         single_item.setText(labels[i]) #, **plotstyle.legend_label_style) 
+        self.updateSize()
