@@ -3,11 +3,12 @@ Example color palettes:
 http://repec.sowi.unibe.ch/stata/palettes/colors.html#cbrew
 https://chartio.com/learn/charts/how-to-choose-colors-data-visualization/
 '''
+from .qtWrapper import *
 
 LINEWIDTH = 2 #default linewidth
 CURSORWIDTH = 2
 CURSORDOTSIZE = 4
-YAXIS_WIDTH = 35 #allows alignment of y axis in vertically-stacked graphs
+YAXIS_WIDTH = 50 #allows alignment of y axis in vertically-stacked graphs
 TITLE_HEIGHT = 30
 LEGEND_OFFSET = 15 #both x and y
 
@@ -28,15 +29,31 @@ title_style = {'color': 'k', 'size': '12pt', 'font-weight': '500'} #note: use si
 legend_label_style = {'color': 'k', 'size': '8pt'} #, 'bold': True, 'italic': False
 
 fonts = {'axis': 'Roboto', 'axis-tick': 'Roboto', 'title': 'Roboto', 'legend': 'Roboto'}
+AXIS_FONT = QFont("Source Sans Pro", 9) #tick font
 
 #Color palettes for lines 
 palette_1 = ['#1F77B4','#2CA02C','#D62728','#9467BD','#FAA43A'] #standard
 # palette_2 = ['#1F77B4','#2CA02C','#D62728','#9467BD','#f7ce47'] 
 palette_2 = ['#1F77B4','#2CA02C','#D62728','#9467BD','#f7d55b'] 
 palette_3 = ['#00BFC4','#39B600','#ed3012','#E76BF3','#ff7f0e', colors['yellow']] #bright palette used for dark theme
+palette_blue = ['#1a1a1a', '#27344d', '#345082', '#416ab6', '#618ad5', '#91acdf']
+palette_chroma = ['#5ea5c5', '#56ad74', '#98a255', '#c69255', '#e77c8d', '#828996']
 # Reds: 
 # Old: ff5a51
 # Tried: fc2605, f72504 good but too bright
+
+# https://seaborn.pydata.org/tutorial/color_palettes.html
+#pal = sns.color_palette("husl", 8), pal.as_hex()
+palette_chroma2 = [
+#  '#f561dd',
+#  '#a48cf4',
+ '#39a7d0',
+ '#36ada4',
+ '#32b166',
+ '#97a431',
+ '#ce9032',
+'#f77189',
+ ]
 
 #Candlestickpalettes
 cp1 = cp2 = ['#2CA02C','#D62728']

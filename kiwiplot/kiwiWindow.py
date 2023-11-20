@@ -69,6 +69,25 @@ class KiwiWindow(QMainWindow):
         self.plot_list.append(self.plot) #does this create a new reference?
         return self.plot
 
+    # def set_left_margin(self):
+    #     '''Set the width of the left margin of all plots
+    #     Doesn't work as the viewbox gets resize after the plot is created.
+    #     '''
+    #     dlist = list()
+    #     for plot in self.plot_list:
+    #         plot.viewbox.sigResized.disconnect(plot._resized_view_box)
+    #         p = plot.plotItem
+    #         d = p.getAxis('left').width()
+    #         dlist.append(d)
+    #         print(d)
+
+    #     maxd = max(dlist)
+    #     print(maxd)
+    #         # p.getAxis('left').setWidth(dist)
+
+    #     for plot in self.plot_list:
+    #         plot.viewbox.sigResized.connect(plot._resized_view_box)
+
     def get_plot(self):
         '''Return the last plot created'''
         return self.plot
@@ -191,6 +210,7 @@ class KiwiWindow(QMainWindow):
         
     def default_action(self):
         print('Default action')
+        self.set_left_margin(60)
     
     @Slot(object)
     def update_cursor(self, line):

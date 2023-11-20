@@ -141,7 +141,7 @@ class KiwiPlot(pg.PlotWidget):
         self.plot_item.showGrid(x=xGrid, y=yGrid, alpha=1)
 
 
-    def legend(self, legend_list=None):
+    def show_legend(self, legend_list=None):
         '''
         Show the legend box
         TODO: Change to show_legend()
@@ -218,31 +218,57 @@ class KiwiPlot(pg.PlotWidget):
         self.viewbox.setZoomBoxColor(self.graphstyle['zoombox'])
 
         #Needed to ensure y axis are aligned
-        self.plot_item.getAxis('left').setWidth(plotstyle.YAXIS_WIDTH) 
+        # self.plot_item.getAxis('left').setWidth(plotstyle.YAXIS_WIDTH) 
         # self.plot_item.getAxis('left').setWidth(50) 
 
         #Changes the gridline color
         col = QColor(self.graphstyle['grid'])
         axis_pen = QPen(col)
+
+        #TODO: Set the gridLine color for dark to light grey, not black.
         for ax in ('top', 'left', 'right', 'bottom'):
             axis = self.plot_item.getAxis(ax)
             axis.setPen(axis_pen)
 
         #Sets the font and color of the bottom & left axis units otherwise the text has
         #the same color as the gridlines
-        font = QFont("Source Sans Pro", 9) #tick font
-        keys = ['bottom', 'left']
+        # font = QFont("Source Sans Pro", 9) #tick font
+        keys = ['bottom', 'left', 'top', 'right']
+        # keys = ['bottom', 'left', 'top']
         for k in keys:
             axis = self.plot_item.getAxis(k)
-            axis.setTickFont(font)
+            axis.setTickFont(AXIS_FONT)
             axis.setTextPen(self.graphstyle['text']) #sets text color
 
         #Needed to hide the top & right axis border. Otherwise this is rendered in black
-        self.showAxis('top')
-        self.showAxis('right')
-        self.getAxis('top').setStyle(tickLength=0, showValues=False)
-        self.getAxis('right').setStyle(tickLength=0, showValues=False)
+        # self.showAxis('top')
+        # self.showAxis('right')
+        # self.getAxis('top').setStyle(tickLength=0, showValues=False)
+        # self.getAxis('right').setStyle(tickLength=0, showValues=False)
         self.set_linecolors(graphstyle['linecolors'])
+
+
+    def update_axis_style(self):
+        '''
+        This is called to apply the graphstyle presets to the axis in case the user adds custom axis after instantiating a plot
+        The changes are only visible on the displayed axes.
+        '''
+        axis_keys = ['bottom', 'left', 'top', 'right']
+
+              
+        #Set the gridline color
+        col = QColor(self.graphstyle['grid'])
+        axis_pen = QPen(col)
+        for k in axis_keys: # in ('top', 'left', 'right', 'bottom'):
+            axis = self.plot_item.getAxis(k)
+            axis.setPen(axis_pen)
+
+        #Sets the axis tick font and color
+        for k in axis_keys:
+            axis = self.plot_item.getAxis(k)
+            axis.setTickFont(AXIS_FONT)
+            axis.setTextPen(self.graphstyle['text']) #sets text color
+        
 
 
     def set_linecolors(self, palette):
@@ -264,7 +290,13 @@ class KiwiPlot(pg.PlotWidget):
 
     @Slot(object)
     def _resized_view_box(self, view_box):
+        # print('Resized view box: {}'.format(self))
+
+        #How to set the distance of all plots based on the largest width?
         # plot_item = self.getPlotItem()
+        # d = plot_item.getAxis('left').width()
+        # print(d)
+        
         self._background.setRect(self.plot_item.mapRectFromItem(view_box, view_box.rect()))
 
 
@@ -282,6 +314,7 @@ class KiwiPlot(pg.PlotWidget):
         for x, y in zip(*[iter(args)]*2): #iterate two items at a time
             if color is None: #automatically get next color in sequence
                 color = next(self.linecolor_sequence)
+                logger.debug(f'Color: {color}')
                 pen = pg.functions.mkPen({'color': color, 'width': linewidth})
                 color = None
             else:
@@ -362,7 +395,15 @@ class KiwiPlot(pg.PlotWidget):
 
     #     # self.cursorDataSignal.emit((xlist, ylist))
 
-  
+    def set_label(self, axis_key, label, unit=None):
+
+        if axis_key not in ['bottom', 'left', 'top', 'right']:
+            raise Exception('axis_key must be in: {}'.format(['bottom', 'left', 'top', 'right']))
+        
+        axis = self.plot_item.getAxis(axis_key)
+        # axis.label.setFont(QFont('Source Sans Pro'))
+        axis.label.setFont(QFont('Source Sans Pro'))
+        axis.setLabel(label, unit, **plotstyle.axis_label_style)
 
     def set_xlabel(self, label, unit=None):
         #Workaround that allows the font to be set
@@ -462,6 +503,12 @@ class KiwiPlot(pg.PlotWidget):
         plot - an instance of kiwiplot
         '''
         self.plotItem.setXLink(plot.plotItem)
+
+    def autoYRange(self, x_range_start, x_range_end):
+        self.enableAutoRange(axis='y')
+        self.setAutoVisible(y=True)
+
+
 
 
 if __name__ == '__main__':
