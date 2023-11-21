@@ -99,18 +99,21 @@ class LegendBox(LegendItem):
         self.updateSize()
 
     
-    def update_legend_text(self, labels: list, pos):
+    def update_legend_text(self, labels: list, pos=0):
         '''
         TODO: If labels[n] is None, don't update the label
         labels: list of the new text labels. It must have the same length as the number of legend box items.
         pos: label position. 0 = first label, 1 = second label
+        TODO: Check that if pos > 0, then the legend box must have at least 2 labels
         '''
+        n = len(self.items[0])
+        # logger.debug('Number of text labels: %d', n-1)
+
+        if pos >= (n - 1):
+            raise ValueError('pos must be less than %d' % (n-2))
+
         for i, items in enumerate(self.items): #each item is a tuple of len 2
             single_item = items[pos+1] #add 
             if isinstance(single_item, graphicsItems.LabelItem.LabelItem):
-                single_item.setText(labels[i])
-            
-            # for single_item in item:
-            #     if isinstance(single_item, graphicsItems.LabelItem.LabelItem):
-            #         single_item.setText(labels[i]) #, **plotstyle.legend_label_style) 
+                single_item.setText(labels[i]) #**plotstyle.legend_label_style) 
         self.updateSize()

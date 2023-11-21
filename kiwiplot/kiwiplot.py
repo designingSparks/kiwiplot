@@ -184,7 +184,7 @@ class KiwiPlot(pg.PlotWidget):
                 self.legend_box.addItem(curve, name)
             return
         
-    def _hide_legend(self):
+    def hide_legend(self):
         '''
         Hide the legend box
         Ref: legend.scene().removeItem(legend)
@@ -333,15 +333,19 @@ class KiwiPlot(pg.PlotWidget):
             raise Exception(f'Could not update curve with index {index}')
 
 
-    def cursor_on(self, name=None, type='v'):
+    def cursor_on(self, name=None, show_label=False):
         '''
-        Adds a cursor
+        Adds a cursor. A new cursor is created every time this is called. 
+        TODO: Check if deleteLater() is needed
         '''
         mypen = pg.functions.mkPen({'color': self.graphstyle['cursor'], 'width': plotstyle.CURSORWIDTH})  #white
         cursor = CursorLine(angle=90, movable=True, pen=mypen, name=name, parentWidget=self) #http://www.pyqtgraph.org/downloads/0.10.0/pyqtgraph-0.10.0-deb/pyqtgraph-0.10.0/examples/crosshair.py
-        # labelOpts={'position':0.97, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True} #top
-        labelOpts={'position':0.03, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True} #bottom
-        # cursor.set_label('1', labelOpts) #cursor label is in bottom left
+        
+        # if show_label:
+        #     # labelOpts={'position':0.97, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True} #top
+        #     labelOpts={'position':0.03, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True} #bottom
+        #     cursor.set_label('1', labelOpts) #cursor label is in bottom left
+
         # self.cursor_list.append(cursor)
         cursor.show() #add cursor and cursor dots to self.plot_item
         logger.debug('Cursor added')
