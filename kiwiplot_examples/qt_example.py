@@ -81,7 +81,7 @@ class MainWindow(QMainWindow):
 
         self.plotwidget1.set_xlabel('Time (ms)')
         self.plotwidget1.set_ylabel('Magnitude')
-        self.plotwidget1.legend()
+        self.plotwidget1.show_legend()
         self.plotwidget1.set_title('Graph 1')
         self.plotwidget1.cursor_on()
 
@@ -89,7 +89,7 @@ class MainWindow(QMainWindow):
         for i in range(1, 6):
             self.plotwidget2.plot(t,y1*i)
         self.plotwidget2.grid()
-        self.plotwidget2.legend(['y1','y2','y3','y4','y5']) 
+        self.plotwidget2.show_legend(['y1','y2','y3','y4','y5']) 
         self.plotwidget2.cursor_on()
     
     @Slot(object)

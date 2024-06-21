@@ -10,7 +10,7 @@ CURSORWIDTH = 2
 CURSORDOTSIZE = 4
 YAXIS_WIDTH = 50 #allows alignment of y axis in vertically-stacked graphs
 TITLE_HEIGHT = 30
-LEGEND_OFFSET = 15 #both x and y
+LEGEND_OFFSET = 5 #both x and y
 
 #Useful for creating palettes by name
 colors = {
@@ -67,6 +67,8 @@ zoom_green = [0,219,73,64]
 
 
 #Inbuilt graph styles
-style_white = {'background': '#FFFFFF', 'grid': '#c0c0c0', 'text': 'k', 'cursor': '#00ffff', 'linecolors': palette_1, 'candlecolors': cp1, 'zoombox': zoom_blue} 
+style_white = {'background': '#FFFFFF', 'grid': '#c0c0c0', 'text': 'k', 'cursor': '#3d3d3d', 'linecolors': palette_1, 'candlecolors': cp1, 'zoombox': zoom_blue} 
 style_grey = {'background': '#c0c0c0', 'grid': '#f2f2f2', 'text': 'k', 'cursor': '#ffff33', 'linecolors': palette_2, 'candlecolors': cp2, 'zoombox': zoom_blue}
 style_dark = {'background': '#565656', 'grid': 'k', 'text': 'k', 'cursor': '#ffff33', 'linecolors': palette_3, 'candlecolors': cp3, 'zoombox': zoom_blue}
+
+#00ffff

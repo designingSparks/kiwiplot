@@ -152,7 +152,7 @@ class KiwiWindow(QMainWindow):
         if show:
             logger.debug('Showing cursor')
             for plot in self.plot_list:
-                plot.legend() #show legend
+                plot.show_legend() #show legend
                 plot.cursor_on()
                 plot.cursor.blockSignals(True)
                 plot.cursor.show()

@@ -136,25 +136,28 @@ class CursorLine2(InfiniteLine):
     def hoverEvent(self, ev):
         if (not ev.isExit()) and self.movable and ev.acceptDrags(Qt.LeftButton):
             self.setMouseHover(True)
-            self.parentWidget.setCursor(QCursor(Qt.SizeHorCursor))
+            self.parentWidget.setCursor(QCursor(Qt.SizeHorCursor)) #drag left right cursor
         else:
             self.setMouseHover(False)
-            if not self.isPressed:
+            # print('Exit hover event')
+            if not self.isPressed and not self.moving: #change back to normal cursor
                 self.parentWidget.setCursor(QCursor(Qt.ArrowCursor))
 
 
     def mouseDragEvent(self, ev):
         if self.movable and ev.button() == Qt.LeftButton:
-            if ev.isStart():
+            if ev.isStart(): #drag start
                 self.moving = True
                 #Mouse may not be pressed exactly on the cursorline. Maintain the original offset
                 self.cursorOffset = self.pos() - self.mapToParent(ev.buttonDownPos()) 
                 self.startPosition = self.pos()
+                self.parentWidget.setCursor(QCursor(Qt.SizeHorCursor))
             ev.accept()
 
             if not self.moving:
                 return
-
+            
+            # print('Dragging')
             view = self.getViewBox()
             range = view.viewRange() #[[-0.000865195885804833, 0.020865195885804832], [-2.2279788573127783, 2.2279788573127783]]
             xrange = range[0] #x view extents in axis coordinates
@@ -171,7 +174,7 @@ class CursorLine2(InfiniteLine):
             # self.setPos(self.cursorOffset + self.mapToParent(ev.pos())) #original
 
             self.sigDragged.emit(self)
-            if ev.isFinish():
+            if ev.isFinish(): #drag end
                 self.moving = False
                 self.sigPositionChangeFinished.emit(self)
                 self.parentWidget.setCursor(QCursor(Qt.ArrowCursor))

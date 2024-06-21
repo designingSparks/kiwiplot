@@ -42,7 +42,7 @@ class MainWindow(QMainWindow):
         self.plotwidget1.plot(t,y3, name='y3')
         self.plotwidget1.plot(t,y4, name='y4')
         self.plotwidget1.grid()
-        self.plotwidget1.legend()
+        self.plotwidget1.show_legend()
         self.plotwidget1.set_xlabel('Time', 's') #Can also specify the base unit
         self.plotwidget1.set_ylabel('Magnitude')
         self.plotwidget1.set_title('Sine Wave Magnitude')

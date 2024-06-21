@@ -17,6 +17,7 @@ import sys
 # os.environ['QT_API'] = 'PYQT5'
 from .qtWrapper import *
 from pyqtgraph.graphicsItems.PlotDataItem import PlotDataItem
+from pyqtgraph.graphicsItems.GridItem import GridItem
 from . import plotstyle
 import pyqtgraph as pg
 
@@ -132,6 +133,10 @@ class KiwiPlot(pg.PlotWidget):
         args[0] - bool. Enables or disables both x and y grids
         args[0], args[1] - bool. Separately enable/disable x and y grids
         '''
+        # self.grid = GridItem()
+        # self.plot_item.addItem(self.grid)
+
+        # self.grid.setParentItem(self.viewbox)
         xGrid = yGrid = True
         if len(args) == 1:
             xGrid = yGrid = args[0]
@@ -141,14 +146,17 @@ class KiwiPlot(pg.PlotWidget):
         self.plot_item.showGrid(x=xGrid, y=yGrid, alpha=1)
 
 
-    def show_legend(self, legend_list=None):
+    def show_legend(self, legend_list=None, offset=None):
         '''
-        Show the legend box
-        TODO: Change to show_legend()
+        Shows the legend box
         '''
         #offset[0], distance from right hand side of plot. 0=flush, -ve=distance from right
         # offset[1] - offset from top of plot, +ve = distance from top
-        offset=[-LEGEND_OFFSET, LEGEND_OFFSET]
+        if offset is None:
+            offset=[-LEGEND_OFFSET, LEGEND_OFFSET]
+        else:
+            offset = [-offset, offset]
+            
         if self.hasTitle:
             offset[1] += TITLE_HEIGHT
     
@@ -161,9 +169,9 @@ class KiwiPlot(pg.PlotWidget):
         #If no curves exist, use the default palette to define the curves
         #Note that the yaxis width is incorrect until self.plot() has been called
         if len(self.plot_item.curves) == 0:
-            linecolor_cycle = cycle(self.palette)
+            # linecolor_cycle = cycle(self.palette)
             for name in legend_list:
-                pen = pg.functions.mkPen({'color': next(linecolor_cycle), 'width': self.linewidth})
+                pen = pg.functions.mkPen({'color': next(self.linecolor_sequence), 'width': self.linewidth})
                 item = PlotDataItem()
                 item.setPen(pen)
                 self.legend_box.addItem(item, name)
@@ -282,7 +290,7 @@ class KiwiPlot(pg.PlotWidget):
 
     # def _get_pen(self):
     #     '''
-    #     Creates a pen based on the next color in the chosen linecolor palette.
+    #     Creates a pen based on the next color in the chosen linecolor sequence.
     #     '''
     #     color = next(self.linecolor_sequence)
     #     pen = pg.functions.mkPen({'color': color, 'width': self.linewidth})
@@ -290,13 +298,15 @@ class KiwiPlot(pg.PlotWidget):
 
     @Slot(object)
     def _resized_view_box(self, view_box):
+        '''
+        Ensures the background color resizes with the plot.
+        '''
         # print('Resized view box: {}'.format(self))
 
         #How to set the distance of all plots based on the largest width?
         # plot_item = self.getPlotItem()
         # d = plot_item.getAxis('left').width()
         # print(d)
-        
         self._background.setRect(self.plot_item.mapRectFromItem(view_box, view_box.rect()))
 
 
@@ -304,6 +314,7 @@ class KiwiPlot(pg.PlotWidget):
         '''
         Parameters:
         linewidth - set the width of the particular curve. If unspecified, the default linewidth is used.
+        e.g. color='r'
         *args - x,y values for plotting
         '''
         if linewidth is None:
@@ -319,8 +330,9 @@ class KiwiPlot(pg.PlotWidget):
                 color = None
             else:
                 pen = pg.functions.mkPen({'color': color, 'width': linewidth})
-            self.plot_item.plot(x, y, pen=pen, **kargs)
-
+            curve = self.plot_item.plot(x, y, pen=pen, **kargs)
+            # print(curve)
+            curve.setZValue(1e6) 
         #TODO: Add try except
         # curve = self.plot_item.plot(x, y, pen=pen, **kargs)
         # return curve
@@ -339,7 +351,7 @@ class KiwiPlot(pg.PlotWidget):
         TODO: Check if deleteLater() is needed
         '''
         mypen = pg.functions.mkPen({'color': self.graphstyle['cursor'], 'width': plotstyle.CURSORWIDTH})  #white
-        cursor = CursorLine(angle=90, movable=True, pen=mypen, name=name, parentWidget=self) #http://www.pyqtgraph.org/downloads/0.10.0/pyqtgraph-0.10.0-deb/pyqtgraph-0.10.0/examples/crosshair.py
+        cursor = CursorLine(angle=90, movable=True, pen=mypen, hoverPen=mypen, name=name, parentWidget=self) #http://www.pyqtgraph.org/downloads/0.10.0/pyqtgraph-0.10.0-deb/pyqtgraph-0.10.0/examples/crosshair.py
         
         # if show_label:
         #     # labelOpts={'position':0.97, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True} #top

@@ -26,7 +26,7 @@ class LegendBox(LegendItem):
         midGrey = QColor(0xCC, 0xCC, 0xCC, 127)
         pen = fn.mkPen({'color': midGrey, 'width': 1.5}) #outline
         p.setPen(pen) # outline
-        background_color = QColor(0xFF, 0xFF, 0xFF, 64)
+        background_color = QColor(0xFF, 0xFF, 0xFF, 170) #Last value is transparency. 170 = 2/3
         # p.setBrush(fn.mkBrush('#808080'))   # background fill 
         p.setBrush(background_color)   # background fill 
 
@@ -104,11 +104,8 @@ class LegendBox(LegendItem):
         TODO: If labels[n] is None, don't update the label
         labels: list of the new text labels. It must have the same length as the number of legend box items.
         pos: label position. 0 = first label, 1 = second label
-        TODO: Check that if pos > 0, then the legend box must have at least 2 labels
         '''
         n = len(self.items[0])
-        # logger.debug('Number of text labels: %d', n-1)
-
         if pos >= (n - 1):
             raise ValueError('pos must be less than %d' % (n-2))
 
