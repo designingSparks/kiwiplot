@@ -1,11 +1,9 @@
 '''
-Reference:
-https://groups.google.com/g/pyqtgraph/c/U3AsIBvEirM/m/RdSRsZ-MAgAJ
-https://stackoverflow.com/questions/29196610/qt-drawing-a-filled-rounded-rectangle-with-border
-https://stackoverflow.com/questions/8366600/qt-opacity-color-brush
+Derived from legend_box.py
 '''
 from pyqtgraph import LegendItem, PlotDataItem, ScatterPlotItem, LabelItem, graphicsItems
 from pyqtgraph.Qt import QtCore, QtGui
+from pyqtgraph import Point
 from pyqtgraph.graphicsItems.ScatterPlotItem import drawSymbol
 from pyqtgraph.graphicsItems.LegendItem import ItemSample
 import pyqtgraph.functions as fn
@@ -13,10 +11,14 @@ from .qtWrapper import *
 
 BACKGROUND_DEFAULT = '#808080'
 
-class LegendBox(LegendItem):
-    def __init__(self, size=None, offset=None, background=BACKGROUND_DEFAULT):
+class LabelBox(LegendItem):
+    def __init__(self, size=None, offset=None, background=BACKGROUND_DEFAULT, isTight=True, fixed=True):
+        # if isTight:
+        #     offset -= 5
         LegendItem.__init__(self, size, offset)
         self.background = background
+        self.fixed = fixed
+        self.layoutTight = isTight
 
 
     #Can override paint to draw a custom legend rectangle
@@ -33,11 +35,14 @@ class LegendBox(LegendItem):
         p.setRenderHint(QPainter.Antialiasing)
         path = QPainterPath()
         rect = self.boundingRect()
-        left, top, right, bottom = rect.getCoords()
-        rect.setLeft(left + 0.5) #top left of bounding rectange is 0,0
-        rect.setTop(top + 9.5)
-        rect.setBottom(bottom - 9.5)
-        rect.setRight(right-4.5)
+
+        if self.layoutTight: #Tightens the bounding box of the text
+            left, top, right, bottom = rect.getCoords()
+            rect.setLeft(left + 5) #top left of bounding rectange is 0,0
+            rect.setTop(top + 5)
+            rect.setBottom(bottom - 5)
+            rect.setRight(right-5)
+            # self.shift(5, 5)
 
         path.addRoundedRect(rect, 8, 8)
         # QPen pen(Qt::black, 10);
@@ -47,30 +52,27 @@ class LegendBox(LegendItem):
         p.drawPath(path)
         # p.drawRect(self.boundingRect())
 
-    def addItem(self, item, text1):
-        """
-        Add a new entry to the legend.
 
-        ==============  ========================================================
-        **Arguments:**
-        item            A PlotDataItem from which the line and point style
-                        of the item will be determined or an instance of
-                        ItemSample (or a subclass), allowing the item display
-                        to be customized.
-        title           The title to display for this item. Simple HTML allowed.
-        ==============  ========================================================
-        """
-        label = LabelItem(text1, color=(0,0,0), justify='right')
-        # label2 = LabelItem(text2, color=(0,0,0), justify='right')
-        if isinstance(item, ItemSample):
-            sample = item
-        else:
-            sample = ItemSample(item)
-        row = self.layout.rowCount()
-        self.items.append((sample, label))
-        self.layout.addItem(sample, row, 0)
-        self.layout.addItem(label, row, 1)
-        # self.layout.addItem(label2, row, 2)
+    def hoverEvent(self, ev):
+        '''Only need to accept if you want to drag the label box'''
+        pass
+
+
+    def mouseDragEvent(self, ev):
+        '''Prevent the label box from being dragged'''
+        ev.ignore()
+
+    def shift(self, dx, dy):
+        '''
+        Shifts the label box by dx, dy
+        '''
+        self.setPos(self.pos() + Point(dx, dy))
+
+
+    def addText(self, text):
+        label = LabelItem(text, color=(0,0,0), justify='center', bold=True)
+        row = 0
+        self.layout.addItem(label, row, 0)
         self.updateSize()
 
 

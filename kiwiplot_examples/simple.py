@@ -36,6 +36,7 @@ def update_plot(fig):
     fig.plot(t,y6, name='y6')
     fig.grid()
     fig.show_legend()
+    fig.show_label('Bessel Curves')
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
@@ -46,6 +47,9 @@ if __name__ == '__main__':
     # fig2.setWindowTitle('Style grey')
     # update_plot(fig2)
     fig3 = KiwiPlot(style='dark')
-    fig3.setWindowTitle('Style dark')
+    fig3.setWindowTitle('Dark style')
     update_plot(fig3)
+    # fig3.clear()
+    # fig3.plot_item.clearPlots()
+
     sys.exit(app.exec())

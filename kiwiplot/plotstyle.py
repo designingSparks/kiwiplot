@@ -29,7 +29,7 @@ title_style = {'color': 'k', 'size': '12pt', 'font-weight': '500'} #note: use si
 legend_label_style = {'color': 'k', 'size': '8pt'} #, 'bold': True, 'italic': False
 
 fonts = {'axis': 'Roboto', 'axis-tick': 'Roboto', 'title': 'Roboto', 'legend': 'Roboto'}
-AXIS_FONT = QFont("Source Sans Pro", 9) #tick font
+AXIS_FONT = QFont("Source Sans Pro", 8) #tick font
 
 #Color palettes for lines 
 palette_1 = ['#1F77B4','#2CA02C','#D62728','#9467BD','#FAA43A'] #standard

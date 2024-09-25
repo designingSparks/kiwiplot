@@ -168,7 +168,7 @@ class KiwiWindow(QMainWindow):
             logger.debug('Hiding cursor')
             for plot in self.plot_list:
                 plot.cursor_off()
-                plot._hide_legend()
+                plot.hide_legend()
             self.cursor_list = list()
 
             

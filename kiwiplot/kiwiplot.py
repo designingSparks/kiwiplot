@@ -27,6 +27,7 @@ pg.setConfigOption('antialias', True) #Plotted curve looks nicer
 from itertools import cycle
 import numpy as np
 from .legend_box import LegendBox
+from .label_box import LabelBox
 # from .cursorLine import CursorLine
 from .cursorLine2 import CursorLine2 as CursorLine
 # from pyqtgraph.graphicsItems.ViewBox import ViewBox
@@ -112,6 +113,17 @@ class KiwiPlot(pg.PlotWidget):
     #     return qApp
 
 
+    def reset(self):
+        '''
+        Clears all curves and dots from the plot, clears legend
+        ''' 
+        self.plot_item.clearPlots()
+        self.linecolor_sequence = cycle(self.linecolors)
+
+        if self.legend_box is not None:
+            self.legend_box.remove_all_items()
+
+
     def set_style(self, style):
         '''
         '''
@@ -144,6 +156,10 @@ class KiwiPlot(pg.PlotWidget):
             xGrid = args[0]
             yGrid = args[1]
         self.plot_item.showGrid(x=xGrid, y=yGrid, alpha=1)
+
+        # Solves the issue of gridllines being rendered on top of the curves: https://groups.google.com/g/pyqtgraph/c/plhxNt5Yp4o
+        for ax in self.plot_item.axes:
+            self.getAxis(ax).setZValue(-1) 
 
 
     def show_legend(self, legend_list=None, offset=None):
@@ -200,6 +216,24 @@ class KiwiPlot(pg.PlotWidget):
         scene = self.legend_box.scene()
         scene.removeItem(self.legend_box)
         self.legend_box = None
+
+
+    def show_label(self, text, isTight=True, offset=10):
+        '''
+        Shows a custom label in the top left corner of the plot. Can be used to display a title or a description.
+        :param
+        text - text to display
+        offset - offset from the top left corner of the plot.
+        '''
+        self.label_box = LabelBox(isTight=isTight) #can also supply an offset arguement
+        self.label_box.setParentItem(self.viewbox)
+        self.label_box.addText(text)
+
+        if isTight:
+            offset -= 5
+            self.label_box.shift(offset, offset) 
+
+
 
     def set_graph_style(self, graphstyle):
         '''
@@ -325,7 +359,6 @@ class KiwiPlot(pg.PlotWidget):
         for x, y in zip(*[iter(args)]*2): #iterate two items at a time
             if color is None: #automatically get next color in sequence
                 color = next(self.linecolor_sequence)
-                logger.debug(f'Color: {color}')
                 pen = pg.functions.mkPen({'color': color, 'width': linewidth})
                 color = None
             else:

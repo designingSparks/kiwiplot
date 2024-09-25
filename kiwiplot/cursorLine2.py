@@ -50,15 +50,23 @@ class CursorLine2(InfiniteLine):
         curve = pw.plot_item.curves[0] #use first line as reference
         # idx = int(len(curve.xData)/2)
         # xval = curve.xData[idx]
+
+        #TODO: With log scale, the cursor is not placed at the correct position
         left = pw.viewbox.viewRange()[0][0]
         right = pw.viewbox.viewRange()[0][1]
         xmid = np.average([left, right])
+
+        self.isLog = pw.plot_item.ctrl.logXCheck.isChecked() #True or False
+        # if isLog:
+        #     self.isLog
+        #     self.xlog = 10**xmid #Use xlog to get the y value
+            
         # idx = (np.abs(curve.xData - mid)).argmin()
         # xval = curve.xData[idx]
         self.isDisplayed = True
 
         self.setXDataLimit([curve.xData[0], curve.xData[-1]])
-        pw.plot_item.addItem(self, ignoreBounds=True)
+        pw.plot_item.addItem(self, ignoreBounds=True) #add cursor to plot item
 
         #Create and show the cursor dots
         for curve in pw.plot_item.curves:
@@ -90,7 +98,12 @@ class CursorLine2(InfiniteLine):
         xlim a list of [xmin, xmax]
         Used to prevent the cursor from being dragged beyond the first or last data points.
         '''
-        self.xDataLimit = xlim
+        # self.xDataLimit = xlim
+
+        if self.isLog:
+            self.xDataLimit = [np.log10(x) for x in xlim]
+        else:
+            self.xDataLimit = xlim
 
 
     def forceDataSignal(self):
@@ -118,10 +131,16 @@ class CursorLine2(InfiniteLine):
         #Update cursor dots
         for i, curve in enumerate(pw.plot_item.curves):
             if self.interpolateData is True: #linear interpolation
-                y = np.interp(xpos, curve.xData, curve.yData)
+
+                #Must use the actual x value, not the power of 10 for interpolation
+                if self.isLog:
+                    y = np.interp(10**xpos, curve.xData, curve.yData)
+                else:
+                    y = np.interp(xpos, curve.xData, curve.yData)
+
                 xlist.append(xpos)
                 ylist.append(y)
-                self.cursor_dots[i].setData([xpos], [y])
+                self.cursor_dots[i].setData([xpos], [y]) #If log mode, xpos is the power of 10
             else:
                 #Render dots on actual data points, i.e. no interpolation
                 idx = (np.abs(curve.xData - xpos)).argmin()
@@ -164,12 +183,15 @@ class CursorLine2(InfiniteLine):
 
             # Cursor drag limits
             newpos = self.cursorOffset + self.mapToParent(ev.pos())
+        
             xmin = max(xrange[0], self.xDataLimit[0]) #prevent dragging to left of viewbox or min x value
             xmax = min(xrange[1], self.xDataLimit[1])
+
             if newpos.x() < xmin:
                 newpos.setX(xmin)
             if newpos.x() > xmax:
                 newpos.setX(xmax)
+
             self.setPos(newpos)
             # self.setPos(self.cursorOffset + self.mapToParent(ev.pos())) #original
 
@@ -182,7 +204,8 @@ class CursorLine2(InfiniteLine):
 
     def setPos(self, pos):
         '''
-        Same as the parent function except for emitting the cursorDataSignal signal and calculating xlist, ylist.
+        Derived from the parent function. 
+        It sets the position of the cursor and emits the cursorDataSignal signal and calculating xlist, ylist.
         '''
         if isinstance(pos, (list, tuple, np.ndarray)) and not np.ndim(pos) == 0:
             newPos = list(pos)
@@ -209,11 +232,15 @@ class CursorLine2(InfiniteLine):
                 newPos[1] = min(newPos[1], self.maxRange[1])
 
         if self.p != newPos:
+
             self.p = newPos
             xlist, ylist = self.update_cursor_dots() #not in parent function
             self.viewTransformChanged()
             GraphicsObject.setPos(self, Point(self.p))
             self.sigPositionChanged.emit(self)
+
+            if self.isLog:
+                xlist = [10**x for x in xlist]
             self.cursorDataSignal.emit((xlist, ylist), self) #not in parent function
 
     def set_label(self, label, labelOpts):
