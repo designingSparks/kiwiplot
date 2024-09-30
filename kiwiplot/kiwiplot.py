@@ -30,6 +30,7 @@ from .legend_box import LegendBox
 from .label_box import LabelBox
 # from .cursorLine import CursorLine
 from .cursorLine2 import CursorLine2 as CursorLine
+from .hcursorLine import HCursorLine
 # from pyqtgraph.graphicsItems.ViewBox import ViewBox
 from .ViewBox2 import ViewBox2 #js
 from .klog import get_logger
@@ -378,7 +379,7 @@ class KiwiPlot(pg.PlotWidget):
             raise Exception(f'Could not update curve with index {index}')
 
 
-    def cursor_on(self, name=None, show_label=False):
+    def cursor_on(self, name=None, show_label=False, crosshair=False):
         '''
         Adds a cursor. A new cursor is created every time this is called. 
         TODO: Check if deleteLater() is needed
@@ -400,11 +401,19 @@ class KiwiPlot(pg.PlotWidget):
         # inf1 = pg.InfiniteLine(movable=True, angle=90, pen=mypen, label='x={value:0.2f}', 
         #                labelOpts={'position':0.1, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True})
         # self.plot_item.addItem(inf1)
-    
+
+        if crosshair:
+            cursor = HCursorLine(angle=0, movable=False, pen=mypen, hoverPen=mypen, name=name, parentWidget=self)
+            cursor.show()
+            self.hcursor = cursor
+            self.cursor.cursorDataSignal.connect(self.hcursor.setPos) #when vertical cursor is moved, update horizontal cursor programatically
         
     def cursor_off(self):
         self.cursor.hide()
         self.cursor = None
+
+
+
     
     def isCursorOff(self):
         return self.cursor is None

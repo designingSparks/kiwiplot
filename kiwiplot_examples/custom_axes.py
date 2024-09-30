@@ -10,18 +10,19 @@ from kiwiplot.qtWrapper import QApplication
 import numpy as np
 import pyqtgraph as pg
 from kiwiplot.qtWrapper import *
+from kiwiplot.plotstyle import *
 
 format_comma = lambda x: f'{x:,.0f}'
-format_percent_deviation = lambda x: f'{(x - 10) / 10 * 100:.2f}%'
+format_percent_deviation = lambda x: f'{(x - 10) / 10 * 100:.1f}%'
 format_default = lambda x: f'{x:g}'  # Default formatting, 'g' for general format
 
 class CustomAxis(pg.AxisItem):
-    def __init__(self, format_func, *args, **kwargs):
+    def __init__(self, format_func, style, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.format_func = format_func
-        self.setTextPen('k')  # 'k' => black
-        font = QFont("Roboto", 8)
-        self.setTickFont(font)
+        self.setTextPen(style['text'])  # 'k' => black
+        # font = QFont("Roboto", 8)
+        self.setTickFont(AXIS_FONT) #from plotstyle.py
 
     def tickStrings(self, values, scale, spacing):
         return [self.format_func(value) for value in values]
@@ -69,10 +70,10 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     fig1 = KiwiPlot()
     fig1.setWindowTitle('Default style')
-    la = CustomAxis(format_comma, orientation='left')
+    la = CustomAxis(format_comma, fig1.graphstyle, orientation='left')
     la.setWidth(60)
-    ta = CustomAxis(format_percent_deviation, orientation='top')
-    ba = CustomAxis(format_default, orientation='bottom')
+    ta = CustomAxis(format_percent_deviation, fig1.graphstyle, orientation='top', )
+    ba = CustomAxis(format_default, fig1.graphstyle, orientation='bottom')
 
     #When setAxisItems is called, all other axisItems are removed. Therefore, you must
     #provide all axisItems needed for the plot.
