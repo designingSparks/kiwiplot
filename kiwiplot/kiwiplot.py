@@ -87,6 +87,8 @@ class KiwiPlot(pg.PlotWidget):
 
         self.linewidth = plotstyle.LINEWIDTH
         self.cursor = None #reference to last cursor
+        self.hcursor = None #reference to horizontal cursor
+
         # self.cursor_list = list() #can have multiple cursors
         # self.curves = list() #Not needed. Use self.plot_item.curves()
         self.legend_box = None
@@ -99,19 +101,6 @@ class KiwiPlot(pg.PlotWidget):
 
         self.show()
         self.hasTitle = False
-
-    # @property
-    # def qApplication(self):
-    #     """ Returns the QApplication object. Equivalent to QtWidgets.qApp.
-    #         :rtype QtWidgets.QApplication:
-    #     """
-    #     # TODO: replace the lines below by qApplicationSingleton()
-    #     global _Q_APP
-
-    #     qApp = QApplication.instance()
-    #     if qApp is None:
-    #         _Q_APP = qApp = QApplication([])
-    #     return qApp
 
 
     def reset(self):
@@ -403,16 +392,20 @@ class KiwiPlot(pg.PlotWidget):
         # self.plot_item.addItem(inf1)
 
         if crosshair:
+            self.crosshair = True
             cursor = HCursorLine(angle=0, movable=False, pen=mypen, hoverPen=mypen, name=name, parentWidget=self)
-            cursor.show()
             self.hcursor = cursor
             self.cursor.cursorDataSignal.connect(self.hcursor.setPos) #when vertical cursor is moved, update horizontal cursor programatically
+            self.cursor.forceDataSignal() #set the position of the horizontal cursor
+            self.hcursor.show()
+        
         
     def cursor_off(self):
         self.cursor.hide()
         self.cursor = None
-
-
+        if self.crosshair:
+            self.hcursor.hide()
+            self.hcursor = None
 
     
     def isCursorOff(self):

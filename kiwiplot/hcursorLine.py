@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 '''
-This is a patched version of pyqtgraph.InfiniteLine
+This horizontal cursor line is stationary and is designed to be used in conjunction with a vertical cursor line, which is moveable.
+Used with the vertical cursor, it becomes a crosshair cursor.
+Its position is set by the cursorDataSignal of the vertical cursor.
+It doesn't emit any signals, it just consumes the signal from the vertical cursor.
+
+TODO:
+Test the log scale functionality
 '''
 from .qtWrapper import *
 from pyqtgraph.Point import Point
@@ -25,8 +31,6 @@ from . import plotstyle
 
 class HCursorLine(InfiniteLine):
     
-    # cursorDataSignal = Signal(object, object)
-
     def __init__(self, *args, parentWidget=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.parentWidget = parentWidget
@@ -37,6 +41,7 @@ class HCursorLine(InfiniteLine):
         self.isPressed = False
         # self.cursor_dots = list() #store dots that show the intersection of the cursor and graph
         self.labels = list()
+        self.isLog = self.parentWidget.plot_item.ctrl.logXCheck.isChecked() #True or False
 
     def show(self):
         '''
@@ -56,7 +61,7 @@ class HCursorLine(InfiniteLine):
         # right = pw.viewbox.viewRange()[0][1]
         # xmid = np.average([left, right])
 
-        self.isLog = pw.plot_item.ctrl.logXCheck.isChecked() #True or False
+        
         # if isLog:
         #     self.isLog
         #     self.xlog = 10**xmid #Use xlog to get the y value
@@ -82,7 +87,7 @@ class HCursorLine(InfiniteLine):
             # yval = curve.yData[idx] #find_nearest(curve.xData, xval)
             # cursor_dot.setData([xval], [yval])
 
-        self.setPos(Point(0,0)) #x,y position of the cursor
+        # self.setPos(Point(0,0)) #x,y position of the cursor
 
 
     def hide(self):
@@ -90,9 +95,9 @@ class HCursorLine(InfiniteLine):
         Remove cursorLine and dots from parent plot item.
         '''
         self.parentWidget.plot_item.removeItem(self)
-        for cursor_dot in self.cursor_dots:
-            self.parentWidget.removeItem(cursor_dot)
-            self.cursor_dots = list()
+        # for cursor_dot in self.cursor_dots:
+        #     self.parentWidget.removeItem(cursor_dot)
+        #     self.cursor_dots = list()
 
             
     # def setXDataLimit(self, xlim):
@@ -124,53 +129,12 @@ class HCursorLine(InfiniteLine):
     #     self.cursorDataSignal.emit((xlist, ylist), self)
     
 
-    # def update_cursor_dots(self):
-    #     '''
-    #     Called when the cursor was moved. It updates the cursor dot to the intersection point of the cursor and the curve.
-    #     It also emits the cursorDataSignal signal, which contains the x, y coordinates of the new intersection points.
-    #     Params
-    #     line - pyqtgraph InfiniteLine type
-    #     '''
-    #     pw = self.parentWidget
-    #     # xpos = line.x()
-    #     xpos = self.p[0]
-    #     xlist = list() #Data to emit
-    #     ylist = list()
-    #     # logger.debug('Updating cursor dots')
-
-    #     #Update cursor dots
-    #     for i, curve in enumerate(pw.plot_item.curves):
-    #         if self.interpolateData is True: #linear interpolation
-
-    #             #Must use the actual x value, not the power of 10 for interpolation
-    #             if self.isLog:
-    #                 y = np.interp(10**xpos, curve.xData, curve.yData)
-    #             else:
-    #                 y = np.interp(xpos, curve.xData, curve.yData)
-
-    #             xlist.append(xpos)
-    #             ylist.append(y)
-    #             self.cursor_dots[i].setData([xpos], [y]) #If log mode, xpos is the power of 10
-    #         else:
-    #             #Render dots on actual data points, i.e. no interpolation
-    #             idx = (np.abs(curve.xData - xpos)).argmin()
-    #             xval = curve.xData[idx]
-    #             yval = curve.yData[idx]
-    #             xlist.append(xval)
-    #             ylist.append(yval)
-    #             self.cursor_dots[i].setData([xval], [yval])
-    #     return xlist, ylist
-    
 
     def hoverEvent(self, ev):
         if (not ev.isExit()) and self.movable and ev.acceptDrags(Qt.LeftButton):
             self.setMouseHover(True)
-            # self.parentWidget.setCursor(QCursor(Qt.SizeVerCursor)) #drag up/down cursor
         else:
             self.setMouseHover(False)
-            # print('Exit hover event')
-            # if not self.isPressed and not self.moving: #change back to normal cursor
-            #     self.parentWidget.setCursor(QCursor(Qt.ArrowCursor))
 
 
     def mouseDragEvent(self, ev):
@@ -245,13 +209,13 @@ class HCursorLine(InfiniteLine):
             y = self.p[1][0]
             # xlist, ylist = self.update_cursor_dots() #not in parent function
             self.viewTransformChanged()
-            print('New position: {}'.format(self.p))
+            # print('New position: {}'.format(self.p))
             GraphicsObject.setPos(self, Point(x,y))
             # self.sigPositionChanged.emit(self)
 
             if self.isLog:
                 xlist = [10**x for x in xlist]
-            # self.cursorDataSignal.emit((xlist, ylist), self) #not in parent function
+
 
     def set_label(self, label, labelOpts):
         '''

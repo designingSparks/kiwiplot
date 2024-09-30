@@ -45,7 +45,6 @@ class MainWindow(QMainWindow):
         self.plotwidget1.set_ylabel('Magnitude')
         self.plotwidget1.set_title('Sine Wave Magnitude')
         self.plotwidget1.cursor_on(crosshair=True)
-        # self.plotwidget1.hcursor_on()
         self.plotwidget1.cursor.cursorDataSignal.connect(self.process_cursor_data)
 
 
