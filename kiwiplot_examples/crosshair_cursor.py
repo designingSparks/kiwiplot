@@ -5,6 +5,7 @@ import sys
 import numpy as np
 from kiwiplot import KiwiPlot, plotstyle
 from kiwiplot.qtWrapper import *
+from kiwiplot.constants import HLINE_TOP, VLINE_RIGHT
 import pyqtgraph as pg #must come after importing kiwiplot.qt
 
 _this_file = os.path.realpath(sys.argv[0])
@@ -15,17 +16,18 @@ IMAGE_DIR = os.path.join(BASEDIR, 'images')
 def get_bessel_data(x):
     import scipy.special as spl
     y1 = spl.jv(0,x)
-    return y1
+    y2 = spl.jv(1,x)
+    return y1, y2
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.setWindowTitle('Cursor Example')
+        self.setWindowTitle('Cursor Crosshair Example')
         self.setStyleSheet('QToolBar{spacing:5px;};') #QStatusBar.item {border: none;}
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
         self.status_height = self.status_bar.minimumSize().height()
-        self.plotwidget1 = KiwiPlot(style='dark')
+        self.plotwidget1 = KiwiPlot(style='white')
         self.update_plot()
         vbox = QVBoxLayout()
         widget = QWidget()
@@ -34,17 +36,31 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
         self.show()
 
+
+    def add_cursor_labels(self):
+        # labelOpts1={'position':0.03, 'color': 'w', 'fill': (0x1F, 0x77, 0xB4, 200), 'movable': True} #bottom
+        labelOpts1={'position':0.03, 'color': 'w', 'fill': (0x1F, 0x77, 0xB4, 200)} 
+        format1 = lambda x: f'{x:.2f}'
+        format2 = lambda x: f'{x:.3f}'
+        self.plotwidget1.cursor.add_label('', format1, labelOpts1) #cursor label is in bottom left
+        self.plotwidget1.hcursor.add_label('', format2, labelOpts1)
+        # self.plotwidget1.cursor.labels[0].set_left(True) #alternative positioning
+        # self.plotwidget1.hcursor.labels[0].set_below(True)
+
+
     def update_plot(self):
         t = np.linspace(0,20,100)
-        y1 = get_bessel_data(t)
+        y1, y2 = get_bessel_data(t)
         self.plotwidget1.plot(t,y1, name='y1')
+        self.plotwidget1.plot(t,y2, name='y2')
 
         self.plotwidget1.grid()
         self.plotwidget1.show_legend()
         self.plotwidget1.set_xlabel('Time', 's') #Can also specify the base unit
         self.plotwidget1.set_ylabel('Magnitude')
-        self.plotwidget1.set_title('Sine Wave Magnitude')
+        self.plotwidget1.set_title('Bessel Function')
         self.plotwidget1.cursor_on(crosshair=True)
+        self.add_cursor_labels()
         self.plotwidget1.cursor.cursorDataSignal.connect(self.process_cursor_data)
 
 

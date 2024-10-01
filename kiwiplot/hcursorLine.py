@@ -21,6 +21,7 @@ from pyqtgraph.graphicsItems.GraphicsObject import GraphicsObject
 # from pyqtgraph.graphicsItems.ViewBox import ViewBox
 # from pyqtgraph import functions as fn
 from pyqtgraph import ScatterPlotItem
+from pyqtgraph.functions import mkBrush
 # import weakref
 from . import plotstyle
 # from .klog import *
@@ -211,7 +212,7 @@ class HCursorLine(InfiniteLine):
             self.viewTransformChanged()
             # print('New position: {}'.format(self.p))
             GraphicsObject.setPos(self, Point(x,y))
-            # self.sigPositionChanged.emit(self)
+            self.sigPositionChanged.emit(self) #Needed to update the cursor label
 
             if self.isLog:
                 xlist = [10**x for x in xlist]
@@ -303,9 +304,35 @@ class InfLineLabel(TextItem):
         self.anchors = anchors
         TextItem.__init__(self, **kwds)
         self.setParentItem(line)
-        self.setAnchor(self.anchors[1]) #set to left of line
-        # self.setAnchor(self.anchors[0]) #set to right of line
+        self.setAnchor(self.anchors[1])
+        self.value_prev = 0
         self.valueChanged()
+        value = self.line.value()[0]  #Make sure the initial position is set above or below
+        self.update_anchor(value)
+
+
+    def set_below(self, isBelow):
+        '''
+        Set the label below or above the horizontal cursor
+        :param
+        isBelow - bool
+        '''
+        if isBelow:
+            self.setAnchor(self.anchors[0]) #underneath horizontal cursor
+            self.fill = mkBrush((0xCC, 0, 0, 200))
+        else:
+            self.setAnchor(self.anchors[1]) #on top of horizontal cursor
+            self.fill = mkBrush((0x1F, 0x77, 0xB4, 200))
+
+
+    def update_anchor(self, value):
+        '''Update the position to above or below the horizontal cursor. Called from valueChanged().
+        '''
+        if value > 0:
+            self.set_below(False)
+        else:
+            self.set_below(True)
+
 
     def config_percentage_calc(self, zero_val):
         '''
@@ -316,15 +343,19 @@ class InfLineLabel(TextItem):
         self.zero_val = zero_val
         self.valueChanged()
 
+
     def valueChanged(self):
         if not self.isVisible():
             return
-        value = self.line.value()
-        if self.calc_pc: #calculate percentage change
-            value = (value - self.zero_val) / self.zero_val * 100
+        value = self.line.value()[0] #why is this a list?
+
+        if (self.value_prev > 0) != (value > 0): #Changes the position of the label if the cursor crosses zero
+            self.update_anchor(value)
+        
         new_text = self.format(value)
         self.setText(new_text)
         self.updatePosition()
+        self.value_prev = value
 
     def getEndpoints(self):
         # calculate points where line intersects view box

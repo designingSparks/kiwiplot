@@ -302,7 +302,7 @@ class InfLineLabel(TextItem):
     option here is to use `rotateAxis=(1, 0)`, which will cause the text to
     be automatically rotated parallel to the line.
     """
-    def __init__(self, line, text="", format=None, zero_val=None, calc_pc=False, movable=False, position=0.5, anchors=None, **kwds):
+    def __init__(self, line, text="", format=None, zero_val=None, calc_pc=False, movable=False, position=0.5, anchors=None, pos_below=True, **kwds):
         self.line = line
         self.movable = movable
         self.moving = False
@@ -329,9 +329,22 @@ class InfLineLabel(TextItem):
         self.anchors = anchors
         TextItem.__init__(self, **kwds)
         self.setParentItem(line)
-        self.setAnchor(self.anchors[1]) #set to left of line
-        # self.setAnchor(self.anchors[0]) #set to right of line
+        # self.setAnchor(self.anchors[1]) #set to left of line
+        self.setAnchor(self.anchors[0]) #set to right of line
         self.valueChanged()
+
+
+    def set_left(self, isLeft):
+        '''
+        Set the label below or above the horizontal cursor
+        :param
+        isBelow - bool
+        '''
+        if isLeft:
+            self.setAnchor(self.anchors[1])
+        else:
+            self.setAnchor(self.anchors[0])
+
 
     def config_percentage_calc(self, zero_val):
         '''
