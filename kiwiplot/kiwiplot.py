@@ -368,10 +368,12 @@ class KiwiPlot(pg.PlotWidget):
             raise Exception(f'Could not update curve with index {index}')
 
 
-    def cursor_on(self, name=None, show_label=False, crosshair=False):
+    def cursor_on(self, name=None, show_label=False, hcursor=None):
         '''
         Adds a cursor. A new cursor is created every time this is called. 
         TODO: Check if deleteLater() is needed
+        params:
+        crosshair: bool or HCursorLineObject
         '''
         mypen = pg.functions.mkPen({'color': self.graphstyle['cursor'], 'width': plotstyle.CURSORWIDTH})  #white
         cursor = CursorLine(angle=90, movable=True, pen=mypen, hoverPen=mypen, name=name, parentWidget=self) #http://www.pyqtgraph.org/downloads/0.10.0/pyqtgraph-0.10.0-deb/pyqtgraph-0.10.0/examples/crosshair.py
@@ -391,19 +393,21 @@ class KiwiPlot(pg.PlotWidget):
         #                labelOpts={'position':0.1, 'color': 'k', 'fill': (0xFF, 0xFF, 0xFF, 64), 'movable': True})
         # self.plot_item.addItem(inf1)
 
-        if crosshair:
-            self.crosshair = True
-            cursor = HCursorLine(angle=0, movable=False, pen=mypen, hoverPen=mypen, name=name, parentWidget=self)
-            self.hcursor = cursor
+        if hcursor is not None:
+            if isinstance(hcursor, bool):
+                cursor = HCursorLine(angle=0, movable=False, pen=mypen, hoverPen=mypen, name=name, parentWidget=self)
+                self.hcursor = cursor
+            elif isinstance(hcursor, object): #This check could be more specific
+                self.hcursor = hcursor
             self.cursor.cursorDataSignal.connect(self.hcursor.setPos) #when vertical cursor is moved, update horizontal cursor programatically
             self.cursor.forceDataSignal() #set the position of the horizontal cursor
             self.hcursor.show()
-        
+            self.hasHCursor = True
         
     def cursor_off(self):
         self.cursor.hide()
         self.cursor = None
-        if self.crosshair:
+        if self.hasHCursor:
             self.hcursor.hide()
             self.hcursor = None
 
