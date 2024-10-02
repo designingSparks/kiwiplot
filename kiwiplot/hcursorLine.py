@@ -307,8 +307,6 @@ class InfLineLabel(TextItem):
         self.setAnchor(self.anchors[1])
         self.value_prev = 0
         self.valueChanged()
-        value = self.line.value()[0]  #Make sure the initial position is set above or below
-        self.update_anchor(value)
 
 
     def set_below(self, isBelow):
@@ -319,19 +317,8 @@ class InfLineLabel(TextItem):
         '''
         if isBelow:
             self.setAnchor(self.anchors[0]) #underneath horizontal cursor
-            self.fill = mkBrush((0xCC, 0, 0, 200))
         else:
             self.setAnchor(self.anchors[1]) #on top of horizontal cursor
-            self.fill = mkBrush((0x1F, 0x77, 0xB4, 200))
-
-
-    def update_anchor(self, value):
-        '''Update the position to above or below the horizontal cursor. Called from valueChanged().
-        '''
-        if value > 0:
-            self.set_below(False)
-        else:
-            self.set_below(True)
 
 
     def config_percentage_calc(self, zero_val):
@@ -349,8 +336,8 @@ class InfLineLabel(TextItem):
             return
         value = self.line.value()[0] #why is this a list?
 
-        if (self.value_prev > 0) != (value > 0): #Changes the position of the label if the cursor crosses zero
-            self.update_anchor(value)
+        # if (self.value_prev > 0) != (value > 0): #Changes the position of the label if the cursor crosses zero
+        #     self.update_anchor(value)
         
         new_text = self.format(value)
         self.setText(new_text)

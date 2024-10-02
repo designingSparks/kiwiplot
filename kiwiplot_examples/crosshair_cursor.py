@@ -59,7 +59,7 @@ class MainWindow(QMainWindow):
         self.plotwidget1.set_xlabel('Time', 's') #Can also specify the base unit
         self.plotwidget1.set_ylabel('Magnitude')
         self.plotwidget1.set_title('Bessel Function')
-        self.plotwidget1.cursor_on(crosshair=True)
+        self.plotwidget1.cursor_on(hcursor=True)
         self.add_cursor_labels()
         self.plotwidget1.cursor.cursorDataSignal.connect(self.process_cursor_data)
 
