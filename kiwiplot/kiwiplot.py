@@ -402,12 +402,13 @@ class KiwiPlot(pg.PlotWidget):
             self.cursor.cursorDataSignal.connect(self.hcursor.setPos) #when vertical cursor is moved, update horizontal cursor programatically
             self.cursor.forceDataSignal() #set the position of the horizontal cursor
             self.hcursor.show()
-            self.hasHCursor = True
         
     def cursor_off(self):
+        if self.cursor is None:
+            return
         self.cursor.hide()
         self.cursor = None
-        if self.hasHCursor:
+        if self.hcursor is not None:
             self.hcursor.hide()
             self.hcursor = None
 
