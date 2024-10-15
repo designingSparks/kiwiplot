@@ -355,7 +355,7 @@ class KiwiPlot(pg.PlotWidget):
                 pen = pg.functions.mkPen({'color': color, 'width': linewidth})
             curve = self.plot_item.plot(x, y, pen=pen, **kargs)
             # print(curve)
-            curve.setZValue(1e6) 
+            curve.setZValue(10) 
         #TODO: Add try except
         # curve = self.plot_item.plot(x, y, pen=pen, **kargs)
         # return curve

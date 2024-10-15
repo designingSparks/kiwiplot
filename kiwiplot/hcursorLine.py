@@ -235,6 +235,7 @@ class HCursorLine(InfiniteLine):
         Add a label to the cursor line. This is different from set_label() as it allows multiple labels to be added.
         '''
         label = InfLineLabel(self, text=label_name, format=format, **labelOpts)
+        self.setZValue(1e6)
         self.labels.append(label)
         return label
 
@@ -302,12 +303,16 @@ class InfLineLabel(TextItem):
                     anchors = [(0, 0.5), (1, 0.5)]
             
         self.anchors = anchors
-        TextItem.__init__(self, **kwds)
+        # TextItem.__init__(self, anchor=(0.5,0.5), **kwds) #specifiying an anchor doesn't seem to change anything
+        TextItem.__init__(self, **kwds) 
         self.setParentItem(line)
-        self.setAnchor(self.anchors[1])
+        self.setAnchor(self.anchors[1]) #self.anchors[1] is above the line
         self.value_prev = 0
-        self.valueChanged()
 
+        fm = QFontMetrics(self.textItem.font())
+        self.char_width = fm.averageCharWidth()
+        self.valueChanged()
+        
 
     def set_below(self, isBelow):
         '''
@@ -343,6 +348,9 @@ class InfLineLabel(TextItem):
         self.setText(new_text)
         self.updatePosition()
         self.value_prev = value
+        text_width = self.char_width*(len(new_text)+2)
+        self.textItem.setTextWidth(text_width)
+
 
     def getEndpoints(self):
         # calculate points where line intersects view box

@@ -39,11 +39,13 @@ class MainWindow(QMainWindow):
 
     def add_cursor_labels(self):
         # labelOpts1={'position':0.03, 'color': 'w', 'fill': (0x1F, 0x77, 0xB4, 200), 'movable': True} #bottom
-        labelOpts1={'position':0.03, 'color': 'w', 'fill': (0x1F, 0x77, 0xB4, 200)} 
+        labelOpts1={'position':0.03, 'color': 'w', 'fill': (0x1F, 0x77, 0xB4, 200)}
+        labelOpts2={'position':0.04, 'color': 'w', 'fill': (0x1F, 0x77, 0xB4, 200)}
         format1 = lambda x: f'{x:.2f}'
-        format2 = lambda x: f'{x:.3f}'
+        # format2 = lambda x: f'{x:.3f}'
+        format2 = lambda x: f'{round(x)}'
         self.plotwidget1.cursor.add_label('', format1, labelOpts1) #cursor label is in bottom left
-        self.plotwidget1.hcursor.add_label('', format2, labelOpts1)
+        self.plotwidget1.hcursor.add_label('', format2, labelOpts2)
         # self.plotwidget1.cursor.labels[0].set_left(True) #alternative positioning
         # self.plotwidget1.hcursor.labels[0].set_below(True)
 
@@ -51,8 +53,9 @@ class MainWindow(QMainWindow):
     def update_plot(self):
         t = np.linspace(0,20,100)
         y1, y2 = get_bessel_data(t)
-        self.plotwidget1.plot(t,y1, name='y1')
-        self.plotwidget1.plot(t,y2, name='y2')
+        a = 1e6
+        self.plotwidget1.plot(t,y1*a, name='y1')
+        self.plotwidget1.plot(t,y2*a, name='y2')
 
         self.plotwidget1.grid()
         self.plotwidget1.show_legend()

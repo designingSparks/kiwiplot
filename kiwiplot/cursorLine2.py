@@ -260,6 +260,7 @@ class CursorLine2(InfiniteLine):
         Add a label to the cursor line. This is different from set_label() as it allows multiple labels to be added.
         '''
         label = InfLineLabel(self, text=label_name, format=format, **labelOpts)
+        self.setZValue(1e6)
         self.labels.append(label)
         return label
 
